@@ -1,0 +1,29 @@
+.container {
+  position: relative;
+  width: 300px;
+  margin: 50px 0;
+
+  &.vertical {
+    height: 200px;
+  }
+}
+
+.scroll-container {
+  position: relative;
+  display: flex;
+  overflow-x: auto;
+
+  &.vertical {
+    flex-direction: column;
+    overflow-x: visible;
+    overflow-y: auto;
+    height: 100%;
+  }
+}
+
+.item {
+  padding: 20px;
+  margin: 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.445);
+}
