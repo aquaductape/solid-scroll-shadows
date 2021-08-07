@@ -12,6 +12,7 @@
   position: relative;
   display: flex;
   overflow-x: auto;
+  // direction: rtl;
 
   &.vertical {
     flex-direction: column;
@@ -25,5 +26,5 @@
   padding: 20px;
   margin: 10px;
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.445);
+  background: #f7f7f7;
 }

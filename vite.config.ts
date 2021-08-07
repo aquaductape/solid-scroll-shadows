@@ -1,15 +1,21 @@
-import { defineConfig } from "vite";
+import { defineConfig, UserConfigExport } from "vite";
 import solidPlugin from "vite-plugin-solid";
 import base62 from "./utils/base64";
 
 let id = 0;
 
-export default defineConfig({
-  plugins: [solidPlugin()],
-  build: {
-    target: "esnext",
-    polyfillDynamicImport: false,
-  },
+const common = ({ add = {} }: { add?: UserConfigExport } = {}) => {
+  return defineConfig({
+    plugins: [solidPlugin()],
+    build: {
+      target: "esnext",
+      polyfillDynamicImport: false,
+    },
+    ...add,
+  });
+};
+
+const serveConfig: UserConfigExport = {
   css: {
     modules: {
       generateScopedName: () => {
@@ -19,4 +25,10 @@ export default defineConfig({
       },
     },
   },
-});
+};
+export default ({ command }: { command: "serve" | "build" }) => {
+  if (command === "build") {
+    return common({ add: serveConfig });
+  }
+  return common();
+};

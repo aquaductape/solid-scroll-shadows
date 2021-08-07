@@ -1,5 +1,5 @@
 :root {
-  --brand: #1a1e39;
+  --brand: #252a44;
 }
 
 body {
@@ -10,7 +10,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: var(--brand);
-  color: #bed3d5;
+  background: #fff;
+  color: #000;
+  padding: 50px;
 }
 
 code {
