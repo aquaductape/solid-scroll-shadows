@@ -9,7 +9,7 @@ const App: Component = () => {
   return (
     <div>
       <Horizontal></Horizontal>
-      <Vertical></Vertical>
+      {/* <Vertical></Vertical> */}
     </div>
   );
 };
