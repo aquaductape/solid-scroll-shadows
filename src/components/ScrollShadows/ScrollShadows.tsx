@@ -34,7 +34,7 @@ export type ScrollShadowsShadow = {
    *
    * css color value, for shadow gradient.
    */
-  color?: string;
+  color: string;
   /**
    * image url or css gradient
    */
@@ -120,49 +120,14 @@ type TShared = {
  */
 const ScrollShadows: Component<
   {
-    class: string;
+    class?: string;
+    classList?: { [k: string]: boolean | undefined };
   } & Omit<TShared, "child">
 > = (props) => {
   const propHasShadowColor = props.shadow && props.shadow.color;
-  const {
-    class: className,
-    direction,
-    endsDetectionMargin,
-    onEndsHit,
-    hover,
-  } = props;
-  // if (!props.shadow) props.shadow = {};
-
-  // @ts-ignore
-  // props = mergeProps(
-  //   {
-  //     shadow: {
-  //       size: "50px",
-  //       color: "red",
-  //       transition: "300ms",
-  //       colorToRGBA: isSafari,
-  //       shape: "rectangle",
-  //       animation: "opacity",
-  //       ...props.shadow,
-  //     },
-  //   } as ScrollShadowsComponent,
-  //   props
-  // );
-
-  // if (props.shadow.size == null) props.shadow.size = "50px";
-  // if (props.shadow.color == null) props.shadow.color = "rgba(255, 255, 255, 1)";
-  // if (props.shadow.transition == null) props.shadow.transition = "300ms";
-  // if (props.shadow.colorToRGBA == null) props.shadow.colorToRGBA = isSafari;
-  // if (props.shadow.shape == null) props.shadow.shape = "rectangle";
-  // if (props.shadow.animation == null) props.shadow.animation = "opacity";
+  const { direction, endsDetectionMargin, onEndsHit, hover } = props;
 
   let transparentColor = "transparent";
-
-  // if (shadow.colorToRGBA && propHasShadowColor) {
-  //   const colorArr = colorToRGBA(shadow.color!);
-  //   shadow.color = colorArrToCSS({ colorArr });
-  //   transparentColor = colorArrToCSS({ colorArr, alpha: 0 });
-  // }
 
   const sentinelShadowState = new Map<HTMLElement, HTMLElement>();
   let shadowFirstEl!: HTMLElement;
@@ -170,16 +135,16 @@ const ScrollShadows: Component<
   let sentinelFirstEl = (
     <Sentinel
       child="first"
-      direction={direction}
-      endsDetectionMargin={endsDetectionMargin}
+      direction={props.direction}
+      endsDetectionMargin={props.endsDetectionMargin}
       rtl={props.rtl}
     />
   ) as HTMLElement;
   let sentinelLastEl = (
     <Sentinel
       child="last"
-      direction={direction}
-      endsDetectionMargin={endsDetectionMargin}
+      direction={props.direction}
+      endsDetectionMargin={props.endsDetectionMargin}
       rtl={props.rtl}
     />
   ) as HTMLElement;
@@ -298,11 +263,22 @@ const ScrollShadows: Component<
     onCleanup(() => observer && observer.disconnect());
   });
 
+  const setContainerStyle = () => {
+    const { rtl } = props;
+
+    return rtl ? "direction: rtl;" : "";
+  };
+
   return (
-    <div class={className} ref={container}>
+    <div
+      class={props.class}
+      classList={props.classList || {}}
+      style={setContainerStyle()}
+      ref={container}
+    >
       <Shadow
         child="first"
-        direction={direction}
+        direction={props.direction}
         shadow={props.shadow}
         tranparentColor={transparentColor}
         rtl={props.rtl}
@@ -310,7 +286,7 @@ const ScrollShadows: Component<
       />
       <Shadow
         child="last"
-        direction={direction}
+        direction={props.direction}
         shadow={props.shadow}
         tranparentColor={transparentColor}
         rtl={props.rtl}
@@ -324,8 +300,10 @@ const ScrollShadows: Component<
 
 const Sentinel: Component<
   Pick<TShared, "direction" | "child" | "endsDetectionMargin" | "rtl">
-> = ({ direction, child, endsDetectionMargin = 0, rtl }) => {
-  const setPosition = (direction: string) => {
+> = (props) => {
+  const setPosition = () => {
+    const { child, endsDetectionMargin = 0, rtl, direction } = props;
+
     const isFirst = child === "first";
     const left = rtl ? "right" : "left";
     const right = rtl ? "left" : "right";
@@ -342,8 +320,10 @@ const Sentinel: Component<
       isFirst ? "" : "flex-shrink: 0; margin-top: -1px;"
     }`;
   };
-  const style = `pointer-events: none; ${setPosition(direction)}; `;
-  return <div style={style}></div>;
+
+  const style = () => `pointer-events: none; ${setPosition()}; `;
+
+  return <div style={style()}></div>;
 };
 
 const animationState = ({
@@ -377,7 +357,7 @@ const animationState = ({
 const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
   props
 ) => {
-  const { child, ref } = props;
+  const { child } = props;
   let init = true;
   let shadowEl!: HTMLDivElement;
   let { color, transition, image, shape, animation, colorToRGBA, size } =
@@ -396,13 +376,19 @@ const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
     );
 
   let { direction, rtl } = getProps(props, ["direction", "rtl"]);
+  const transparentColor = createMemo(() => {
+    const { color } = getProps(props.shadow, ["color"]);
+
+    const colorArr = setColorToRGBA(color);
+    return colorArrToCSS({ colorArr, alpha: 0 });
+  });
   let containerShadow!: HTMLDivElement;
 
   createEffect(
     on(
       // why doesn't props work since it updates
       // why does props.shadow work when
-      [() => props.shadow, () => props.rtl],
+      [() => props.shadow, () => props.rtl, () => props.direction],
       () => {
         // const props = input[0];
         let { color, transition, image, shape, animation, colorToRGBA, size } =
@@ -422,7 +408,6 @@ const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
 
         let { direction, rtl } = getProps(props, ["direction", "rtl"]);
 
-        console.log({ color });
         shadowEl.style.background = getBackgroundImage({
           color,
           image,
@@ -430,23 +415,18 @@ const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
           shape,
         });
         shadowEl.style.backgroundSize = getBackgroundSize({ shape });
-        shadowEl.style.backgroundPosition = getBackgroundSize({ shape });
+        shadowEl.style.backgroundPosition = getBackgroundPosition({
+          shape,
+          rtl,
+        });
+        shadowEl.style.backgroundRepeat = "no-repeat";
         containerShadow.style.cssText = getShadowContainerStyle({ rtl, size });
       },
       { defer: true }
     )
   );
 
-  const transparentColor = createMemo(() => {
-    const { color } = getProps(props.shadow, ["color"]);
-
-    const colorArr = setColorToRGBA(color);
-    return colorArrToCSS({ colorArr, alpha: 0 });
-  });
-
   const isFirst = child === "first";
-  const right = rtl ? "left" : "right";
-  const left = rtl ? "right" : "left";
 
   const getShadowContainerStyle = (props: {
     rtl: boolean;
@@ -456,7 +436,6 @@ const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
     const isFirst = child === "first";
     const right = rtl ? "left" : "right";
     const left = rtl ? "right" : "left";
-    console.log("getShadowContainerStyle");
 
     size = parseVal(size);
 
@@ -490,8 +469,10 @@ const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
     return bgSize;
   };
 
-  const getBackgroundPosition = (props: { shape: string }) => {
-    const { shape } = props;
+  const getBackgroundPosition = (props: { shape: string; rtl: boolean }) => {
+    const { shape, rtl } = props;
+    const right = rtl ? "left" : "right";
+    const left = rtl ? "right" : "left";
     if (shape === "rectangle") return "";
 
     if (shape === "convex") {
@@ -551,8 +532,6 @@ const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
   };
 
   const getShadowStyle = () => {
-    console.log("getShadowStyle");
-
     const animationProp = animation === "opacity" ? animation : "transform";
 
     const getBackgroundDeclarations = () => {
@@ -563,7 +542,7 @@ const Shadow: Component<{ ref: any; tranparentColor: string } & TShared> = (
         shape,
       })}; background-size: ${getBackgroundSize({
         shape,
-      })}; background-position: ${getBackgroundPosition({ shape })};`;
+      })}; background-position: ${getBackgroundPosition({ shape, rtl })};`;
     };
 
     return `width: 100%; height: 100%; ${getBackgroundDeclarations()} ${animationProp}: ${animationState(

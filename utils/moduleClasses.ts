@@ -1,6 +1,6 @@
 export const scopeModuleClasses =
   (inputModuleClasses: CSSModuleClasses) =>
-  (...selectors: string[]) => {
+  (...selectors: (string | boolean)[]) => {
     // ...args: (string | [CSSModuleClasses, string])[]
     //     if (args.length > 1) {
     //       return args
@@ -17,5 +17,8 @@ export const scopeModuleClasses =
     //         .join(" ");
     //     }
 
-    return selectors.map((item) => inputModuleClasses[item]).join(" ");
+    return selectors.reduce((acc, item) => {
+      if (typeof item === "boolean") return acc + "";
+      return acc + " " + inputModuleClasses[item];
+    }, "") as string;
   };
