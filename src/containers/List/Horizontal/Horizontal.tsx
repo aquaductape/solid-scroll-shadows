@@ -20,20 +20,11 @@ const Horizontal = () => {
     direction: "horizontal",
     shadow: {
       color: "magenta",
-      size: 20,
+      size: 50,
     },
-
-    // color: "magenta",
+    rtl: false,
+    endsDetectionMargin: 0,
   });
-  const [color, setColor] = createSignal("magenta");
-  const [size, setSize] = createSignal(50);
-  const [rtl, setRTL] = createSignal(false);
-  const [shape, setShape] = createSignal("convex");
-  let buttonEl!: HTMLButtonElement;
-
-  onMount(() => {});
-
-  const verticalClass = c["vertical"];
 
   return (
     <div>
@@ -45,12 +36,7 @@ const Horizontal = () => {
         onClick={() => {
           const value =
             shadowState.direction === "horizontal" ? "vertical" : "horizontal";
-          console.log(value);
-          setShadowState(
-            "direction",
-
-            value
-          );
+          setShadowState("direction", value);
         }}
       >
         {shadowState.direction !== "horizontal" ? "Horizontal" : "Vertical"}
@@ -85,13 +71,28 @@ const Horizontal = () => {
       <label htmlFor="">
         Size
         <input
-          classList={{ hi: true }}
           type="range"
           min="5"
           max="100"
-          value={shadowState.shadow.size}
+          value={shadowState.shadow!.size}
           onInput={(e) => {
             setShadowState("shadow", "size", Number(e.currentTarget.value));
+          }}
+        />
+      </label>
+      <br />
+      <label htmlFor="">
+        endsDetectionMargin
+        <input
+          type="range"
+          min="0"
+          max="150"
+          value={shadowState.endsDetectionMargin}
+          onInput={(e) => {
+            setShadowState(
+              "endsDetectionMargin",
+              Number(e.currentTarget.value)
+            );
           }}
         />
       </label>
@@ -109,13 +110,16 @@ const Horizontal = () => {
         //   color: "magenta",
         //   size: shadowState.shadow.size,
         // }}
-        shadow={{
-          color: shadowState.shadow.color,
-          size: shadowState.shadow.size,
-          shape: shadowState.shadow.shape,
-        }}
-        endsDetectionMargin="10%"
+        // shadow={{
+        //   color: shadowState.shadow!.color,
+        //   size: shadowState.shadow!.size,
+        //   shape: shadowState.shadow!.shape,
+        //   animation: "slide",
+        //   transition: "1s",
+        // }}
+        endsDetectionMargin={shadowState.endsDetectionMargin}
         rtl={shadowState.rtl}
+
         // rtl={true}
       >
         <div
