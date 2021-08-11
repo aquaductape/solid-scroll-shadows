@@ -723,6 +723,8 @@ const Shadow: Component<
     shadowEl.style.backgroundPosition = backgroundPosition;
     shadowEl.style.backgroundRepeat = backgroundRepeat;
     shadowEl.style.backgroundSize = backgroundSize;
+    // fix animation flash outside of overflow:hidden parent for Safari
+    shadowEl.style.borderRadius = "50%";
     if (shadow.onAnimate) {
       shadow.onAnimate({
         target: shadowEl,
