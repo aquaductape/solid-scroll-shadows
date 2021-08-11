@@ -329,9 +329,7 @@ const ScrollShadows: Component<
   const setContainerStyle = () => {
     const { rtl } = props;
 
-    return `position: relative; overflow: hidden; ${
-      rtl ? "direction: rtl;" : ""
-    }`;
+    return `position: relative; ${rtl ? "direction: rtl;" : ""}`;
   };
 
   return (
@@ -497,7 +495,7 @@ const Shadow: Component<
       return image.flipLast ? inverseProp : "";
     };
 
-    return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; -webkit-transform: translate3d(0, 0, 0); transform: translateZ(0); transition: opacity 300ms; ${getPositionSize()}; ${getFlip()}; `;
+    return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; backface-visibility: hidden; transform: translate3d(0, 0, 0); transition: opacity 300ms; ${getPositionSize()}; ${getFlip()}; `;
   };
 
   const getShadowStyle = () => {
