@@ -495,7 +495,7 @@ const Shadow: Component<
       return image.flipLast ? inverseProp : "";
     };
 
-    return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; -webkit-transform: translate3d(0, 0, 0); transition: opacity 300ms; ${getPositionSize()}; ${getFlip()}; `;
+    return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; -webkit-transform: translate3d(0, 0, 0); transform: translateZ(0); transition: opacity 300ms; ${getPositionSize()}; ${getFlip()}; `;
   };
 
   const getShadowStyle = () => {
