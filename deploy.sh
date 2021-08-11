@@ -17,7 +17,7 @@ function subtree_push() {
 }
 
 function subtree_split() {
-    git push origin $(git subtree split --prefix $output master):gh-pages --force
+    git push origin $(git subtree split --prefix $output main):gh-pages --force
 }
 
 function is_in_remote() {
