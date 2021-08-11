@@ -329,7 +329,9 @@ const ScrollShadows: Component<
   const setContainerStyle = () => {
     const { rtl } = props;
 
-    return `position: relative; ${rtl ? "direction: rtl;" : ""}`;
+    return `position: relative; overflow: hidden; ${
+      rtl ? "direction: rtl;" : ""
+    }`;
   };
 
   return (
