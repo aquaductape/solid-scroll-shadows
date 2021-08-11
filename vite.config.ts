@@ -6,6 +6,7 @@ let id = 0;
 
 const common = ({ add = {} }: { add?: UserConfigExport } = {}) => {
   return defineConfig({
+    base: "/solid-scroll-shadows/",
     plugins: [solidPlugin()],
     build: {
       target: "esnext",
