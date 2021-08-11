@@ -261,48 +261,51 @@ const ScrollShadows: Component<
   };
 
   onMount(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const target = entry.target as HTMLElement;
-        const shadowContainerEl = sentinelShadowState.get(target)!;
-        const shadowEl = shadowContainerEl.firstElementChild as HTMLElement;
-        const isFirstShadow = shadowContainerEl === shadowFirstEl;
-        const firstLast = target.dataset.scrollShadowsSentinel!;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const target = entry.target as HTMLElement;
+          const shadowContainerEl = sentinelShadowState.get(target)!;
+          const shadowEl = shadowContainerEl.firstElementChild as HTMLElement;
+          const isFirstShadow = shadowContainerEl === shadowFirstEl;
+          const firstLast = target.dataset.scrollShadowsSentinel!;
 
-        if (onEndsHit) {
-          const result = onEndsHit({
-            entry,
-            isFirstShadow,
-            shadow: shadowEl!,
-            hitEnd: entry.isIntersecting,
-          });
+          if (onEndsHit) {
+            const result = onEndsHit({
+              entry,
+              isFirstShadow,
+              shadow: shadowEl!,
+              hitEnd: entry.isIntersecting,
+            });
 
-          if (result === false) return;
-        }
+            if (result === false) return;
+          }
 
-        let isVisible = false;
+          let isVisible = false;
 
-        if (entry.isIntersecting) {
-          isVisible = true;
-        }
+          if (entry.isIntersecting) {
+            isVisible = true;
+          }
 
-        if (firstLast === "first") {
-          setShadowsActive((prev) => ({
-            ...prev,
-            first: !isVisible,
-            transition: shadow.transitionInit || !init,
-          }));
-        } else {
-          setShadowsActive((prev) => ({
-            ...prev,
-            last: !isVisible,
-            transition: shadow.transitionInit || !init,
-          }));
-        }
-      });
+          if (firstLast === "first") {
+            setShadowsActive((prev) => ({
+              ...prev,
+              first: !isVisible,
+              transition: shadow.transitionInit || !init,
+            }));
+          } else {
+            setShadowsActive((prev) => ({
+              ...prev,
+              last: !isVisible,
+              transition: shadow.transitionInit || !init,
+            }));
+          }
+        });
 
-      init = false;
-    });
+        init = false;
+      },
+      { root: scrollableContainer }
+    );
 
     if (direction === "horizontal") {
       children.addEventListener("wheel", scrollHorizontally);
