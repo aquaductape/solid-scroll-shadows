@@ -23,7 +23,7 @@ const Horizontal = () => {
       size: 50,
     },
     rtl: false,
-    endsDetectionMargin: 1,
+    endsDetectionMargin: 0,
   });
 
   return (

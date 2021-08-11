@@ -369,7 +369,7 @@ const Sentinel: Component<
   const { child } = props;
 
   const setPosition = () => {
-    let { endsDetectionMargin = 1, rtl, direction } = props;
+    let { endsDetectionMargin = 0, rtl, direction } = props;
 
     endsDetectionMargin = parseVal(endsDetectionMargin);
 
@@ -380,14 +380,14 @@ const Sentinel: Component<
     if (direction === "horizontal") {
       return `position: ${isFirst ? "absolute" : "relative"}; top: 0; ${
         isFirst ? left : right
-      }: ${endsDetectionMargin}; height: 100%; width: 1px; ${
-        isFirst ? "" : "flex-shrink: 0; margin-left: -1px;"
+      }: ${endsDetectionMargin}; height: auto; width: 5px; ${
+        isFirst ? "" : "flex-shrink: 0; margin-left: -5px;"
       }`;
     }
     return `position: ${isFirst ? "absolute" : "static"}; left: 0; ${
       isFirst ? "top" : "bottom"
-    }: ${endsDetectionMargin}; height: 1px; width: 100% ${
-      isFirst ? "" : "flex-shrink: 0; margin-top: -1px;"
+    }: ${endsDetectionMargin}; height: 5px; width: 100% ${
+      isFirst ? "" : "flex-shrink: 0; margin-top: -5px;"
     }`;
   };
 
