@@ -410,8 +410,9 @@ const animationState = ({
   if (animation === "opacity") {
     return show ? "1" : "0";
   }
-  let last = !rtl && direction === "horizontal" ? "100%" : "-100%";
-  let first = !rtl && direction === "horizontal" ? "-100%" : "100%";
+
+  const last = !rtl || direction === "vertical" ? "100%" : "-100%";
+  const first = !rtl || direction === "vertical" ? "-100%" : "100%";
 
   const value = show ? "0%" : isFirst ? first : last;
 
