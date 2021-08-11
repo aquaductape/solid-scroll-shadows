@@ -740,7 +740,7 @@ const Shadow: Component<
   return (
     <div ref={props.ref} style={getShadowContainerStyle()}>
       {/* extra wrapper fixes animation bug in Safari */}
-      <div style="width: 100%; height: 100%; border-radius: 50%;">
+      <div style="width: 100%; height: 100%; overflow: hidden;">
         <Show
           when={props.shadow && props.shadow.components}
           fallback={
