@@ -11,6 +11,7 @@ import {
 } from "solid-js";
 import { isServer } from "solid-js/web";
 import { editHTMLStr } from "./ssr";
+//  animatedEl > shadowEl: inversion
 
 type ElementTemplate = { t: string };
 export type ScrollShadowsOnEndsHit = (props: {
@@ -27,20 +28,6 @@ export type ScrollShadowsAnimate = (props: {
   init: boolean;
 }) => void;
 
-type Image = {
-  src: string;
-  class?: string;
-  classList?: { [key: string]: boolean };
-  /**
-   * Default: `true`
-   *
-   * will flip last shadow image.
-   *
-   * Is set to `false` if `image.class` or `image.classList` are used.
-   */
-  flipLast?: boolean;
-};
-
 export type ScrollShadowsShadow = {
   /**
    * Default: `undefined`
@@ -48,7 +35,6 @@ export type ScrollShadowsShadow = {
    * Takes css class, will override `shape`
    */
   class?: string;
-  classList?: { [key: string]: boolean };
   /**
    * Default: `rectangle`
    */
@@ -70,13 +56,6 @@ export type ScrollShadowsShadow = {
    *
    * If `string` is used, the last shadow image is flipped, to disable use object prop and set `flipLast` to `false`
    */
-  image?:
-    | string
-    | Image
-    | {
-        first: string | Omit<Image, "flipLast">;
-        last: string | Omit<Image, "flipLast">;
-      };
   animation?: "opacity" | "slide";
   /**
    * Default: `300ms`
@@ -118,6 +97,12 @@ export type ScrollShadowsShadow = {
      */
     defaultStyle?: boolean;
   };
+  /**
+   * Default: `null`
+   *
+   * Inverts last shadow. Usefull if you want to use one image, instead of two dedicated for first and last shadows
+   */
+  invert?: "first" | "last" | null;
 };
 
 export type ScrollShadowsComponent = _TScrollShadowsComponent & {
@@ -425,10 +410,10 @@ const animationState = ({
   if (animation === "opacity") {
     return show ? "1" : "0";
   }
-  const from = rtl && direction === "horizontal" ? "100%" : "-100%";
-  const to = rtl && direction === "horizontal" ? "-100%" : "100%";
+  let last = !rtl && direction === "horizontal" ? "100%" : "-100%";
+  let first = !rtl && direction === "horizontal" ? "-100%" : "100%";
 
-  const value = show ? "0%" : isFirst ? from : to;
+  const value = show ? "0%" : isFirst ? first : last;
 
   if (direction === "horizontal") {
     return `translateX(${value})`;
@@ -446,6 +431,7 @@ const Shadow: Component<
 > = (props) => {
   const { child } = props;
   let shadowEl!: HTMLDivElement;
+  let animatedEl!: HTMLDivElement;
   const isFirst = child === "first";
   let prevDirection: "horizontal" | "vertical" | null = null;
   let prevRTL: boolean = false;
@@ -471,7 +457,7 @@ const Shadow: Component<
 
   const getShadowContainerStyle = () => {
     const { direction, rtl = false, shadow = {} } = props;
-    let { size = "50px", image } = shadow;
+    let { size = "50px", invert = null } = shadow;
 
     const isFirst = child === "first";
     const right = rtl ? "left" : "right";
@@ -491,24 +477,7 @@ const Shadow: Component<
       }: 0;  width: 100%; height: ${size}`;
     };
 
-    const getFlip = () => {
-      if (!image) return "";
-      if (isFirst || !rtl) return "";
-
-      const inverseScale =
-        direction === "horizontal" ? "scaleX(-1)" : "scaleY(-1)";
-      const inverseProp = `transform: ${inverseScale};`;
-
-      if (typeof image === "string") return inverseProp;
-      if ("first" in image) {
-        return "";
-      }
-      if (image.class || image.classList) return "";
-
-      return image.flipLast ? inverseProp : "";
-    };
-
-    return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; transition: opacity 300ms; ${getPositionSize()}; ${getFlip()}; `;
+    return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; transition: opacity 300ms; ${getPositionSize()}; `;
   };
 
   const getShadowStyle = () => {
@@ -521,9 +490,10 @@ const Shadow: Component<
     } = props;
     const {
       animation = "opacity",
-      image,
+      class: className,
       shape = "rectangle",
       transition = "300ms",
+      invert,
     } = shadow;
     if (shadow.elements) return null;
 
@@ -544,8 +514,19 @@ const Shadow: Component<
       shadow.colorToRGBA != null ? shadow.colorToRGBA : isSafari
     );
 
+    const getInvertScale = () => {
+      if (!invert) return "";
+      if (invert !== child) return "";
+      // if (!rtl) return "";
+
+      const inverseScale =
+        direction === "horizontal" ? "scaleX(-1)" : "scaleY(-1)";
+
+      return invert ? inverseScale : "";
+    };
+
     const getBackgroundSize = () => {
-      if (image) return "";
+      if (className) return "";
       if (shape === "rectangle") return "";
 
       if (shape === "convex") {
@@ -560,7 +541,7 @@ const Shadow: Component<
     };
 
     const getBackgroundPosition = () => {
-      if (image) return "";
+      if (className) return "";
 
       const right = rtl ? "left" : "right";
       const left = rtl ? "right" : "left";
@@ -583,20 +564,9 @@ const Shadow: Component<
     };
 
     const getBackgroundImage = () => {
+      if (className) return "";
       const right = rtl ? "left" : "right";
       const left = rtl ? "right" : "left";
-
-      if (image) {
-        if (typeof image === "string") return image;
-        if (typeof image === "object" && !("first" in image)) {
-          return image.src;
-        }
-
-        const img = image[child];
-
-        if (typeof img === "string") return img;
-        return img.src;
-      }
 
       if (shape === "convex") {
         const from = rtl ? "100%" : "0%";
@@ -624,7 +594,7 @@ const Shadow: Component<
     };
 
     const getBackgroundRepeat = () => {
-      if (image) return "";
+      if (className) return "";
       return "no-repeat";
     };
 
@@ -652,6 +622,7 @@ const Shadow: Component<
         show: active,
         rtl: rtl!,
       }),
+      invertScale: getInvertScale(),
     };
   };
 
@@ -682,30 +653,14 @@ const Shadow: Component<
     })}; ${transitionDeclaration}`;
   };
 
-  const getImageClass = () => {
-    const { shadow = {} } = props;
-    const { image } = shadow;
-    if (!image || typeof image === "string") return "";
-    if ("first" in image) {
-      const img = image[child];
-      if (typeof img === "string") return "";
-      return img.class || "";
-    }
+  const getAnimatedElClassNames = () => {
+    const { active, transitionActive, shadow = {} } = props;
+    const { animateClassNames } = shadow;
+    if (!animateClassNames) return "";
+    const state = active ? "-show" : "-hide";
+    const init = !transitionActive ? `${animateClassNames}-init` : "";
 
-    return image.class || "";
-  };
-
-  const getImageClassList = () => {
-    const { shadow = {} } = props;
-    const { image } = shadow;
-    if (!image || typeof image === "string") return {};
-    if ("first" in image) {
-      const img = image[child];
-      if (typeof img === "string") return {};
-      return img.classList || {};
-    }
-
-    return image.classList || {};
+    return `${animateClassNames} ${init} ${animateClassNames}${state}`;
   };
 
   createEffect(() => {
@@ -717,6 +672,7 @@ const Shadow: Component<
       transition,
       opacity,
       transform,
+      invertScale,
     } = getShadowStyle()!;
     const { shadow = {}, active, transitionActive } = props;
 
@@ -736,6 +692,8 @@ const Shadow: Component<
     shadowEl.style.backgroundPosition = backgroundPosition;
     shadowEl.style.backgroundRepeat = backgroundRepeat;
     shadowEl.style.backgroundSize = backgroundSize;
+    shadowEl.style.transform = invertScale;
+
     if (shadow.onAnimate) {
       shadow.onAnimate({
         target: shadowEl,
@@ -745,9 +703,12 @@ const Shadow: Component<
       });
       return;
     }
-    shadowEl.style.transition = transition;
-    shadowEl.style.opacity = opacity;
-    shadowEl.style.transform = transform;
+
+    if (shadow.animateClassNames) return;
+
+    animatedEl.style.transition = transition;
+    animatedEl.style.opacity = opacity;
+    animatedEl.style.transform = transform;
   });
 
   const dataAttribute = isFirst ? { first: "" } : { last: "" };
@@ -763,23 +724,40 @@ const Shadow: Component<
           when={props.shadow && props.shadow.elements}
           fallback={
             <div
+              class={getAnimatedElClassNames()}
+              style="width: 100%; height: 100%;"
+              ref={animatedEl}
               {...dataAttribute}
-              class={getImageClass()}
-              classList={getImageClassList()}
-              ref={shadowEl}
-              style={"width: 100%; height: 100%;"}
-            ></div>
+            >
+              <div
+                class={props.shadow && props.shadow.class}
+                ref={shadowEl}
+                style={"width: 100%; height: 100%;"}
+                {...dataAttribute}
+              ></div>
+            </div>
           }
         >
-          <div {...dataAttribute} style={getCustomShadowStyle()}>
-            <Switch>
-              <Match when={child === "first"}>
-                {props.shadow && props.shadow.elements!.first}
-              </Match>
-              <Match when={child === "last"}>
-                {props.shadow && props.shadow.elements!.last}
-              </Match>
-            </Switch>
+          <div
+            class={getAnimatedElClassNames()}
+            style="width: 100%; height: 100%;"
+            ref={animatedEl}
+            {...dataAttribute}
+          >
+            <div
+              {...dataAttribute}
+              class={props.shadow && props.shadow.class}
+              style={getCustomShadowStyle()}
+            >
+              <Switch>
+                <Match when={child === "first"}>
+                  {props.shadow && props.shadow.elements!.first}
+                </Match>
+                <Match when={child === "last"}>
+                  {props.shadow && props.shadow.elements!.last}
+                </Match>
+              </Switch>
+            </div>
           </div>
         </Show>
       </div>

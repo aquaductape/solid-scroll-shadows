@@ -19,8 +19,10 @@ const Horizontal = () => {
   const [shadowState, setShadowState] = createStore<ScrollShadowsComponent>({
     direction: "horizontal",
     shadow: {
+      class: "",
       color: "magenta",
       size: 50,
+      invert: null,
     },
     rtl: false,
     endsDetectionMargin: 0,
@@ -28,12 +30,13 @@ const Horizontal = () => {
 
   return (
     <div>
-      <div className="section">
+      <div class="section">
         <button onClick={() => setShadowState("rtl", !shadowState.rtl)}>
           {!shadowState.rtl ? "RTL" : "LTR"}
         </button>
       </div>
-      <div className="section">
+
+      <div class="section">
         <button
           onClick={() => {
             const value =
@@ -47,7 +50,7 @@ const Horizontal = () => {
         </button>
       </div>
 
-      <div className="section">
+      <div class="section">
         <label>
           Shadow shapes:
           <select
@@ -65,8 +68,43 @@ const Horizontal = () => {
           </select>
         </label>
       </div>
+      <div class="section">
+        <label>
+          Invert shadow:
+          <select
+            onInput={(e) => {
+              let value: string | null = e.currentTarget.value.toLowerCase();
+              if (value === "none") {
+                value = null;
+              }
+              setShadowState("shadow", "invert", value as "first");
+            }}
+          >
+            <option>None</option>
+            <option>First</option>
+            <option>Last</option>
+          </select>
+        </label>
+      </div>
+      <div class="section">
+        <label>
+          CSS class:
+          <select
+            onInput={(e) => {
+              let value: string = e.currentTarget.value;
+              if (value === "None") {
+                value = "";
+              }
+              setShadowState("shadow", "class", value);
+            }}
+          >
+            <option>None</option>
+            <option>foo</option>
+          </select>
+        </label>
+      </div>
 
-      <div className="section">
+      <div class="section">
         <input
           type="color"
           value="#ff00ff"
@@ -76,7 +114,7 @@ const Horizontal = () => {
         />
       </div>
 
-      <div className="section">
+      <div class="section">
         <label htmlFor="">
           Size
           <input
@@ -91,7 +129,7 @@ const Horizontal = () => {
         </label>
       </div>
 
-      <div className="section">
+      <div class="section">
         <label htmlFor="">
           endsDetectionMargin
           <input
@@ -124,6 +162,7 @@ const Horizontal = () => {
         //   size: shadowState.shadow.size,
         // }}
         shadow={{
+          class: shadowState.shadow!.class,
           color: shadowState.shadow!.color,
           size: shadowState.shadow!.size,
           shape: shadowState.shadow!.shape,
@@ -143,6 +182,7 @@ const Horizontal = () => {
           //             }
           //           },
           animation: "slide",
+          invert: shadowState.shadow.invert,
         }}
         endsDetectionMargin={shadowState.endsDetectionMargin}
         rtl={shadowState.rtl}

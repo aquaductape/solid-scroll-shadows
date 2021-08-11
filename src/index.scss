@@ -47,3 +47,29 @@ button {
 .section {
   margin: 10px 0;
 }
+
+.foo {
+  background: url("./assets/emojiis/dragon_1f409.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.my-shadow {
+  transition: 2s transform;
+}
+
+.my-shadow-init {
+  transition: none;
+}
+
+.my-shadow-show {
+  transform: translateX(0%);
+}
+
+.my-shadow-hide {
+  transform: translateX(100%);
+}
+.my-shadow-hide[first] {
+  transform: translateX(-100%);
+}
