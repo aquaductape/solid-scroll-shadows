@@ -3,17 +3,16 @@ import {
   onCleanup,
   onMount,
   JSX,
-  mergeProps,
-  createMemo,
   createEffect,
   createSignal,
-  on,
   Show,
   Match,
   Switch,
 } from "solid-js";
 import { isServer } from "solid-js/web";
+import { editHTMLStr } from "./ssr";
 
+type ElementTemplate = { t: string };
 export type ScrollShadowsOnEndsHit = (props: {
   isFirstShadow: boolean;
   entry: IntersectionObserverEntry;
@@ -90,6 +89,12 @@ export type ScrollShadowsShadow = {
    * To fix to Safari's [transparent behavior](https://css-tricks.com/thing-know-gradients-transparent-black/), it will convert `color` value to rgba. If the value is a css variable it will have have to compute style of document element. This is automatically set to true if useragent is Safari.
    */
   colorToRGBA?: boolean;
+  /**
+   * Default `false`
+   *
+   * Show shadow transition animation after component renders
+   */
+  transitionInit?: boolean;
   components?: {
     first: JSX.Element;
     last: JSX.Element;
@@ -102,7 +107,11 @@ export type ScrollShadowsShadow = {
   };
 };
 
-export type ScrollShadowsComponent = {
+export type ScrollShadowsComponent = _TScrollShadowsComponent & {
+  shadow: ScrollShadowsShadow;
+};
+
+export type _TScrollShadowsComponent = {
   direction: "horizontal" | "vertical";
   /**
    * Default `false`
@@ -135,6 +144,13 @@ export type ScrollShadowsComponent = {
   endsDetectionMargin?: string | number;
   shadow?: ScrollShadowsShadow;
   /**
+   * Default `undefined`
+   *
+   * If the root element of `props.children` is not a scrollable container, then you must place an `id` attribute on it and set `scrollableElementId` to the same `id` value.
+   *
+   */
+  scrollableElementId?: string;
+  /**
    * Default `false`
    *
    * When enabled, shadow state is determined via Intersection Observer API. It observes "sentinel" divs at each end of the `props.children` which is the scrollable container.
@@ -154,7 +170,7 @@ export type ScrollShadowsComponent = {
 
 type TShared = {
   child: "first" | "last";
-} & ScrollShadowsComponent;
+} & _TScrollShadowsComponent;
 
 /**
  *
@@ -166,10 +182,13 @@ const ScrollShadows: Component<
     classList?: { [k: string]: boolean | undefined };
   } & Omit<TShared, "child">
 > = (props) => {
-  const propHasShadowColor = props.shadow && props.shadow.color;
-  const { direction, endsDetectionMargin, onEndsHit, hover } = props;
-
-  let transparentColor = "transparent";
+  const {
+    direction,
+    onEndsHit,
+    hover,
+    shadow = {},
+    scrollableElementId,
+  } = props;
 
   const sentinelShadowState = new Map<HTMLElement, HTMLElement>();
   let shadowFirstEl!: HTMLElement;
@@ -181,7 +200,7 @@ const ScrollShadows: Component<
       endsDetectionMargin={props.endsDetectionMargin}
       rtl={props.rtl}
     />
-  ) as HTMLElement;
+  ) as HTMLElement & ElementTemplate;
   let sentinelLastEl = (
     <Sentinel
       child="last"
@@ -189,21 +208,39 @@ const ScrollShadows: Component<
       endsDetectionMargin={props.endsDetectionMargin}
       rtl={props.rtl}
     />
-  ) as HTMLElement;
+  ) as HTMLElement & ElementTemplate;
   let container!: HTMLDivElement;
   let init = true;
-  let initTransition: string | null = "";
   const [shadowsActive, setShadowsActive] = createSignal({
     first: false,
     last: false,
-    transition: false,
+    transition: shadow.transitionInit || false,
   });
 
-  // won't work for SSR
-  const scrollableContainer = props.children as HTMLElement;
-  scrollableContainer.style.position = "relative";
-  scrollableContainer.appendChild(sentinelFirstEl);
-  scrollableContainer.appendChild(sentinelLastEl);
+  const children = props.children as HTMLElement & ElementTemplate;
+  let scrollableContainer = children as HTMLElement;
+
+  if (isServer) {
+    const scrollableContainerStr = children.t;
+    const sentinelFirstElStr = sentinelFirstEl.t;
+    const sentinelLastElStr = sentinelLastEl.t;
+
+    const result = editHTMLStr({
+      html: scrollableContainerStr,
+      insertElementStr: sentinelFirstElStr + sentinelLastElStr,
+      id: scrollableElementId,
+    });
+    children.t = result;
+  } else {
+    if (scrollableElementId) {
+      scrollableContainer = children.querySelector(
+        `#${scrollableElementId}`
+      ) as HTMLElement;
+    }
+    scrollableContainer.style.position = "relative";
+    scrollableContainer.appendChild(sentinelFirstEl);
+    scrollableContainer.appendChild(sentinelLastEl);
+  }
 
   const scrollHorizontally = (e: WheelEvent) => {
     const target = e.currentTarget as HTMLElement;
@@ -213,19 +250,13 @@ const ScrollShadows: Component<
 
   const onScrollableContainerHover = (e: MouseEvent) => {
     if (e.type === "mouseleave") {
-      scrollableContainer.addEventListener(
-        "mouseover",
-        onScrollableContainerHover
-      );
+      children.addEventListener("mouseover", onScrollableContainerHover);
       sentinelShadowState.forEach((shadowContainerEl) => {
         shadowContainerEl.style.opacity = "0.8";
       });
       return;
     }
-    scrollableContainer.removeEventListener(
-      "mouseover",
-      onScrollableContainerHover
-    );
+    children.removeEventListener("mouseover", onScrollableContainerHover);
     sentinelShadowState.forEach((shadowContainerEl) => {
       shadowContainerEl.style.opacity = "1";
     });
@@ -261,13 +292,13 @@ const ScrollShadows: Component<
           setShadowsActive((prev) => ({
             ...prev,
             first: !isVisible,
-            transition: !init,
+            transition: shadow.transitionInit || !init,
           }));
         } else {
           setShadowsActive((prev) => ({
             ...prev,
             last: !isVisible,
-            transition: !init,
+            transition: shadow.transitionInit || !init,
           }));
         }
       });
@@ -276,20 +307,14 @@ const ScrollShadows: Component<
     });
 
     if (direction === "horizontal") {
-      scrollableContainer.addEventListener("wheel", scrollHorizontally);
+      children.addEventListener("wheel", scrollHorizontally);
     }
 
     if (hover) {
       shadowFirstEl.style.opacity = "0.8";
       shadowLastEl.style.opacity = "0.8";
-      scrollableContainer.addEventListener(
-        "mouseover",
-        onScrollableContainerHover
-      );
-      scrollableContainer.addEventListener(
-        "mouseleave",
-        onScrollableContainerHover
-      );
+      children.addEventListener("mouseover", onScrollableContainerHover);
+      children.addEventListener("mouseleave", onScrollableContainerHover);
     }
 
     sentinelShadowState.set(sentinelFirstEl, shadowFirstEl);
@@ -318,7 +343,6 @@ const ScrollShadows: Component<
         child="first"
         direction={props.direction}
         shadow={props.shadow}
-        tranparentColor={transparentColor}
         rtl={props.rtl}
         active={shadowsActive().first}
         transitionActive={shadowsActive().transition}
@@ -328,14 +352,13 @@ const ScrollShadows: Component<
         child="last"
         direction={props.direction}
         shadow={props.shadow}
-        tranparentColor={transparentColor}
         active={shadowsActive().last}
         transitionActive={shadowsActive().transition}
         rtl={props.rtl}
         ref={shadowLastEl}
       />
 
-      {scrollableContainer}
+      {children}
     </div>
   );
 };
@@ -408,7 +431,6 @@ const animationState = ({
 const Shadow: Component<
   {
     ref: any;
-    tranparentColor: string;
     active: boolean;
     transitionActive: boolean;
   } & TShared
@@ -424,7 +446,7 @@ const Shadow: Component<
   const getColors = (color?: string, colorToRGBA?: boolean) => {
     if (!color) return ["rgba(0, 0, 0, 0.5)", "rgba(0, 0, 0, 0)"];
 
-    if (!colorToRGBA) return [color, "transparent"];
+    if (!colorToRGBA || isServer) return [color, "transparent"];
 
     if (prevColor !== color) {
       prevColor = color;
@@ -688,23 +710,33 @@ const Shadow: Component<
       opacity,
       transform,
     } = getShadowStyle()!;
+    const { shadow = {}, active, transitionActive } = props;
 
-    if (!shadowEl || !shadowEl.isConnected) return;
-
-    // console.log({
-    //   backgroundImage,
-    //   backgroundPosition,
-    //   backgroundRepeat,
-    //   backgroundSize,
-    //   transition,
-    //   opacity,
-    //   transform,
-    // });
+    if (shadow.components) {
+      if (shadow.onAnimate) {
+        shadow.onAnimate({
+          target: shadow.components[child] as HTMLElement,
+          active,
+          isFirst: child === "first",
+          init: transitionActive,
+        });
+      }
+      return;
+    }
 
     shadowEl.style.backgroundImage = backgroundImage;
     shadowEl.style.backgroundPosition = backgroundPosition;
     shadowEl.style.backgroundRepeat = backgroundRepeat;
     shadowEl.style.backgroundSize = backgroundSize;
+    if (shadow.onAnimate) {
+      shadow.onAnimate({
+        target: shadowEl,
+        active,
+        isFirst: child === "first",
+        init: !transitionActive,
+      });
+      return;
+    }
     shadowEl.style.transition = transition;
     shadowEl.style.opacity = opacity;
     shadowEl.style.transform = transform;
@@ -794,59 +826,5 @@ const parseVal = (value?: string | number, unit: "px" | "ms" = "px") => {
 
 export const isSafari =
   userAgent(/safari/i) && !userAgent(/chrome/i) && !userAgent(/android/i);
-
-function getProps<T>(props: T, selectors: string[], stop?: boolean) {
-  const obj: { [key: string]: any } = {};
-
-  if (!("shadow" in props)) {
-    selectors.forEach((_selector) => {
-      const selector = _selector as keyof ScrollShadowsShadow;
-      const getVal = () => {
-        const argValue = (props as any)[selector];
-        if (argValue != null) return argValue;
-
-        switch (selector) {
-          case "animation":
-            return "opacity";
-          case "size":
-            return "50px";
-          case "transition":
-            return "300ms";
-          case "shape":
-            return "rectangle";
-          case "colorToRGBA":
-            return isSafari;
-          case "image":
-            return undefined;
-        }
-      };
-
-      obj[selector] = getVal();
-    });
-
-    return obj as Required<T>;
-  }
-
-  selectors.forEach((_selector) => {
-    const selector = _selector as keyof ScrollShadowsComponent;
-    const getVal = () => {
-      const argValue = (props as any)[selector];
-      if (argValue != null) return argValue;
-
-      switch (selector) {
-        case "endsDetectionMargin":
-          return "0px";
-        case "rtl":
-          return false;
-        case "hover":
-          return false;
-      }
-    };
-
-    obj[selector] = getVal();
-  });
-
-  return obj as Required<T>;
-}
 
 export default ScrollShadows;

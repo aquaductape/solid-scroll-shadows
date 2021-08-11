@@ -7,15 +7,15 @@ import { For, createSignal, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import c from "../List.module.scss";
 import ScrollShadows, {
-  ScrollShadowsComponent,
   ScrollShadowsShadow,
+  ScrollShadowsComponent,
 } from "../../../components/ScrollShadows/ScrollShadows";
 import { scopeModuleClasses } from "../../../../utils/moduleClasses";
 
 const classM = scopeModuleClasses(c);
 
 const Horizontal = () => {
-  const [list, setList] = createStore([..._list]);
+  const [list] = createStore([..._list]);
   const [shadowState, setShadowState] = createStore<ScrollShadowsComponent>({
     direction: "horizontal",
     shadow: {
@@ -110,17 +110,28 @@ const Horizontal = () => {
         //   color: "magenta",
         //   size: shadowState.shadow.size,
         // }}
-        // shadow={{
-        //   color: shadowState.shadow!.color,
-        //   size: shadowState.shadow!.size,
-        //   shape: shadowState.shadow!.shape,
-        //   animation: "slide",
-        //   transition: "1s",
-        // }}
+        shadow={{
+          color: shadowState.shadow!.color,
+          size: shadowState.shadow!.size,
+          shape: shadowState.shadow!.shape,
+          onAnimate: ({ target, active, init, isFirst }) => {
+            if (isFirst) {
+              target.style.transform = active
+                ? "scale(1) rotate(0deg)"
+                : "scale(0) rotate(270deg)";
+            } else {
+              target.style.transform = active
+                ? "scale(1) rotate(0deg)"
+                : "scale(0) rotate(-270deg)";
+            }
+
+            if (!init) {
+              target.style.transition = "500ms";
+            }
+          },
+        }}
         endsDetectionMargin={shadowState.endsDetectionMargin}
         rtl={shadowState.rtl}
-
-        // rtl={true}
       >
         <div
           class={
