@@ -739,28 +739,31 @@ const Shadow: Component<
 
   return (
     <div ref={props.ref} style={getShadowContainerStyle()}>
-      <Show
-        when={props.shadow && props.shadow.components}
-        fallback={
-          <div
-            class={getImageClass()}
-            classList={getImageClassList()}
-            ref={shadowEl}
-            style={"width: 100%; height: 100%;"}
-          ></div>
-        }
-      >
-        <div style={getCustomShadowStyle()}>
-          <Switch>
-            <Match when={child === "first"}>
-              {props.shadow && props.shadow.components!.first}
-            </Match>
-            <Match when={child === "last"}>
-              {props.shadow && props.shadow.components!.last}
-            </Match>
-          </Switch>
-        </div>
-      </Show>
+      {/* extra wrapper fixes animation bug in Safari */}
+      <div style="width: 100%; height: 100%; border-radius: 50%;">
+        <Show
+          when={props.shadow && props.shadow.components}
+          fallback={
+            <div
+              class={getImageClass()}
+              classList={getImageClassList()}
+              ref={shadowEl}
+              style={"width: 100%; height: 100%;"}
+            ></div>
+          }
+        >
+          <div style={getCustomShadowStyle()}>
+            <Switch>
+              <Match when={child === "first"}>
+                {props.shadow && props.shadow.components!.first}
+              </Match>
+              <Match when={child === "last"}>
+                {props.shadow && props.shadow.components!.last}
+              </Match>
+            </Switch>
+          </div>
+        </Show>
+      </div>
     </div>
   );
 };
