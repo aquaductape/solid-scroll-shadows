@@ -12,6 +12,7 @@ body {
   background: var(--brand);
   background: #fff;
   color: #000;
+  font-size: 18px;
   padding: 50px;
 }
 
@@ -27,4 +28,19 @@ code {
 .no-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+select {
+  font-size: 20px;
+}
+
+input[type="color"] {
+  padding: 10px;
+}
+button {
+  padding: 10px;
+}
+
+.section {
+  margin: 10px 0;
 }

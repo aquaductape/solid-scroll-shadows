@@ -28,74 +28,87 @@ const Horizontal = () => {
 
   return (
     <div>
-      <button onClick={() => setShadowState("rtl", !shadowState.rtl)}>
-        {!shadowState.rtl ? "RTL" : "LTR"}
-      </button>
-      <br />
-      <button
-        onClick={() => {
-          const value =
-            shadowState.direction === "horizontal" ? "vertical" : "horizontal";
-          setShadowState("direction", value);
-        }}
-      >
-        {shadowState.direction !== "horizontal" ? "Horizontal" : "Vertical"}
-      </button>
-      <br />
-      <label>
-        Shadow shapes:
-        <select
-          onInput={(e) => {
-            setShadowState(
-              "shadow",
-              "shape",
-              e.currentTarget.value.toLowerCase() as "rectangle"
-            );
+      <div className="section">
+        <button onClick={() => setShadowState("rtl", !shadowState.rtl)}>
+          {!shadowState.rtl ? "RTL" : "LTR"}
+        </button>
+      </div>
+      <div className="section">
+        <button
+          onClick={() => {
+            const value =
+              shadowState.direction === "horizontal"
+                ? "vertical"
+                : "horizontal";
+            setShadowState("direction", value);
           }}
         >
-          <option>Rectangle</option>
-          <option>Concave</option>
-          <option>Convex</option>
-        </select>
-      </label>
+          {shadowState.direction !== "horizontal" ? "Horizontal" : "Vertical"}
+        </button>
+      </div>
 
-      <br />
-      <input
-        type="color"
-        value="#ff00ff"
-        onInput={(e) => {
-          setShadowState("shadow", "color", e.currentTarget.value);
-        }}
-      />
-      <br />
-      <label htmlFor="">
-        Size
+      <div className="section">
+        <label>
+          Shadow shapes:
+          <select
+            onInput={(e) => {
+              setShadowState(
+                "shadow",
+                "shape",
+                e.currentTarget.value.toLowerCase() as "rectangle"
+              );
+            }}
+          >
+            <option>Rectangle</option>
+            <option>Concave</option>
+            <option>Convex</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="section">
         <input
-          type="range"
-          min="5"
-          max="100"
-          value={shadowState.shadow!.size}
+          type="color"
+          value="#ff00ff"
           onInput={(e) => {
-            setShadowState("shadow", "size", Number(e.currentTarget.value));
+            setShadowState("shadow", "color", e.currentTarget.value);
           }}
         />
-      </label>
-      <br />
-      <label htmlFor="">
-        endsDetectionMargin
-        <input
-          type="range"
-          min="0"
-          max="150"
-          value={shadowState.endsDetectionMargin}
-          onInput={(e) => {
-            setShadowState(
-              "endsDetectionMargin",
-              Number(e.currentTarget.value)
-            );
-          }}
-        />
-      </label>
+      </div>
+
+      <div className="section">
+        <label htmlFor="">
+          Size
+          <input
+            type="range"
+            min="5"
+            max="100"
+            value={shadowState.shadow!.size}
+            onInput={(e) => {
+              setShadowState("shadow", "size", Number(e.currentTarget.value));
+            }}
+          />
+        </label>
+      </div>
+
+      <div className="section">
+        <label htmlFor="">
+          endsDetectionMargin
+          <input
+            type="range"
+            min="0"
+            max="150"
+            value={shadowState.endsDetectionMargin}
+            onInput={(e) => {
+              setShadowState(
+                "endsDetectionMargin",
+                Number(e.currentTarget.value)
+              );
+            }}
+          />
+        </label>
+      </div>
+
       <ScrollShadows
         class={classM(
           "container",
