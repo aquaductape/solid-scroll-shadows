@@ -137,7 +137,7 @@ export type _TScrollShadowsComponent = {
    */
   onEndsHit?: ScrollShadowsOnEndsHit;
   /**
-   * Default: `0px`
+   * Default: `1px`
    *
    * Set Ends positions to fire when scroll container is at beginning or end;
    */
@@ -369,17 +369,13 @@ const Sentinel: Component<
   const { child } = props;
 
   const setPosition = () => {
-    let { endsDetectionMargin = 0, rtl, direction } = props;
+    let { endsDetectionMargin = 1, rtl, direction } = props;
 
     endsDetectionMargin = parseVal(endsDetectionMargin);
 
     const isFirst = child === "first";
     const left = rtl ? "right" : "left";
     const right = rtl ? "left" : "right";
-
-    if (direction === "horizontal" && rtl && !isFirst) {
-      endsDetectionMargin = `calc(${endsDetectionMargin} + 1px)`;
-    }
 
     if (direction === "horizontal") {
       return `position: ${isFirst ? "absolute" : "relative"}; top: 0; ${
@@ -512,7 +508,6 @@ const Shadow: Component<
     } = props;
     const {
       animation = "opacity",
-      colorToRGBA = isSafari,
       image,
       shape = "rectangle",
       transition = "300ms",
@@ -533,7 +528,7 @@ const Shadow: Component<
 
     const [color, transparentColor] = getColors(
       shadow.color,
-      shadow.colorToRGBA
+      shadow.colorToRGBA != null ? shadow.colorToRGBA : isSafari
     );
 
     const getBackgroundSize = () => {

@@ -23,7 +23,7 @@ const Horizontal = () => {
       size: 50,
     },
     rtl: false,
-    endsDetectionMargin: 0,
+    endsDetectionMargin: 1,
   });
 
   return (
@@ -114,21 +114,22 @@ const Horizontal = () => {
           color: shadowState.shadow!.color,
           size: shadowState.shadow!.size,
           shape: shadowState.shadow!.shape,
-          onAnimate: ({ target, active, init, isFirst }) => {
-            if (isFirst) {
-              target.style.transform = active
-                ? "scale(1) rotate(0deg)"
-                : "scale(0) rotate(270deg)";
-            } else {
-              target.style.transform = active
-                ? "scale(1) rotate(0deg)"
-                : "scale(0) rotate(-270deg)";
-            }
-
-            if (!init) {
-              target.style.transition = "500ms";
-            }
-          },
+          //           onAnimate: ({ target, active, init, isFirst }) => {
+          //             if (isFirst) {
+          //               target.style.transform = active
+          //                 ? "scale(1) rotate(0deg)"
+          //                 : "scale(0) rotate(270deg)";
+          //             } else {
+          //               target.style.transform = active
+          //                 ? "scale(1) rotate(0deg)"
+          //                 : "scale(0) rotate(-270deg)";
+          //             }
+          //
+          //             if (!init) {
+          //               target.style.transition = "500ms";
+          //             }
+          //           },
+          animation: "slide",
         }}
         endsDetectionMargin={shadowState.endsDetectionMargin}
         rtl={shadowState.rtl}
