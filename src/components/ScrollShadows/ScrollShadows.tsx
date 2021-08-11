@@ -43,6 +43,13 @@ type Image = {
 
 export type ScrollShadowsShadow = {
   /**
+   * Default: `undefined`
+   *
+   * Takes css class, will override `shape`
+   */
+  class?: string;
+  classList?: { [key: string]: boolean };
+  /**
    * Default: `rectangle`
    */
   shape?: "rectangle" | "concave" | "convex";
@@ -95,7 +102,13 @@ export type ScrollShadowsShadow = {
    * Show shadow transition animation after component renders
    */
   transitionInit?: boolean;
-  components?: {
+  animateClassNames?: string;
+  /**
+   * Default: `undefined`
+   *
+   * Use custom element for shadows
+   */
+  elements?: {
     first: JSX.Element;
     last: JSX.Element;
     /**
@@ -512,7 +525,7 @@ const Shadow: Component<
       shape = "rectangle",
       transition = "300ms",
     } = shadow;
-    if (shadow.components) return null;
+    if (shadow.elements) return null;
 
     const animationProp = animation === "opacity" ? animation : "transform";
 
@@ -650,7 +663,7 @@ const Shadow: Component<
       rtl = false,
       shadow = {},
     } = props;
-    if (!shadow.components) return "";
+    if (!shadow.elements) return "";
 
     const { transition, animation } = shadow;
 
@@ -707,10 +720,10 @@ const Shadow: Component<
     } = getShadowStyle()!;
     const { shadow = {}, active, transitionActive } = props;
 
-    if (shadow.components) {
+    if (shadow.elements) {
       if (shadow.onAnimate) {
         shadow.onAnimate({
-          target: shadow.components[child] as HTMLElement,
+          target: shadow.elements[child] as HTMLElement,
           active,
           isFirst: child === "first",
           init: transitionActive,
@@ -737,14 +750,20 @@ const Shadow: Component<
     shadowEl.style.transform = transform;
   });
 
+  const dataAttribute = isFirst ? { first: "" } : { last: "" };
+
   return (
     <div ref={props.ref} style={getShadowContainerStyle()}>
-      {/* extra wrapper fixes animation bug in Safari */}
+      {/* extra wrapper fixes animation bug in Safari, where animation is shown outside of parent despite having overflow:hidden
+      
+      https://stackoverflow.com/a/42297882/8234457
+      */}
       <div style="width: 100%; height: 100%; overflow: hidden;">
         <Show
-          when={props.shadow && props.shadow.components}
+          when={props.shadow && props.shadow.elements}
           fallback={
             <div
+              {...dataAttribute}
               class={getImageClass()}
               classList={getImageClassList()}
               ref={shadowEl}
@@ -752,13 +771,13 @@ const Shadow: Component<
             ></div>
           }
         >
-          <div style={getCustomShadowStyle()}>
+          <div {...dataAttribute} style={getCustomShadowStyle()}>
             <Switch>
               <Match when={child === "first"}>
-                {props.shadow && props.shadow.components!.first}
+                {props.shadow && props.shadow.elements!.first}
               </Match>
               <Match when={child === "last"}>
-                {props.shadow && props.shadow.components!.last}
+                {props.shadow && props.shadow.elements!.last}
               </Match>
             </Switch>
           </div>
