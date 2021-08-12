@@ -18,7 +18,7 @@ const Horizontal = () => {
   const [list] = createStore([..._list]);
   const [shadowState, setShadowState] = createStore<ScrollShadowsComponent>({
     direction: "horizontal",
-    shadow: {
+    shadows: {
       class: "",
       color: "magenta",
       size: 50,
@@ -56,7 +56,7 @@ const Horizontal = () => {
           <select
             onInput={(e) => {
               setShadowState(
-                "shadow",
+                "shadows",
                 "shape",
                 e.currentTarget.value.toLowerCase() as "rectangle"
               );
@@ -77,7 +77,7 @@ const Horizontal = () => {
               if (value === "none") {
                 value = null;
               }
-              setShadowState("shadow", "invert", value as "first");
+              setShadowState("shadows", "invert", value as "first");
             }}
           >
             <option>None</option>
@@ -95,7 +95,7 @@ const Horizontal = () => {
               if (value === "None") {
                 value = "";
               }
-              setShadowState("shadow", "class", value);
+              setShadowState("shadows", "class", value);
             }}
           >
             <option>None</option>
@@ -109,7 +109,7 @@ const Horizontal = () => {
           type="color"
           value="#ff00ff"
           onInput={(e) => {
-            setShadowState("shadow", "color", e.currentTarget.value);
+            setShadowState("shadows", "color", e.currentTarget.value);
           }}
         />
       </div>
@@ -121,9 +121,9 @@ const Horizontal = () => {
             type="range"
             min="5"
             max="100"
-            value={shadowState.shadow!.size}
+            value={shadowState.shadows!.size}
             onInput={(e) => {
-              setShadowState("shadow", "size", Number(e.currentTarget.value));
+              setShadowState("shadows", "size", Number(e.currentTarget.value));
             }}
           />
         </label>
@@ -161,11 +161,11 @@ const Horizontal = () => {
         //   color: "magenta",
         //   size: shadowState.shadow.size,
         // }}
-        shadow={{
-          class: shadowState.shadow!.class,
-          color: shadowState.shadow!.color,
-          size: shadowState.shadow!.size,
-          shape: shadowState.shadow!.shape,
+        shadows={{
+          class: shadowState.shadows!.class,
+          color: shadowState.shadows!.color,
+          size: shadowState.shadows!.size,
+          shape: shadowState.shadows!.shape,
           //           onAnimate: ({ target, active, init, isFirst }) => {
           //             if (isFirst) {
           //               target.style.transform = active
@@ -182,7 +182,7 @@ const Horizontal = () => {
           //             }
           //           },
           animation: "slide",
-          invert: shadowState.shadow.invert,
+          invert: shadowState.shadows.invert,
         }}
         endsDetectionMargin={shadowState.endsDetectionMargin}
         rtl={shadowState.rtl}

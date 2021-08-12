@@ -13,6 +13,7 @@ import { isServer } from "solid-js/web";
 import { editHTMLStr } from "./ssr";
 //  animatedEl > shadowEl: inversion
 
+type ShadowElements = HTMLElement | { first: HTMLElement; last: HTMLElement };
 type ElementTemplate = { t: string };
 export type ScrollShadowsOnEndsHit = (props: {
   isFirstShadow: boolean;
@@ -28,7 +29,7 @@ export type ScrollShadowsAnimate = (props: {
   init: boolean;
 }) => void;
 
-export type ScrollShadowsShadow = {
+export interface ScrollShadowsShadow {
   /**
    * Default: `undefined`
    *
@@ -87,29 +88,20 @@ export type ScrollShadowsShadow = {
    *
    * Use custom element for shadows
    */
-  elements?: {
-    first: JSX.Element;
-    last: JSX.Element;
-    /**
-     * Default: `true`
-     *
-     * Adds default styling such as position, width, ect.
-     */
-    defaultStyle?: boolean;
-  };
+  element?: JSX.Element | { first: JSX.Element; last: JSX.Element };
   /**
    * Default: `null`
    *
    * Inverts last shadow. Usefull if you want to use one image, instead of two dedicated for first and last shadows
    */
   invert?: "first" | "last" | null;
-};
+}
 
 export type ScrollShadowsComponent = _TScrollShadowsComponent & {
-  shadow: ScrollShadowsShadow;
+  shadows: ScrollShadowsShadow;
 };
 
-export type _TScrollShadowsComponent = {
+export interface _TScrollShadowsComponent {
   direction: "horizontal" | "vertical";
   /**
    * Default `false`
@@ -140,7 +132,7 @@ export type _TScrollShadowsComponent = {
    * Set Ends positions to fire when scroll container is at beginning or end;
    */
   endsDetectionMargin?: string | number;
-  shadow?: ScrollShadowsShadow;
+  shadows?: ScrollShadowsShadow;
   /**
    * Default `undefined`
    *
@@ -164,7 +156,7 @@ export type _TScrollShadowsComponent = {
    * Allows scrolling horizontal scrollbar using scrollwheel, without using additional holding down keyboard combinations such as `Shift`.
    */
   // horizontalWheelScroll?: boolean;
-};
+}
 
 type TShared = {
   child: "first" | "last";
@@ -178,13 +170,13 @@ const ScrollShadows: Component<
   {
     class?: string;
     classList?: { [k: string]: boolean | undefined };
-  } & Omit<TShared, "child">
+  } & _TScrollShadowsComponent
 > = (props) => {
   const {
     direction,
     onEndsHit,
     hover,
-    shadow = {},
+    shadows: shadow = {},
     scrollableElementId,
   } = props;
 
@@ -343,7 +335,7 @@ const ScrollShadows: Component<
       <Shadow
         child="first"
         direction={props.direction}
-        shadow={props.shadow}
+        shadows={props.shadows}
         rtl={props.rtl}
         active={shadowsActive().first}
         transitionActive={shadowsActive().transition}
@@ -352,7 +344,7 @@ const ScrollShadows: Component<
       <Shadow
         child="last"
         direction={props.direction}
-        shadow={props.shadow}
+        shadows={props.shadows}
         active={shadowsActive().last}
         transitionActive={shadowsActive().transition}
         rtl={props.rtl}
@@ -460,7 +452,7 @@ const Shadow: Component<
   };
 
   const getShadowContainerStyle = () => {
-    const { direction, rtl = false, shadow = {} } = props;
+    const { direction, rtl = false, shadows: shadow = {} } = props;
     let { size = "50px", invert = null } = shadow;
 
     const isFirst = child === "first";
@@ -488,7 +480,7 @@ const Shadow: Component<
     let {
       active,
       transitionActive,
-      shadow = {},
+      shadows: shadow = {},
       direction,
       rtl = false,
     } = props;
@@ -499,7 +491,7 @@ const Shadow: Component<
       transition = "300ms",
       invert,
     } = shadow;
-    if (shadow.elements) return null;
+    if (shadow.element) return null;
 
     const animationProp = animation === "opacity" ? animation : "transform";
 
@@ -636,9 +628,9 @@ const Shadow: Component<
       transitionActive,
       direction,
       rtl = false,
-      shadow = {},
+      shadows: shadow = {},
     } = props;
-    if (!shadow.elements) return "";
+    if (!shadow.element) return "";
 
     const { transition, animation } = shadow;
 
@@ -658,7 +650,7 @@ const Shadow: Component<
   };
 
   const getAnimatedElClassNames = () => {
-    const { active, transitionActive, shadow = {} } = props;
+    const { active, transitionActive, shadows: shadow = {} } = props;
     const { animateClassNames } = shadow;
     if (!animateClassNames) return "";
     const state = active ? "-show" : "-hide";
@@ -678,12 +670,13 @@ const Shadow: Component<
       transform,
       invertScale,
     } = getShadowStyle()!;
-    const { shadow = {}, active, transitionActive } = props;
+    const { shadows = {}, active, transitionActive } = props;
 
-    if (shadow.elements) {
-      if (shadow.onAnimate) {
-        shadow.onAnimate({
-          target: shadow.elements[child] as HTMLElement,
+    if (shadows.element) {
+      const element = shadows.element as ShadowElements;
+      if (shadows.onAnimate) {
+        shadows.onAnimate({
+          target: element instanceof Element ? element : element[child],
           active,
           isFirst: child === "first",
           init: transitionActive,
@@ -698,8 +691,8 @@ const Shadow: Component<
     shadowEl.style.backgroundSize = backgroundSize;
     shadowEl.style.transform = invertScale;
 
-    if (shadow.onAnimate) {
-      shadow.onAnimate({
+    if (shadows.onAnimate) {
+      shadows.onAnimate({
         target: shadowEl,
         active,
         isFirst: child === "first",
@@ -708,7 +701,7 @@ const Shadow: Component<
       return;
     }
 
-    if (shadow.animateClassNames) return;
+    if (shadows.animateClassNames) return;
 
     animatedEl.style.transition = transition;
     animatedEl.style.opacity = opacity;
@@ -725,7 +718,7 @@ const Shadow: Component<
       */}
       <div style="width: 100%; height: 100%; overflow: hidden;">
         <Show
-          when={props.shadow && props.shadow.elements}
+          when={props.shadows && props.shadows.element}
           fallback={
             <div
               class={getAnimatedElClassNames()}
@@ -734,7 +727,7 @@ const Shadow: Component<
               {...dataAttribute}
             >
               <div
-                class={props.shadow && props.shadow.class}
+                class={props.shadows && props.shadows.class}
                 ref={shadowEl}
                 style={"width: 100%; height: 100%;"}
                 {...dataAttribute}
@@ -750,15 +743,24 @@ const Shadow: Component<
           >
             <div
               {...dataAttribute}
-              class={props.shadow && props.shadow.class}
+              class={props.shadows && props.shadows.class}
               style={getCustomShadowStyle()}
             >
               <Switch>
+                <Match
+                  // @ts-ignore
+                  when={props.shadows!.element || props.shadows!.element.t}
+                >
+                  {/* @ts-ignore */}
+                  {props.shadows.element}
+                </Match>
                 <Match when={child === "first"}>
-                  {props.shadow && props.shadow.elements!.first}
+                  {/* @ts-ignore */}
+                  {props.shadows.element!.first}
                 </Match>
                 <Match when={child === "last"}>
-                  {props.shadow && props.shadow.elements!.last}
+                  {/* @ts-ignore */}
+                  {props.shadows.element!.last}
                 </Match>
               </Switch>
             </div>

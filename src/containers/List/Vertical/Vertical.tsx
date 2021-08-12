@@ -13,7 +13,7 @@ const Vertical = () => {
   return (
     <ScrollShadows
       class={classM("container", "vertical")}
-      shadow={{
+      shadows={{
         color: "#d9dee7",
         shape: "convex",
         animation: "slide",
