@@ -12,6 +12,8 @@ Editor features
 
 Emojiis - use Apple versions, which you will use png assets
 
+⛰️
+
 1. Star-Struck 🤩
 2. Mount Fuji 🗻
 3. Flying Saucer 🛸

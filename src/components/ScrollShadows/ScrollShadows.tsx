@@ -749,7 +749,11 @@ const Shadow: Component<
               <Switch>
                 <Match
                   // @ts-ignore
-                  when={props.shadows!.element || props.shadows!.element.t}
+                  when={
+                    props.shadows!.element instanceof Element ||
+                    // @ts-ignore
+                    props.shadows!.element.t
+                  }
                 >
                   {/* @ts-ignore */}
                   {props.shadows.element}
