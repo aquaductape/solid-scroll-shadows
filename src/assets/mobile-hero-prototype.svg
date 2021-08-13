@@ -591,9 +591,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35558501"
-     inkscape:cx="912.21528"
-     inkscape:cy="613.42916"
+     inkscape:zoom="0.7360261"
+     inkscape:cx="644.17691"
+     inkscape:cy="630.1768"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -714,7 +714,7 @@
        transform="matrix(0.99676684,0.08034837,-0.1247446,0.99218889,0,0)" />
     <path
        id="path2906"
-       style="opacity:1;fill:#2848e5;fill-opacity:1;stroke-width:1.42877;stroke-linecap:round"
+       style="opacity:1;fill:#1e297c;fill-opacity:1;stroke-width:1.42877;stroke-linecap:round"
        d="m 117.28194,121.74363 l 27.46826,-6.3687 c 1.6587,-0.38458 2.86941,1.69234 2.64621,3.38034 l -19.45074,147.10229 c -0.22364,1.68796 -1.77168,2.89705 -3.46428,2.7119 l -21.97239,-2.4036 c -1.69261,-0.18516 -2.869414,-1.69234 -2.646214,-3.38034 c 0,0 17.446914,-102.57066 15.484664,-136.83464 c -0.0974,-1.69992 0.27579,-3.82267 1.93449,-4.20725 z"
        sodipodi:nodetypes="sssssssss" />
     <path
@@ -725,14 +725,14 @@
        sodipodi:nodetypes="ssssssssss" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.91294px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke-width:0.264583"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.91294px;line-height:1.25;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke-width:0.264583;"
        x="51.599529"
        y="256.85992"
        id="text2916"><tspan
          sodipodi:role="line"
          x="51.599529"
          y="256.85992"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:6.91294px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#666666;fill-opacity:1;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:6.91294px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke-width:0.264583;"
          id="tspan2914">Scroll There</tspan></text>
     <text
        xml:space="preserve"
@@ -778,7 +778,7 @@
        x="118.00645"
        y="90.557983" />
     <circle
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#666666;stroke-width:0.9525;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.9525;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="circle2930"
        cx="105.63713"
        cy="254.22955"
@@ -786,17 +786,17 @@
     <g
        id="g2938"
        transform="translate(-329.3207,0.28131873)"
-       style="stroke:#666666;stroke-width:0.9525;stroke-miterlimit:4;stroke-dasharray:none">
+       style="stroke:#000000;stroke-width:0.9525;stroke-miterlimit:4;stroke-dasharray:none">
       <path
-         style="fill:none;stroke:#666666;stroke-width:0.9525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#000000;stroke-width:0.9525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 435.1742,256.63075 l 2.59022,-2.68251"
          id="path2932" />
       <path
-         style="fill:none;stroke:#666666;stroke-width:0.9525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#000000;stroke-width:0.9525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 435.1742,251.26572 l 2.59022,2.68252"
          id="path2934" />
       <path
-         style="fill:none;stroke:#666666;stroke-width:0.9525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:none;stroke:#000000;stroke-width:0.9525;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 432.15129,253.88294 l 3.7284,0.0653"
          id="path2936" />
     </g>
@@ -1142,7 +1142,7 @@
        transform="matrix(0.99676684,0.08034837,-0.1247446,0.99218889,0,0)" />
     <path
        id="path6072"
-       style="opacity:1;fill:#2848e5;fill-opacity:1;stroke-width:1.42877;stroke-linecap:round"
+       style="opacity:1;fill:#1e297c;fill-opacity:1;stroke-width:1.42877;stroke-linecap:round"
        d="m 660.15793,121.74363 l 27.46826,-6.3687 c 1.6587,-0.38458 2.86941,1.69234 2.64621,3.38034 l -19.45074,147.10229 c -0.22364,1.68796 -1.77168,2.89705 -3.46428,2.7119 l -21.97239,-2.4036 c -1.69261,-0.18516 -2.86941,-1.69234 -2.64621,-3.38034 c 0,0 17.44691,-102.57066 15.48466,-136.83464 c -0.0974,-1.69992 0.27579,-3.82267 1.93449,-4.20725 z"
        sodipodi:nodetypes="sssssssss" />
     <path

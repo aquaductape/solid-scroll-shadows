@@ -5,6 +5,7 @@ import {
   JSX,
   createEffect,
   createSignal,
+  createMemo,
   Show,
   Match,
   Switch,
@@ -100,7 +101,9 @@ export interface ScrollShadowsShadow {
    *
    * Use custom element for shadows
    */
-  element?: JSX.Element | { first: JSX.Element; last: JSX.Element };
+  element?:
+    | (() => JSX.Element)
+    | { first: () => JSX.Element; last: () => JSX.Element };
   /**
    * Default: `null`
    *
@@ -408,12 +411,14 @@ const Sentinel: Component<
 };
 
 const animationState = ({
+  type,
   animation,
   direction,
   isFirst,
   show,
   rtl,
 }: {
+  type: "opacity" | "transform";
   show: boolean;
   animation: "opacity" | "slide";
   direction: "horizontal" | "vertical";
@@ -421,8 +426,12 @@ const animationState = ({
   rtl: boolean;
 }) => {
   if (animation === "opacity") {
+    if (type === "transform") return "";
+
     return show ? "1" : "0";
   }
+
+  if (type === "opacity") return "";
 
   const last = !rtl || direction === "vertical" ? "100%" : "-100%";
   const first = !rtl || direction === "vertical" ? "-100%" : "100%";
@@ -512,7 +521,6 @@ const Shadow: Component<
       insetSize,
       size = "50px",
     } = shadow;
-    if (shadow.element) return null;
 
     const animationProp = animation === "opacity" ? animation : "transform";
 
@@ -544,7 +552,9 @@ const Shadow: Component<
       val = parseValToNum(insetSize);
 
       if (direction === "horizontal") {
-        x = isFirst ? val : -val;
+        const from = rtl ? -val : val;
+        const to = rtl ? val : -val;
+        x = isFirst ? from : to;
       } else {
         y = isFirst ? val : -val;
       }
@@ -565,11 +575,21 @@ const Shadow: Component<
 
       if (direction === "horizontal") {
         if (isFirst) {
-          topLeft = val;
-          bottomLeft = val;
+          if (rtl) {
+            topRight = val;
+            bottomRight = val;
+          } else {
+            topLeft = val;
+            bottomLeft = val;
+          }
         } else {
-          topRight = val;
-          bottomRight = val;
+          if (rtl) {
+            topLeft = val;
+            bottomLeft = val;
+          } else {
+            topRight = val;
+            bottomRight = val;
+          }
         }
       } else {
         if (isFirst) {
@@ -587,7 +607,6 @@ const Shadow: Component<
     const getInvertScale = () => {
       if (!invert) return "";
       if (invert !== child) return "";
-      // if (!rtl) return "";
 
       const inverseScale =
         direction === "horizontal" ? "scaleX(-1)" : "scaleY(-1)";
@@ -698,6 +717,7 @@ const Shadow: Component<
       backgroundRepeat: getBackgroundRepeat(),
       transition: transitionDeclaration,
       opacity: animationState({
+        type: "opacity",
         animation: animation!,
         direction,
         isFirst,
@@ -705,6 +725,7 @@ const Shadow: Component<
         rtl: rtl!,
       }),
       transform: animationState({
+        type: "transform",
         animation: animation!,
         direction,
         isFirst,
@@ -718,30 +739,10 @@ const Shadow: Component<
   };
 
   const getCustomShadowStyle = () => {
-    const {
-      active,
-      transitionActive,
-      direction,
-      rtl = false,
-      shadows: shadow = {},
-    } = props;
+    const { shadows: shadow = {} } = props;
     if (!shadow.element) return "";
 
-    const { transition, animation } = shadow;
-
-    const animationProp = animation === "opacity" ? animation : "transform";
-
-    const transitionDeclaration = transitionActive
-      ? `transition: ${animationProp} ${parseVal(transition, "ms")};`
-      : "";
-
-    return `height: 100%; width: 100%; ${animationProp}: ${animationState({
-      animation: animation!,
-      direction,
-      isFirst,
-      show: active,
-      rtl: rtl!,
-    })}; ${transitionDeclaration}`;
+    return `height: 100%; width: 100%;`;
   };
 
   const getAnimatedElClassNames = () => {
@@ -769,7 +770,10 @@ const Shadow: Component<
     } = getShadowStyle()!;
     const { shadows = {}, active, transitionActive } = props;
 
+    // const customShadowEl = createMemo(() => props.shadows && props.shadows.element)
+
     if (shadows.element) {
+      // @ts-ignore
       const element = shadows.element as ShadowElements;
       if (shadows.onAnimate) {
         shadows.onAnimate({
@@ -779,6 +783,10 @@ const Shadow: Component<
           init: transitionActive,
         });
       }
+
+      animatedEl.style.transition = transition;
+      animatedEl.style.opacity = opacity;
+      animatedEl.style.transform = transform;
       return;
     }
 
@@ -847,7 +855,6 @@ const Shadow: Component<
             >
               <Switch>
                 <Match
-                  // @ts-ignore
                   when={
                     props.shadows!.element instanceof Element ||
                     // @ts-ignore

@@ -15,6 +15,14 @@ body {
   font-size: 18px;
   padding-top: 65px;
   height: 2000px;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+html {
+  scrollbar-width: none;
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 
 code {

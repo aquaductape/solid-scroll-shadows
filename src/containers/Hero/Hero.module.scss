@@ -1,6 +1,23 @@
 .main {
-  // height: calc(100vh - 65px);
+  height: calc(100vh - 65px);
+}
+
+.container {
+  height: 100%;
+}
+
+.slides {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow-x: auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.slide {
+  min-width: 100vw;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.slide-content {
 }
