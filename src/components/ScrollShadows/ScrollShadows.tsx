@@ -310,8 +310,8 @@ const ScrollShadows: Component<
         });
 
         init = false;
-      },
-      { root: scrollableContainer }
+      }
+      // { root: scrollableContainer }
     );
 
     if (direction === "horizontal") {
