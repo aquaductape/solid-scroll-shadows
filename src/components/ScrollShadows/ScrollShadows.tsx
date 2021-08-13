@@ -294,24 +294,24 @@ const ScrollShadows: Component<
             isVisible = true;
           }
 
-          if (firstLast === "first") {
-            setShadowsActive((prev) => ({
-              ...prev,
-              first: !isVisible,
-              transition: shadows.transitionInit || !init,
-            }));
-          } else {
-            setShadowsActive((prev) => ({
-              ...prev,
-              last: !isVisible,
-              transition: shadows.transitionInit || !init,
-            }));
-          }
+          // if (firstLast === "first") {
+          //   setShadowsActive((prev) => ({
+          //     ...prev,
+          //     first: !isVisible,
+          //     transition: shadows.transitionInit || !init,
+          //   }));
+          // } else {
+          //   setShadowsActive((prev) => ({
+          //     ...prev,
+          //     last: !isVisible,
+          //     transition: shadows.transitionInit || !init,
+          //   }));
+          // }
         });
 
         init = false;
-      }
-      // { root: scrollableContainer }
+      },
+      { root: scrollableContainer }
     );
 
     if (direction === "horizontal") {
