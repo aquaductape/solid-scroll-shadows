@@ -270,7 +270,7 @@ const ScrollShadows: Component<
     });
   };
 
-  const obsCb: IntersectionObserverCallback = (entries) => {
+  const observerCallback: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
       const target = entry.target as HTMLElement;
       const shadowContainerEl = sentinelShadowState.get(target)!;
@@ -308,13 +308,15 @@ const ScrollShadows: Component<
           transition: shadows.transitionInit || !init,
         }));
       }
+
+      console.log(shadowsActive());
     });
 
     init = false;
   };
 
   onMount(() => {
-    const observer = new IntersectionObserver(obsCb, {
+    const observer = new IntersectionObserver(observerCallback, {
       root: scrollableContainer,
     });
 
