@@ -20,12 +20,12 @@ const Hero = () => {
           animation: "slide",
           transition: "500ms",
           element: {
-            first: () => (
+            first: (
               <div style="position: relative; height: 100%;">
                 <DesktopLeftCurtain />
               </div>
             ),
-            last: () => (
+            last: (
               <div style="position: relative; height: 100%;">
                 <DesktopRightCurtain />
               </div>

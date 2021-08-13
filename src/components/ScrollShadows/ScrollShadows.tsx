@@ -9,6 +9,8 @@ import {
   Show,
   Match,
   Switch,
+  mergeProps,
+  splitProps,
 } from "solid-js";
 import { isServer } from "solid-js/web";
 import { editHTMLStr } from "./ssr";
@@ -101,9 +103,7 @@ export interface ScrollShadowsShadow {
    *
    * Use custom element for shadows
    */
-  element?:
-    | (() => JSX.Element)
-    | { first: () => JSX.Element; last: () => JSX.Element };
+  element?: TElement;
   /**
    * Default: `null`
    *
@@ -111,6 +111,8 @@ export interface ScrollShadowsShadow {
    */
   invert?: "first" | "last" | null;
 }
+
+type TElement = JSX.Element | { first: JSX.Element; last: JSX.Element };
 
 export type ScrollShadowsComponent = _TScrollShadowsComponent & {
   shadows: ScrollShadowsShadow;
@@ -187,13 +189,11 @@ const ScrollShadows: Component<
     classList?: { [k: string]: boolean | undefined };
   } & _TScrollShadowsComponent
 > = (props) => {
-  const {
-    direction,
-    onEndsHit,
-    hover,
-    shadows = {},
-    scrollableElementId,
-  } = props;
+  const { direction, onEndsHit, hover, scrollableElementId } = props;
+
+  const [local, shadows] = splitProps(props.shadows ? props.shadows : {}, [
+    "element",
+  ]);
 
   const sentinelShadowState = new Map<HTMLElement, HTMLElement>();
   let shadowFirstEl!: HTMLElement;
@@ -356,7 +356,8 @@ const ScrollShadows: Component<
       <Shadow
         child="first"
         direction={props.direction}
-        shadows={props.shadows}
+        shadows={shadows}
+        customShadows={local.element}
         rtl={props.rtl}
         active={shadowsActive().first}
         transitionActive={shadowsActive().transition}
@@ -365,7 +366,8 @@ const ScrollShadows: Component<
       <Shadow
         child="last"
         direction={props.direction}
-        shadows={props.shadows}
+        shadows={shadows}
+        customShadows={local.element}
         active={shadowsActive().last}
         transitionActive={shadowsActive().transition}
         rtl={props.rtl}
@@ -447,12 +449,16 @@ const animationState = ({
 
 const Shadow: Component<
   {
+    child: "first" | "last";
     ref: any;
     active: boolean;
     transitionActive: boolean;
-  } & TShared
+    customShadows: TElement;
+    shadows: Omit<ScrollShadowsShadow, "element">;
+  } & Pick<_TScrollShadowsComponent, "direction" | "rtl">
 > = (props) => {
   const { child } = props;
+  console.log(props);
   let shadowEl!: HTMLDivElement;
   let animatedEl!: HTMLDivElement;
   const isFirst = child === "first";
@@ -739,8 +745,7 @@ const Shadow: Component<
   };
 
   const getCustomShadowStyle = () => {
-    const { shadows: shadow = {} } = props;
-    if (!shadow.element) return "";
+    if (!props.customShadows) return "";
 
     return `height: 100%; width: 100%;`;
   };
@@ -768,13 +773,13 @@ const Shadow: Component<
       boxShadow,
       borderRadius,
     } = getShadowStyle()!;
-    const { shadows = {}, active, transitionActive } = props;
+    const { shadows, active, transitionActive, customShadows } = props;
 
     // const customShadowEl = createMemo(() => props.shadows && props.shadows.element)
 
-    if (shadows.element) {
+    if (customShadows) {
       // @ts-ignore
-      const element = shadows.element as ShadowElements;
+      const element = customShadows as ShadowElements;
       if (shadows.onAnimate) {
         shadows.onAnimate({
           target: element instanceof Element ? element : element[child],
@@ -825,7 +830,7 @@ const Shadow: Component<
       */}
       <div style="width: 100%; height: 100%; overflow: hidden;">
         <Show
-          when={props.shadows && props.shadows.element}
+          when={props.customShadows}
           fallback={
             <div
               class={getAnimatedElClassNames()}
@@ -856,21 +861,21 @@ const Shadow: Component<
               <Switch>
                 <Match
                   when={
-                    props.shadows!.element instanceof Element ||
+                    props.customShadows instanceof Element ||
                     // @ts-ignore
-                    props.shadows!.element.t
+                    props.customShadows.t
                   }
                 >
                   {/* @ts-ignore */}
-                  {props.shadows.element}
+                  {props.customShadows}
                 </Match>
                 <Match when={child === "first"}>
                   {/* @ts-ignore */}
-                  {props.shadows.element!.first}
+                  {props.customShadows.first}
                 </Match>
                 <Match when={child === "last"}>
                   {/* @ts-ignore */}
-                  {props.shadows.element!.last}
+                  {props.customShadows.last}
                 </Match>
               </Switch>
             </div>
