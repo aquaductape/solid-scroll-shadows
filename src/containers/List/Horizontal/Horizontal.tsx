@@ -23,6 +23,8 @@ const Horizontal = () => {
       color: "magenta",
       size: 50,
       invert: null,
+      insetSize: undefined,
+      borderRadius: undefined,
     },
     rtl: false,
     endsDetectionMargin: 0,
@@ -128,6 +130,39 @@ const Horizontal = () => {
           />
         </label>
       </div>
+      <div class="section">
+        <label htmlFor="">
+          Border Radius
+          <input
+            type="range"
+            min="0"
+            max="30"
+            value={shadowState.shadows!.borderRadius || 0}
+            onInput={(e) => {
+              let value: number | undefined = Number(e.currentTarget.value);
+              if (value === 0) value = undefined;
+              setShadowState("shadows", "borderRadius", value);
+            }}
+          />
+        </label>
+      </div>
+      <div class="section">
+        <label htmlFor="">
+          inset size
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={shadowState.shadows!.insetSize || 0}
+            onInput={(e) => {
+              let value: number | undefined = Number(e.currentTarget.value);
+              if (value === 0) value = undefined;
+
+              setShadowState("shadows", "insetSize", value);
+            }}
+          />
+        </label>
+      </div>
 
       <div class="section">
         <label htmlFor="">
@@ -166,6 +201,8 @@ const Horizontal = () => {
           color: shadowState.shadows!.color,
           size: shadowState.shadows!.size,
           shape: shadowState.shadows!.shape,
+          borderRadius: shadowState.shadows!.borderRadius,
+          insetSize: shadowState.shadows.insetSize,
           //           onAnimate: ({ target, active, init, isFirst }) => {
           //             if (isFirst) {
           //               target.style.transform = active

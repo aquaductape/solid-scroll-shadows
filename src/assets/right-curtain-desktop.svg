@@ -1,0 +1,49 @@
+<svg width="550.59" height="1095.9" viewBox="0 0 145.68 289.95" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="right-curtain-desktop-c" x="-.159" y="-.057" width="1.317" height="1.113" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="3.57"/>
+    </filter>
+    <filter id="right-curtain-desktop-e" x="-.21" y="-.112" width="1.421" height="1.224" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="6.527"/>
+    </filter>
+    <filter id="right-curtain-desktop-d" x="-.052" y="-.031" width="1.104" height="1.063" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.559"/>
+    </filter>
+    <filter id="right-curtain-desktop-b" x="-.05" y="-.071" width="1.101" height="1.142" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="4.099"/>
+    </filter>
+    <filter id="right-curtain-desktop-a" x="-.266" y="-.374" width="1.532" height="1.748" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="21.626"/>
+    </filter>
+  </defs>
+  <text x="51.935" y="-216.552" font-family="Ubuntu" font-size="14.826" letter-spacing="0" stroke-width=".265" word-spacing="0" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25"/>
+  <rect class="big-blur" transform="rotate(245.39 -11.635 725.73)" x="401.33" y="1041.5" width="74.566" height="188.6" ry="11.698" fill="#c2c2ce" filter="url(#right-curtain-desktop-a)"/>
+  <path transform="matrix(.9847 .17427 -.18208 .98328 -162.76 106.14)" d="M263.81-40.1h21.354a3.443 3.443 0 013.45 3.45v143.2c0 1.912-1.546 3.298-3.45 3.451l-20.673 1.663c-1.904.153-7.696-2.02-7.271-3.881 0 0 9.476-20.7 9.703-57.962.196-32.142-6.564-86.47-6.564-86.47-.133-1.908 1.54-3.45 3.451-3.45z" fill="#e6e6e6" filter="url(#right-curtain-desktop-c)"/>
+  <g class="top-rect">
+    <path transform="rotate(-10.445 1074.5 5912.4)" d="M1175.5-49.118l32.306 6.997c4.55.986 8.219 3.752 8.405 8.405l4.458 111.7c.186 4.652-4.199 6.407-8.405 8.405l-53.735 25.527c-4.206 1.998-9.446-3.867-8.405-8.405 21.034-91.731 15.9-109.17 16.972-144.22.142-4.654 3.854-9.39 8.404-8.405z" fill="#adadb9" fill-opacity=".465" filter="url(#right-curtain-desktop-e)"/>
+    <rect transform="rotate(-10.445)" x="82.192" y="48.597" width="53.574" height="135.5" ry="8.405" fill="#fff"/>
+  </g>
+  <g class="colored-rects">
+    <rect transform="matrix(.99389 .11038 -.11503 .99336 0 0)" x="125.36" y="74.158" width="70.481" height="174.67" ry="10.834" fill="#bec7f7"/>
+    <rect transform="rotate(11.27)" x="136.66" y="55.853" width="70.5" height="178.31" ry="11.06" fill="#1e297c"/>
+  </g>
+  <g class="mind-rect">
+    <rect transform="rotate(245.39 -11.635 725.73)" x="401.33" y="1041.5" width="74.566" height="188.6" ry="11.698" fill="#c2c2ce" filter="url(#right-curtain-desktop-b)"/>
+    <rect transform="rotate(245.39)" x="-242" y="2.962" width="74.566" height="188.6" ry="11.698" fill="#fff"/>
+    <g class="btn-arrow" stroke-linecap="round">
+      <rect x="80.949" y="149.41" width="15.052" height="15.37" ry="2.195" fill="#fff"/>
+      <g fill="none" stroke="#000" stroke-width=".953">
+        <circle cx="88.44" cy="157.34" r="5.599"/>
+        <g>
+          <path d="M88.657 160.02l2.59-2.683"/>
+          <path d="M88.657 154.65l2.59 2.683"/>
+          <path d="M85.634 157.27l3.728.065"/>
+        </g>
+      </g>
+    </g>
+  </g>
+  <g class="bottom-rect">
+    <path transform="rotate(14.995 -2100.7 -3736.5)" d="M1058.6-632.44l45.764.969c6.48.137 11.698 5.217 11.698 11.698v165.21c0 6.48-5.24 11.16-11.698 11.698l-37.884 3.153c-6.458.537-25.019-8.37-24.985-14.851.256-48.14-4.96-51.563-3.75-108.04.201-9.367 7.145-10.094 6.584-14.33-1.935-14.631-4.076-36.305-3.524-38.82 1.714-7.82 8.901-16.871 17.795-16.682z" fill="#d8d3ea" filter="url(#right-curtain-desktop-d)"/>
+    <path d="M147.68 79.484l48.219 17.128c6.107 2.17 8.382 8.584 7.108 14.939l-33.43 166.74c-1.274 6.354-8.927 9.527-14.94 7.108l-70.085-28.196c-6.013-2.42-9.277-8.832-7.108-14.94l55.296-155.68a11.673 11.673 0 0114.939-7.107z" fill="#fff"/>
+  </g>
+</svg>

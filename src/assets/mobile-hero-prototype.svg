@@ -14,7 +14,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="1.0.2 (394de47547, 2021-03-26)"
-   sodipodi:docname="drawing.svg">
+   sodipodi:docname="mobile-hero-prototype.svg">
   <defs
      id="defs2">
     <linearGradient
@@ -26,7 +26,7 @@
          id="stop4288" />
       <stop
          style="stop-color:#8f88ca;stop-opacity:0.85882354"
-         offset="0.17167811"
+         offset="0.1999999"
          id="stop4298" />
       <stop
          style="stop-color:#ffffff;stop-opacity:0;"
@@ -565,7 +565,7 @@
        xlink:href="#linearGradient4292"
        id="linearGradient4296"
        gradientUnits="userSpaceOnUse"
-       x1="101.27504"
+       x1="101.34123"
        y1="108.6511"
        x2="83.172218"
        y2="108.6511"
@@ -591,9 +591,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7055629"
-     inkscape:cx="3542.0714"
-     inkscape:cy="663.72653"
+     inkscape:zoom="0.35558501"
+     inkscape:cx="912.21528"
+     inkscape:cy="613.42916"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -1869,9 +1869,10 @@
        ry="1.7601302" />
     <path
        id="rect4300"
-       style="opacity:1;fill:#453e92;fill-opacity:0.337351;stroke:none;stroke-width:1.32071;stroke-linecap:round;stroke-opacity:0.505882;filter:url(#filter4647)"
-       d="m 98.087036,101.49971 c 0.975111,0 1.760098,0.78499 1.760098,1.7601 v 10.7828 c 0,0.97511 -0.784987,1.7601 -1.760098,1.7601 h 0.708483 c 0.975111,0 1.760101,-0.78499 1.760101,-1.7601 v -10.7828 c 0,-0.97511 -0.78499,-1.7601 -1.760101,-1.7601 z"
-       transform="matrix(1,0,0,0.97743125,1.8750553,2.4521221)" />
+       style="opacity:1;fill:#3227a9;fill-opacity:0.59487;stroke:none;stroke-width:1.32071;stroke-linecap:round;stroke-opacity:0.505882;filter:url(#filter4647)"
+       d="m 97.633703,101.49971 c 0.975111,0 2.213431,0.78499 2.213431,1.7601 v 10.7828 c 0,0.97511 -1.23832,1.7601 -2.213431,1.7601 h 1.161816 c 0.975111,0 1.760101,-0.78499 1.760101,-1.7601 v -10.7828 c 0,-0.97511 -0.78499,-1.7601 -1.760101,-1.7601 z"
+       transform="matrix(1,0,0,0.97743125,1.8750553,2.4521221)"
+       sodipodi:nodetypes="csscssssc" />
     <use
        x="0"
        y="0"

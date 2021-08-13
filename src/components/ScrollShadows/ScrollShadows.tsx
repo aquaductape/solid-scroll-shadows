@@ -41,6 +41,18 @@ export interface ScrollShadowsShadow {
    */
   shape?: "rectangle" | "concave" | "convex";
   /**
+   * Default `undefined`
+   *
+   * Will also apply border radius on scrollable container
+   */
+  borderRadius?: string | number;
+  /**
+   * Default `undefined`
+   *
+   * If string, must use only pixel units
+   */
+  insetSize?: string | number;
+  /**
    * Default: `50px`
    *
    * size of shadow
@@ -176,7 +188,7 @@ const ScrollShadows: Component<
     direction,
     onEndsHit,
     hover,
-    shadows: shadow = {},
+    shadows = {},
     scrollableElementId,
   } = props;
 
@@ -204,7 +216,7 @@ const ScrollShadows: Component<
   const [shadowsActive, setShadowsActive] = createSignal({
     first: false,
     last: false,
-    transition: shadow.transitionInit || false,
+    transition: shadows.transitionInit || false,
   });
 
   const children = props.children as HTMLElement & ElementTemplate;
@@ -283,13 +295,13 @@ const ScrollShadows: Component<
             setShadowsActive((prev) => ({
               ...prev,
               first: !isVisible,
-              transition: shadow.transitionInit || !init,
+              transition: shadows.transitionInit || !init,
             }));
           } else {
             setShadowsActive((prev) => ({
               ...prev,
               last: !isVisible,
-              transition: shadow.transitionInit || !init,
+              transition: shadows.transitionInit || !init,
             }));
           }
         });
@@ -320,9 +332,15 @@ const ScrollShadows: Component<
   });
 
   const setContainerStyle = () => {
-    const { rtl } = props;
+    const { rtl, shadows = {} } = props;
 
-    return `position: relative; ${rtl ? "direction: rtl;" : ""}`;
+    return `position: relative; ${rtl ? "direction: rtl;" : ""} ${
+      shadows!.borderRadius
+        ? "overflow:hidden; border-radius:" +
+          parseVal(shadows.borderRadius) +
+          ";"
+        : ""
+    }`;
   };
 
   return (
@@ -490,6 +508,9 @@ const Shadow: Component<
       shape = "rectangle",
       transition = "300ms",
       invert,
+      borderRadius,
+      insetSize,
+      size = "50px",
     } = shadow;
     if (shadow.element) return null;
 
@@ -509,6 +530,59 @@ const Shadow: Component<
       shadow.color,
       shadow.colorToRGBA != null ? shadow.colorToRGBA : isSafari
     );
+
+    const getBoxShadow = () => {
+      if (className) return "";
+      if (!insetSize) return "";
+
+      let x = 0;
+      let y = 0;
+      let blur = 0;
+      let spread = 0;
+      let val = insetSize as number;
+
+      val = parseValToNum(insetSize);
+
+      if (direction === "horizontal") {
+        x = isFirst ? val : -val;
+      } else {
+        y = isFirst ? val : -val;
+      }
+
+      blur = val - 3;
+      spread = val * -1;
+      return `${shadow.color} ${x}px ${y}px ${blur}px ${spread}px inset`;
+    };
+
+    const getBorderRadius = () => {
+      if (className) return "";
+      if (!borderRadius) return "";
+      const val = parseVal(borderRadius);
+      let topLeft = "0px";
+      let topRight = "0px";
+      let bottomLeft = "0px";
+      let bottomRight = "0px";
+
+      if (direction === "horizontal") {
+        if (isFirst) {
+          topLeft = val;
+          bottomLeft = val;
+        } else {
+          topRight = val;
+          bottomRight = val;
+        }
+      } else {
+        if (isFirst) {
+          topLeft = val;
+          topRight = val;
+        } else {
+          bottomLeft = val;
+          bottomRight = val;
+        }
+      }
+
+      return `${topLeft} ${topRight} ${bottomRight} ${bottomLeft}`;
+    };
 
     const getInvertScale = () => {
       if (!invert) return "";
@@ -578,15 +652,34 @@ const Shadow: Component<
         const to = rtl ? "100%" : "0%";
         const x = direction === "horizontal" ? (isFirst ? from : to) : "50%";
         const y = direction === "horizontal" ? "50%" : isFirst ? "100%" : "0%";
+        let firstStop: string | number = "0%";
+        if (insetSize) {
+          firstStop = parseValToNum(insetSize) * -1;
+        }
         return `radial-gradient(farthest-side at ${x} ${y},${transparentColor} 25%,${color})`;
       }
 
       const x = direction === "horizontal" ? right : "bottom";
       const y = direction === "horizontal" ? left : "top";
 
+      let firstStop: string | number = "50%";
+      if (insetSize) {
+        let numVal = parseValToNum(insetSize);
+        const pxUnits = parseVal(size).match(/px/g)!;
+        const sizeHasPxUnit = pxUnits != null && pxUnits.length === 1;
+
+        if (sizeHasPxUnit) {
+          const numSize = parseValToNum(size);
+          if (numVal >= numSize / 2) {
+            numVal = numSize / 2 - 1;
+          }
+        }
+        firstStop = `calc(${firstStop} - ${numVal}px)`;
+      }
+
       return `linear-gradient(to ${
         isFirst ? x : y
-      }, ${color}, 50%, ${transparentColor})`;
+      }, ${color}, ${firstStop}, ${transparentColor})`;
     };
 
     const getBackgroundRepeat = () => {
@@ -619,6 +712,8 @@ const Shadow: Component<
         rtl: rtl!,
       }),
       invertScale: getInvertScale(),
+      borderRadius: getBorderRadius(),
+      boxShadow: getBoxShadow(),
     };
   };
 
@@ -669,6 +764,8 @@ const Shadow: Component<
       opacity,
       transform,
       invertScale,
+      boxShadow,
+      borderRadius,
     } = getShadowStyle()!;
     const { shadows = {}, active, transitionActive } = props;
 
@@ -689,6 +786,8 @@ const Shadow: Component<
     shadowEl.style.backgroundPosition = backgroundPosition;
     shadowEl.style.backgroundRepeat = backgroundRepeat;
     shadowEl.style.backgroundSize = backgroundSize;
+    shadowEl.style.boxShadow = boxShadow;
+    shadowEl.style.borderRadius = borderRadius;
     shadowEl.style.transform = invertScale;
 
     if (shadows.onAnimate) {
@@ -827,6 +926,18 @@ const parseVal = (value?: string | number, unit: "px" | "ms" = "px") => {
   if (typeof value === "number") return `${value}${unit}`;
 
   return value || "";
+};
+
+/**
+ *
+ * if string, should only have px unit
+ */
+const parseValToNum = (value?: string | number) => {
+  if (typeof value === "string") {
+    return Number(value.match(/(.+)px/)![1])!;
+  }
+
+  return value || 0;
 };
 
 export const isSafari =

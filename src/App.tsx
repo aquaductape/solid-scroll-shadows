@@ -12,7 +12,6 @@ const App: Component = () => {
       <Header></Header>
       <Hero></Hero>
       <Horizontal></Horizontal>
-      {/* <Vertical></Vertical> */}
     </>
   );
 };
