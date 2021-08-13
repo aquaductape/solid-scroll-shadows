@@ -3,6 +3,7 @@ import {
   onCleanup,
   onMount,
   JSX,
+  untrack,
   createEffect,
   createSignal,
   createMemo,
@@ -294,21 +295,19 @@ const ScrollShadows: Component<
         isVisible = true;
       }
 
-      // if (firstLast === "first") {
-      //   setShadowsActive((prev) => ({
-      //     ...prev,
-      //     first: !isVisible,
-      //     transition: shadows.transitionInit || !init,
-      //   }));
-      // } else {
-      //   setShadowsActive((prev) => ({
-      //     ...prev,
-      //     last: !isVisible,
-      //     transition: shadows.transitionInit || !init,
-      //   }));
-      // }
-
-      console.log(local, shadows.size, foo.rtl, props.direction);
+      if (firstLast === "first") {
+        setShadowsActive((prev) => ({
+          ...prev,
+          first: !isVisible,
+          transition: shadows.transitionInit || !init,
+        }));
+      } else {
+        setShadowsActive((prev) => ({
+          ...prev,
+          last: !isVisible,
+          transition: shadows.transitionInit || !init,
+        }));
+      }
     });
 
     init = false;
@@ -494,8 +493,9 @@ const Shadow: Component<
   };
 
   const getShadowContainerStyle = () => {
-    const { direction, rtl = false, shadows: shadow = {} } = props;
-    let { size = "50px", invert = null } = shadow;
+    const { direction, rtl = false, shadows = {} } = props;
+    // const {direction, rtl} = other
+    let { size = "50px", invert = null } = shadows;
 
     const isFirst = child === "first";
     const right = rtl ? "left" : "right";
@@ -518,8 +518,11 @@ const Shadow: Component<
     return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; transition: opacity 300ms; ${getPositionSize()}; `;
   };
 
+  // const getShadowStyle = ({ shadows, other }: { shadows; other }) => {
   const getShadowStyle = () => {
-    let { shadowsActive, shadows: shadow = {}, direction, rtl = false } = props;
+    // const { direction, rtl = false } = other;
+    let { shadowsActive, shadows = {}, direction, rtl = false } = props;
+    // get dom attr if active
     const {
       animation = "opacity",
       class: className,
@@ -529,7 +532,7 @@ const Shadow: Component<
       borderRadius,
       insetSize,
       size = "50px",
-    } = shadow;
+    } = shadows;
 
     const animationProp = animation === "opacity" ? animation : "transform";
 
@@ -544,8 +547,8 @@ const Shadow: Component<
     }
 
     const [color, transparentColor] = getColors(
-      shadow.color,
-      shadow.colorToRGBA != null ? shadow.colorToRGBA : isSafari
+      shadows.color,
+      shadows.colorToRGBA != null ? shadows.colorToRGBA : isSafari
     );
 
     const getBoxShadow = () => {
@@ -570,7 +573,7 @@ const Shadow: Component<
 
       blur = val - 3;
       spread = val * -1;
-      return `${shadow.color} ${x}px ${y}px ${blur}px ${spread}px inset`;
+      return `${shadows.color} ${x}px ${y}px ${blur}px ${spread}px inset`;
     };
 
     const getBorderRadius = () => {
@@ -770,7 +773,8 @@ const Shadow: Component<
   };
 
   createEffect(() => {
-    console.log(props.direction);
+    const shadowsActive = untrack(props.shadowsActive);
+    console.log(shadowsActive, props.customShadows, props.rtl, props.direction);
     //     const {
     //       backgroundImage,
     //       backgroundPosition,
@@ -785,7 +789,6 @@ const Shadow: Component<
     //     } = getShadowStyle()!;
     //     const { shadows, shadowsActive, customShadows } = props;
     //
-    //     // const customShadowEl = createMemo(() => props.shadows && props.shadows.element)
     //
     //     if (customShadows) {
     //       // @ts-ignore
