@@ -195,6 +195,8 @@ const ScrollShadows: Component<
     "element",
   ]);
 
+  const [_, foo] = splitProps(props, ["shadows"]);
+
   const sentinelShadowState = new Map<HTMLElement, HTMLElement>();
   let shadowFirstEl!: HTMLElement;
   let shadowLastEl!: HTMLElement;
@@ -267,52 +269,55 @@ const ScrollShadows: Component<
     });
   };
 
-  onMount(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const target = entry.target as HTMLElement;
-          const shadowContainerEl = sentinelShadowState.get(target)!;
-          const shadowEl = shadowContainerEl.firstElementChild as HTMLElement;
-          const isFirstShadow = shadowContainerEl === shadowFirstEl;
-          const firstLast = target.dataset.scrollShadowsSentinel!;
+  const obsCb: IntersectionObserverCallback = (entries) => {
+    entries.forEach((entry) => {
+      const target = entry.target as HTMLElement;
+      const shadowContainerEl = sentinelShadowState.get(target)!;
+      const shadowEl = shadowContainerEl.firstElementChild as HTMLElement;
+      const isFirstShadow = shadowContainerEl === shadowFirstEl;
+      const firstLast = target.dataset.scrollShadowsSentinel!;
 
-          if (onEndsHit) {
-            const result = onEndsHit({
-              entry,
-              isFirstShadow,
-              shadow: shadowEl!,
-              hitEnd: entry.isIntersecting,
-            });
-
-            if (result === false) return;
-          }
-
-          let isVisible = false;
-
-          if (entry.isIntersecting) {
-            isVisible = true;
-          }
-
-          // if (firstLast === "first") {
-          //   setShadowsActive((prev) => ({
-          //     ...prev,
-          //     first: !isVisible,
-          //     transition: shadows.transitionInit || !init,
-          //   }));
-          // } else {
-          //   setShadowsActive((prev) => ({
-          //     ...prev,
-          //     last: !isVisible,
-          //     transition: shadows.transitionInit || !init,
-          //   }));
-          // }
+      if (onEndsHit) {
+        const result = onEndsHit({
+          entry,
+          isFirstShadow,
+          shadow: shadowEl!,
+          hitEnd: entry.isIntersecting,
         });
 
-        init = false;
-      },
-      { root: scrollableContainer }
-    );
+        if (result === false) return;
+      }
+
+      let isVisible = false;
+
+      if (entry.isIntersecting) {
+        isVisible = true;
+      }
+
+      // if (firstLast === "first") {
+      //   setShadowsActive((prev) => ({
+      //     ...prev,
+      //     first: !isVisible,
+      //     transition: shadows.transitionInit || !init,
+      //   }));
+      // } else {
+      //   setShadowsActive((prev) => ({
+      //     ...prev,
+      //     last: !isVisible,
+      //     transition: shadows.transitionInit || !init,
+      //   }));
+      // }
+
+      console.log(local, shadows.size, foo.rtl, props.direction);
+    });
+
+    init = false;
+  };
+
+  onMount(() => {
+    const observer = new IntersectionObserver(obsCb, {
+      root: scrollableContainer,
+    });
 
     if (direction === "horizontal") {
       children.addEventListener("wheel", scrollHorizontally);
@@ -359,8 +364,9 @@ const ScrollShadows: Component<
         shadows={shadows}
         customShadows={local.element}
         rtl={props.rtl}
-        active={shadowsActive().first}
-        transitionActive={shadowsActive().transition}
+        shadowsActive={shadowsActive}
+        // active={shadowsActive().first}
+        // transitionActive={shadowsActive().transition}
         ref={shadowFirstEl}
       />
       <Shadow
@@ -368,8 +374,9 @@ const ScrollShadows: Component<
         direction={props.direction}
         shadows={shadows}
         customShadows={local.element}
-        active={shadowsActive().last}
-        transitionActive={shadowsActive().transition}
+        shadowsActive={shadowsActive}
+        // active={shadowsActive().last}
+        // transitionActive={shadowsActive().transition}
         rtl={props.rtl}
         ref={shadowLastEl}
       />
@@ -451,14 +458,16 @@ const Shadow: Component<
   {
     child: "first" | "last";
     ref: any;
-    active: boolean;
-    transitionActive: boolean;
+    shadowsActive: () => {
+      first: boolean;
+      last: boolean;
+      transition: boolean;
+    };
     customShadows: TElement;
     shadows: Omit<ScrollShadowsShadow, "element">;
   } & Pick<_TScrollShadowsComponent, "direction" | "rtl">
 > = (props) => {
   const { child } = props;
-  console.log(props);
   let shadowEl!: HTMLDivElement;
   let animatedEl!: HTMLDivElement;
   const isFirst = child === "first";
@@ -510,13 +519,7 @@ const Shadow: Component<
   };
 
   const getShadowStyle = () => {
-    let {
-      active,
-      transitionActive,
-      shadows: shadow = {},
-      direction,
-      rtl = false,
-    } = props;
+    let { shadowsActive, shadows: shadow = {}, direction, rtl = false } = props;
     const {
       animation = "opacity",
       class: className,
@@ -531,12 +534,12 @@ const Shadow: Component<
     const animationProp = animation === "opacity" ? animation : "transform";
 
     if (prevDirection !== direction) {
-      transitionActive = false;
+      // transitionActive = false;
       prevDirection = direction;
     }
 
     if (prevRTL !== rtl) {
-      transitionActive = false;
+      // transitionActive = false;
       prevRTL = rtl;
     }
 
@@ -712,7 +715,10 @@ const Shadow: Component<
       return "no-repeat";
     };
 
-    const transitionDeclaration = transitionActive
+    // const transitionDeclaration = transitionActive
+    //   ? `${animationProp} ${parseVal(transition, "ms")}`
+    //   : "";
+    const transitionDeclaration = true
       ? `${animationProp} ${parseVal(transition, "ms")}`
       : "";
 
@@ -727,7 +733,8 @@ const Shadow: Component<
         animation: animation!,
         direction,
         isFirst,
-        show: active,
+        // show: active,
+        show: false,
         rtl: rtl!,
       }),
       transform: animationState({
@@ -735,7 +742,8 @@ const Shadow: Component<
         animation: animation!,
         direction,
         isFirst,
-        show: active,
+        // show: active,
+        show: false,
         rtl: rtl!,
       }),
       invertScale: getInvertScale(),
@@ -751,73 +759,75 @@ const Shadow: Component<
   };
 
   const getAnimatedElClassNames = () => {
-    const { active, transitionActive, shadows: shadow = {} } = props;
-    const { animateClassNames } = shadow;
+    const { shadowsActive, shadows } = props;
+    const { animateClassNames } = shadows;
     if (!animateClassNames) return "";
-    const state = active ? "-show" : "-hide";
-    const init = !transitionActive ? `${animateClassNames}-init` : "";
-
-    return `${animateClassNames} ${init} ${animateClassNames}${state}`;
+    //     const state = active ? "-show" : "-hide";
+    //     const init = !transitionActive ? `${animateClassNames}-init` : "";
+    //
+    //     return `${animateClassNames} ${init} ${animateClassNames}${state}`;
+    return "";
   };
 
   createEffect(() => {
-    const {
-      backgroundImage,
-      backgroundPosition,
-      backgroundRepeat,
-      backgroundSize,
-      transition,
-      opacity,
-      transform,
-      invertScale,
-      boxShadow,
-      borderRadius,
-    } = getShadowStyle()!;
-    const { shadows, active, transitionActive, customShadows } = props;
-
-    // const customShadowEl = createMemo(() => props.shadows && props.shadows.element)
-
-    if (customShadows) {
-      // @ts-ignore
-      const element = customShadows as ShadowElements;
-      if (shadows.onAnimate) {
-        shadows.onAnimate({
-          target: element instanceof Element ? element : element[child],
-          active,
-          isFirst: child === "first",
-          init: transitionActive,
-        });
-      }
-
-      animatedEl.style.transition = transition;
-      animatedEl.style.opacity = opacity;
-      animatedEl.style.transform = transform;
-      return;
-    }
-
-    shadowEl.style.backgroundImage = backgroundImage;
-    shadowEl.style.backgroundPosition = backgroundPosition;
-    shadowEl.style.backgroundRepeat = backgroundRepeat;
-    shadowEl.style.backgroundSize = backgroundSize;
-    shadowEl.style.boxShadow = boxShadow;
-    shadowEl.style.borderRadius = borderRadius;
-    shadowEl.style.transform = invertScale;
-
-    if (shadows.onAnimate) {
-      shadows.onAnimate({
-        target: shadowEl,
-        active,
-        isFirst: child === "first",
-        init: !transitionActive,
-      });
-      return;
-    }
-
-    if (shadows.animateClassNames) return;
-
-    animatedEl.style.transition = transition;
-    animatedEl.style.opacity = opacity;
-    animatedEl.style.transform = transform;
+    console.log(props.direction);
+    //     const {
+    //       backgroundImage,
+    //       backgroundPosition,
+    //       backgroundRepeat,
+    //       backgroundSize,
+    //       transition,
+    //       opacity,
+    //       transform,
+    //       invertScale,
+    //       boxShadow,
+    //       borderRadius,
+    //     } = getShadowStyle()!;
+    //     const { shadows, shadowsActive, customShadows } = props;
+    //
+    //     // const customShadowEl = createMemo(() => props.shadows && props.shadows.element)
+    //
+    //     if (customShadows) {
+    //       // @ts-ignore
+    //       const element = customShadows as ShadowElements;
+    //       // if (shadows.onAnimate) {
+    //       //   shadows.onAnimate({
+    //       //     target: element instanceof Element ? element : element[child],
+    //       //     active,
+    //       //     isFirst: child === "first",
+    //       //     init: transitionActive,
+    //       //   });
+    //       // }
+    //
+    //       animatedEl.style.transition = transition;
+    //       animatedEl.style.opacity = opacity;
+    //       animatedEl.style.transform = transform;
+    //       return;
+    //     }
+    //
+    //     shadowEl.style.backgroundImage = backgroundImage;
+    //     shadowEl.style.backgroundPosition = backgroundPosition;
+    //     shadowEl.style.backgroundRepeat = backgroundRepeat;
+    //     shadowEl.style.backgroundSize = backgroundSize;
+    //     shadowEl.style.boxShadow = boxShadow;
+    //     shadowEl.style.borderRadius = borderRadius;
+    //     shadowEl.style.transform = invertScale;
+    //
+    //     // if (shadows.onAnimate) {
+    //     //   shadows.onAnimate({
+    //     //     target: shadowEl,
+    //     //     active,
+    //     //     isFirst: child === "first",
+    //     //     init: !transitionActive,
+    //     //   });
+    //     //   return;
+    //     // }
+    //
+    //     if (shadows.animateClassNames) return;
+    //
+    //     animatedEl.style.transition = transition;
+    //     animatedEl.style.opacity = opacity;
+    //     animatedEl.style.transform = transform;
   });
 
   const dataAttribute = isFirst ? { first: "" } : { last: "" };
