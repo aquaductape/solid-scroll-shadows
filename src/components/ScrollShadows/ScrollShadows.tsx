@@ -775,8 +775,9 @@ const Shadow: Component<
   };
 
   createEffect(() => {
-    const shadowsActive = untrack(props.shadowsActive);
-    console.log(shadowsActive, props.customShadows, props.rtl, props.direction);
+    // const shadowsActive = untrack(props.shadowsActive);
+    // console.log(shadowsActive, props.customShadows, props.rtl, props.direction);
+    console.log(props.shadowsActive());
     //     const {
     //       backgroundImage,
     //       backgroundPosition,
