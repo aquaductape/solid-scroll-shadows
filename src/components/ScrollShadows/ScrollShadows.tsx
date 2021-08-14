@@ -313,7 +313,7 @@ const ScrollShadows: Component<
         }));
       }
 
-      console.log(shadowsActive());
+      // console.log(props.direction, shadows);
 
       const { opacity, transform, transition } = getShadowStyle({
         child: firstLast as "first",
@@ -554,6 +554,8 @@ const Shadow: Component<
 
   createEffect(() => {
     const shadowsActive = untrack(props.shadowsActive);
+
+    console.log("fire");
     const rtl = props.rtl;
     const direction = props.direction;
     const shadows = props.shadows;
