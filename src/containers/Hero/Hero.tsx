@@ -17,7 +17,7 @@ const Hero = () => {
         endsDetectionMargin="5vw"
         shadows={{
           size: 500,
-          animation: "slide",
+          animation: "opacity",
           transition: "500ms",
           element: {
             first: (

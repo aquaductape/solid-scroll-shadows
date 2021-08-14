@@ -18,6 +18,11 @@ import { editHTMLStr } from "./ssr";
 //  animatedEl > shadowEl: inversion
 
 type ShadowElements = HTMLElement | { first: HTMLElement; last: HTMLElement };
+type ShadowsActive = {
+  first: boolean;
+  last: boolean;
+  transition: boolean;
+};
 type ElementTemplate = { t: string };
 export type ScrollShadowsOnEndsHit = (props: {
   isFirstShadow: boolean;
@@ -196,8 +201,6 @@ const ScrollShadows: Component<
     "element",
   ]);
 
-  const [_, foo] = splitProps(props, ["shadows"]);
-
   const sentinelShadowState = new Map<HTMLElement, HTMLElement>();
   let shadowFirstEl!: HTMLElement;
   let shadowLastEl!: HTMLElement;
@@ -219,7 +222,7 @@ const ScrollShadows: Component<
   ) as HTMLElement & ElementTemplate;
   let container!: HTMLDivElement;
   let init = true;
-  const [shadowsActive, setShadowsActive] = createSignal({
+  const [shadowsActive, setShadowsActive] = createSignal<ShadowsActive>({
     first: false,
     last: false,
     transition: shadows.transitionInit || false,
@@ -275,6 +278,7 @@ const ScrollShadows: Component<
       const target = entry.target as HTMLElement;
       const shadowContainerEl = sentinelShadowState.get(target)!;
       const shadowEl = shadowContainerEl.firstElementChild as HTMLElement;
+      const shadowAnimationEl = shadowEl.firstElementChild as HTMLElement;
       const isFirstShadow = shadowContainerEl === shadowFirstEl;
       const firstLast = target.dataset.scrollShadowsSentinel!;
 
@@ -310,6 +314,21 @@ const ScrollShadows: Component<
       }
 
       console.log(shadowsActive());
+
+      const { opacity, transform, transition } = getShadowStyle({
+        child: firstLast as "first",
+        direction: props.direction,
+        rtl: props.rtl,
+        shadowsActive: shadowsActive(),
+        shadows: shadows,
+      });
+
+      if (shadows.animateClassNames) return;
+
+      // console.log({ shadowContainerEl, shadowEl });
+      shadowAnimationEl.style.transition = transition;
+      shadowAnimationEl.style.opacity = opacity;
+      shadowAnimationEl.style.transform = transform;
     });
 
     init = false;
@@ -366,8 +385,6 @@ const ScrollShadows: Component<
         customShadows={local.element}
         rtl={props.rtl}
         shadowsActive={shadowsActive}
-        // active={shadowsActive().first}
-        // transitionActive={shadowsActive().transition}
         ref={shadowFirstEl}
       />
       <Shadow
@@ -376,8 +393,6 @@ const ScrollShadows: Component<
         shadows={shadows}
         customShadows={local.element}
         shadowsActive={shadowsActive}
-        // active={shadowsActive().last}
-        // transitionActive={shadowsActive().transition}
         rtl={props.rtl}
         ref={shadowLastEl}
       />
@@ -472,8 +487,8 @@ const Shadow: Component<
   let shadowEl!: HTMLDivElement;
   let animatedEl!: HTMLDivElement;
   const isFirst = child === "first";
-  let prevDirection: "horizontal" | "vertical" | null = null;
-  let prevRTL: boolean = false;
+  let prevDirection: "horizontal" | "vertical" = props.direction;
+  let prevRtl: boolean = !!props.rtl;
   let prevColor = "";
   let prevTransparentColor = "";
 
@@ -495,7 +510,7 @@ const Shadow: Component<
   };
 
   const getShadowContainerStyle = () => {
-    const { direction, rtl = false, shadows = {} } = props;
+    const { direction, rtl = false, shadows } = props;
     // const {direction, rtl} = other
     let { size = "50px", invert = null } = shadows;
 
@@ -520,243 +535,6 @@ const Shadow: Component<
     return `position: absolute; z-index: 1; pointer-events: none; overflow: hidden; transition: opacity 300ms; ${getPositionSize()}; `;
   };
 
-  // const getShadowStyle = ({ shadows, other }: { shadows; other }) => {
-  const getShadowStyle = () => {
-    // const { direction, rtl = false } = other;
-    let { shadowsActive, shadows = {}, direction, rtl = false } = props;
-    // get dom attr if active
-    const {
-      animation = "opacity",
-      class: className,
-      shape = "rectangle",
-      transition = "300ms",
-      invert,
-      borderRadius,
-      insetSize,
-      size = "50px",
-    } = shadows;
-
-    const animationProp = animation === "opacity" ? animation : "transform";
-
-    if (prevDirection !== direction) {
-      // transitionActive = false;
-      prevDirection = direction;
-    }
-
-    if (prevRTL !== rtl) {
-      // transitionActive = false;
-      prevRTL = rtl;
-    }
-
-    const [color, transparentColor] = getColors(
-      shadows.color,
-      shadows.colorToRGBA != null ? shadows.colorToRGBA : isSafari
-    );
-
-    const getBoxShadow = () => {
-      if (className) return "";
-      if (!insetSize) return "";
-
-      let x = 0;
-      let y = 0;
-      let blur = 0;
-      let spread = 0;
-      let val = insetSize as number;
-
-      val = parseValToNum(insetSize);
-
-      if (direction === "horizontal") {
-        const from = rtl ? -val : val;
-        const to = rtl ? val : -val;
-        x = isFirst ? from : to;
-      } else {
-        y = isFirst ? val : -val;
-      }
-
-      blur = val - 3;
-      spread = val * -1;
-      return `${shadows.color} ${x}px ${y}px ${blur}px ${spread}px inset`;
-    };
-
-    const getBorderRadius = () => {
-      if (className) return "";
-      if (!borderRadius) return "";
-      const val = parseVal(borderRadius);
-      let topLeft = "0px";
-      let topRight = "0px";
-      let bottomLeft = "0px";
-      let bottomRight = "0px";
-
-      if (direction === "horizontal") {
-        if (isFirst) {
-          if (rtl) {
-            topRight = val;
-            bottomRight = val;
-          } else {
-            topLeft = val;
-            bottomLeft = val;
-          }
-        } else {
-          if (rtl) {
-            topLeft = val;
-            bottomLeft = val;
-          } else {
-            topRight = val;
-            bottomRight = val;
-          }
-        }
-      } else {
-        if (isFirst) {
-          topLeft = val;
-          topRight = val;
-        } else {
-          bottomLeft = val;
-          bottomRight = val;
-        }
-      }
-
-      return `${topLeft} ${topRight} ${bottomRight} ${bottomLeft}`;
-    };
-
-    const getInvertScale = () => {
-      if (!invert) return "";
-      if (invert !== child) return "";
-
-      const inverseScale =
-        direction === "horizontal" ? "scaleX(-1)" : "scaleY(-1)";
-
-      return invert ? inverseScale : "";
-    };
-
-    const getBackgroundSize = () => {
-      if (className) return "";
-      if (shape === "rectangle") return "";
-
-      if (shape === "convex") {
-        const bgSize =
-          direction === "horizontal"
-            ? "50% 100%, 100% 100%"
-            : "100% 50%, 100% 100%";
-        return bgSize;
-      }
-      const bgSize = direction === "horizontal" ? "100% 345%" : "345% 100%";
-      return bgSize;
-    };
-
-    const getBackgroundPosition = () => {
-      if (className) return "";
-
-      const right = rtl ? "left" : "right";
-      const left = rtl ? "right" : "left";
-      if (shape === "rectangle") return "";
-
-      if (shape === "convex") {
-        const bgPosition =
-          direction === "horizontal"
-            ? isFirst
-              ? left
-              : right
-            : isFirst
-            ? "top"
-            : "bottom";
-        return bgPosition;
-      }
-      const bgPosition = direction === "horizontal" ? "right" : "center center";
-
-      return bgPosition;
-    };
-
-    const getBackgroundImage = () => {
-      if (className) return "";
-      const right = rtl ? "left" : "right";
-      const left = rtl ? "right" : "left";
-
-      if (shape === "convex") {
-        const from = rtl ? "100%" : "0%";
-        const to = rtl ? "0%" : "100%";
-        const x = direction === "horizontal" ? (isFirst ? from : to) : "50%";
-        const y = direction === "horizontal" ? "50%" : isFirst ? "0%" : "100%";
-
-        return `radial-gradient(farthest-side at ${x} ${y},${color} 0%, ${transparentColor}), radial-gradient(farthest-side at ${x} ${y},${color} -15%,${transparentColor})`;
-      }
-
-      if (shape === "concave") {
-        const from = rtl ? "0%" : "100%";
-        const to = rtl ? "100%" : "0%";
-        const x = direction === "horizontal" ? (isFirst ? from : to) : "50%";
-        const y = direction === "horizontal" ? "50%" : isFirst ? "100%" : "0%";
-        let firstStop: string | number = "0%";
-        if (insetSize) {
-          firstStop = parseValToNum(insetSize) * -1;
-        }
-        return `radial-gradient(farthest-side at ${x} ${y},${transparentColor} 25%,${color})`;
-      }
-
-      const x = direction === "horizontal" ? right : "bottom";
-      const y = direction === "horizontal" ? left : "top";
-
-      let firstStop: string | number = "50%";
-      if (insetSize) {
-        let numVal = parseValToNum(insetSize);
-        const pxUnits = parseVal(size).match(/px/g)!;
-        const sizeHasPxUnit = pxUnits != null && pxUnits.length === 1;
-
-        if (sizeHasPxUnit) {
-          const numSize = parseValToNum(size);
-          if (numVal >= numSize / 2) {
-            numVal = numSize / 2 - 1;
-          }
-        }
-        firstStop = `calc(${firstStop} - ${numVal}px)`;
-      }
-
-      return `linear-gradient(to ${
-        isFirst ? x : y
-      }, ${color}, ${firstStop}, ${transparentColor})`;
-    };
-
-    const getBackgroundRepeat = () => {
-      if (className) return "";
-      return "no-repeat";
-    };
-
-    // const transitionDeclaration = transitionActive
-    //   ? `${animationProp} ${parseVal(transition, "ms")}`
-    //   : "";
-    const transitionDeclaration = true
-      ? `${animationProp} ${parseVal(transition, "ms")}`
-      : "";
-
-    return {
-      backgroundImage: getBackgroundImage(),
-      backgroundSize: getBackgroundSize(),
-      backgroundPosition: getBackgroundPosition(),
-      backgroundRepeat: getBackgroundRepeat(),
-      transition: transitionDeclaration,
-      opacity: animationState({
-        type: "opacity",
-        animation: animation!,
-        direction,
-        isFirst,
-        // show: active,
-        show: false,
-        rtl: rtl!,
-      }),
-      transform: animationState({
-        type: "transform",
-        animation: animation!,
-        direction,
-        isFirst,
-        // show: active,
-        show: false,
-        rtl: rtl!,
-      }),
-      invertScale: getInvertScale(),
-      borderRadius: getBorderRadius(),
-      boxShadow: getBoxShadow(),
-    };
-  };
-
   const getCustomShadowStyle = () => {
     if (!props.customShadows) return "";
 
@@ -775,65 +553,81 @@ const Shadow: Component<
   };
 
   createEffect(() => {
-    // const shadowsActive = untrack(props.shadowsActive);
-    // console.log(shadowsActive, props.customShadows, props.rtl, props.direction);
-    console.log(props.shadowsActive());
-    //     const {
-    //       backgroundImage,
-    //       backgroundPosition,
-    //       backgroundRepeat,
-    //       backgroundSize,
-    //       transition,
-    //       opacity,
-    //       transform,
-    //       invertScale,
-    //       boxShadow,
-    //       borderRadius,
-    //     } = getShadowStyle()!;
-    //     const { shadows, shadowsActive, customShadows } = props;
-    //
-    //
-    //     if (customShadows) {
-    //       // @ts-ignore
-    //       const element = customShadows as ShadowElements;
-    //       // if (shadows.onAnimate) {
-    //       //   shadows.onAnimate({
-    //       //     target: element instanceof Element ? element : element[child],
-    //       //     active,
-    //       //     isFirst: child === "first",
-    //       //     init: transitionActive,
-    //       //   });
-    //       // }
-    //
-    //       animatedEl.style.transition = transition;
-    //       animatedEl.style.opacity = opacity;
-    //       animatedEl.style.transform = transform;
-    //       return;
-    //     }
-    //
-    //     shadowEl.style.backgroundImage = backgroundImage;
-    //     shadowEl.style.backgroundPosition = backgroundPosition;
-    //     shadowEl.style.backgroundRepeat = backgroundRepeat;
-    //     shadowEl.style.backgroundSize = backgroundSize;
-    //     shadowEl.style.boxShadow = boxShadow;
-    //     shadowEl.style.borderRadius = borderRadius;
-    //     shadowEl.style.transform = invertScale;
-    //
-    //     // if (shadows.onAnimate) {
-    //     //   shadows.onAnimate({
-    //     //     target: shadowEl,
-    //     //     active,
-    //     //     isFirst: child === "first",
-    //     //     init: !transitionActive,
-    //     //   });
-    //     //   return;
-    //     // }
-    //
-    //     if (shadows.animateClassNames) return;
-    //
-    //     animatedEl.style.transition = transition;
-    //     animatedEl.style.opacity = opacity;
-    //     animatedEl.style.transform = transform;
+    const shadowsActive = untrack(props.shadowsActive);
+    const rtl = props.rtl;
+    const direction = props.direction;
+    const shadows = props.shadows;
+    const child = props.child;
+    const customShadows = props.customShadows;
+    const [color, transparentColor] = getColors(
+      shadows.color,
+      shadows.colorToRGBA
+    );
+
+    const {
+      backgroundImage,
+      backgroundPosition,
+      backgroundRepeat,
+      backgroundSize,
+      transition,
+      opacity,
+      transform,
+      invertScale,
+      boxShadow,
+      borderRadius,
+    } = getShadowStyle({
+      child,
+      direction,
+      shadows,
+      shadowsActive,
+      rtl,
+      prevDirection,
+      prevRtl,
+      transparentColor,
+      color,
+    });
+
+    if (customShadows) {
+      // @ts-ignore
+      const element = customShadows as ShadowElements;
+      // if (shadows.onAnimate) {
+      //   shadows.onAnimate({
+      //     target: element instanceof Element ? element : element[child],
+      //     active,
+      //     isFirst: child === "first",
+      //     init: transitionActive,
+      //   });
+      // }
+
+      animatedEl.style.transition = transition;
+      animatedEl.style.opacity = opacity;
+      animatedEl.style.transform = transform;
+      return;
+    }
+
+    shadowEl.style.backgroundImage = backgroundImage;
+    shadowEl.style.backgroundPosition = backgroundPosition;
+    shadowEl.style.backgroundRepeat = backgroundRepeat;
+    shadowEl.style.backgroundSize = backgroundSize;
+    shadowEl.style.boxShadow = boxShadow;
+    shadowEl.style.borderRadius = borderRadius;
+    shadowEl.style.transform = invertScale;
+
+    // if (shadows.onAnimate) {
+    //   shadows.onAnimate({
+    //     target: shadowEl,
+    //     active,
+    //     isFirst: child === "first",
+    //     init: !transitionActive,
+    //   });
+    //   return;
+    // }
+
+    if (shadows.animateClassNames) return;
+
+    animatedEl.style.transition = transition;
+    animatedEl.style.opacity = opacity;
+    animatedEl.style.transform = transform;
   });
 
   const dataAttribute = isFirst ? { first: "" } : { last: "" };
@@ -900,6 +694,258 @@ const Shadow: Component<
       </div>
     </div>
   );
+};
+
+const getShadowStyle = (
+  props: Omit<_TScrollShadowsComponent, "shadows"> & {
+    child: "first" | "last";
+    shadows: ScrollShadowsShadow;
+    shadowsActive: ShadowsActive;
+    prevDirection?: "horizontal" | "vertical";
+    prevRtl?: boolean;
+    transparentColor?: string;
+    color?: string;
+  }
+) => {
+  // const { direction, rtl = false } = other;
+  let {
+    shadowsActive,
+    shadows,
+    direction,
+    rtl = false,
+    child,
+    prevDirection,
+    prevRtl,
+    transparentColor,
+    color,
+  } = props;
+  // get dom attr if active
+  const {
+    animation = "opacity",
+    class: className,
+    shape = "rectangle",
+    transition = "300ms",
+    invert,
+    borderRadius,
+    insetSize,
+    size = "50px",
+  } = shadows;
+
+  const animationProp = animation === "opacity" ? animation : "transform";
+  const isFirst = child === "first";
+  let transitionActive = shadowsActive.transition;
+
+  if (prevDirection != null) {
+    if (prevDirection !== direction) {
+      transitionActive = false;
+      prevDirection = direction;
+    }
+  }
+
+  if (prevRtl != null) {
+    if (prevRtl !== rtl) {
+      transitionActive = false;
+      prevRtl = rtl;
+    }
+  }
+
+  const getBoxShadow = () => {
+    if (className) return "";
+    if (!insetSize) return "";
+
+    let x = 0;
+    let y = 0;
+    let blur = 0;
+    let spread = 0;
+    let val = insetSize as number;
+
+    val = parseValToNum(insetSize);
+
+    if (direction === "horizontal") {
+      const from = rtl ? -val : val;
+      const to = rtl ? val : -val;
+      x = isFirst ? from : to;
+    } else {
+      y = isFirst ? val : -val;
+    }
+
+    blur = val - 3;
+    spread = val * -1;
+    return `${shadows.color} ${x}px ${y}px ${blur}px ${spread}px inset`;
+  };
+
+  const getBorderRadius = () => {
+    if (className) return "";
+    if (!borderRadius) return "";
+    const val = parseVal(borderRadius);
+    let topLeft = "0px";
+    let topRight = "0px";
+    let bottomLeft = "0px";
+    let bottomRight = "0px";
+
+    if (direction === "horizontal") {
+      if (isFirst) {
+        if (rtl) {
+          topRight = val;
+          bottomRight = val;
+        } else {
+          topLeft = val;
+          bottomLeft = val;
+        }
+      } else {
+        if (rtl) {
+          topLeft = val;
+          bottomLeft = val;
+        } else {
+          topRight = val;
+          bottomRight = val;
+        }
+      }
+    } else {
+      if (isFirst) {
+        topLeft = val;
+        topRight = val;
+      } else {
+        bottomLeft = val;
+        bottomRight = val;
+      }
+    }
+
+    return `${topLeft} ${topRight} ${bottomRight} ${bottomLeft}`;
+  };
+
+  const getInvertScale = () => {
+    if (!invert) return "";
+    if (invert !== child) return "";
+
+    const inverseScale =
+      direction === "horizontal" ? "scaleX(-1)" : "scaleY(-1)";
+
+    return invert ? inverseScale : "";
+  };
+
+  const getBackgroundSize = () => {
+    if (className) return "";
+    if (shape === "rectangle") return "";
+
+    if (shape === "convex") {
+      const bgSize =
+        direction === "horizontal"
+          ? "50% 100%, 100% 100%"
+          : "100% 50%, 100% 100%";
+      return bgSize;
+    }
+    const bgSize = direction === "horizontal" ? "100% 345%" : "345% 100%";
+    return bgSize;
+  };
+
+  const getBackgroundPosition = () => {
+    if (className) return "";
+
+    const right = rtl ? "left" : "right";
+    const left = rtl ? "right" : "left";
+    if (shape === "rectangle") return "";
+
+    if (shape === "convex") {
+      const bgPosition =
+        direction === "horizontal"
+          ? isFirst
+            ? left
+            : right
+          : isFirst
+          ? "top"
+          : "bottom";
+      return bgPosition;
+    }
+    const bgPosition = direction === "horizontal" ? "right" : "center center";
+
+    return bgPosition;
+  };
+
+  const getBackgroundImage = () => {
+    if (className) return "";
+    const right = rtl ? "left" : "right";
+    const left = rtl ? "right" : "left";
+
+    if (shape === "convex") {
+      const from = rtl ? "100%" : "0%";
+      const to = rtl ? "0%" : "100%";
+      const x = direction === "horizontal" ? (isFirst ? from : to) : "50%";
+      const y = direction === "horizontal" ? "50%" : isFirst ? "0%" : "100%";
+
+      return `radial-gradient(farthest-side at ${x} ${y},${color} 0%, ${transparentColor}), radial-gradient(farthest-side at ${x} ${y},${color} -15%,${transparentColor})`;
+    }
+
+    if (shape === "concave") {
+      const from = rtl ? "0%" : "100%";
+      const to = rtl ? "100%" : "0%";
+      const x = direction === "horizontal" ? (isFirst ? from : to) : "50%";
+      const y = direction === "horizontal" ? "50%" : isFirst ? "100%" : "0%";
+      let firstStop: string | number = "0%";
+      if (insetSize) {
+        firstStop = parseValToNum(insetSize) * -1;
+      }
+      return `radial-gradient(farthest-side at ${x} ${y},${transparentColor} 25%,${color})`;
+    }
+
+    const x = direction === "horizontal" ? right : "bottom";
+    const y = direction === "horizontal" ? left : "top";
+
+    let firstStop: string | number = "50%";
+    if (insetSize) {
+      let numVal = parseValToNum(insetSize);
+      const pxUnits = parseVal(size).match(/px/g)!;
+      const sizeHasPxUnit = pxUnits != null && pxUnits.length === 1;
+
+      if (sizeHasPxUnit) {
+        const numSize = parseValToNum(size);
+        if (numVal >= numSize / 2) {
+          numVal = numSize / 2 - 1;
+        }
+      }
+      firstStop = `calc(${firstStop} - ${numVal}px)`;
+    }
+
+    return `linear-gradient(to ${
+      isFirst ? x : y
+    }, ${color}, ${firstStop}, ${transparentColor})`;
+  };
+
+  const getBackgroundRepeat = () => {
+    if (className) return "";
+    return "no-repeat";
+  };
+
+  const transitionDeclaration = transitionActive
+    ? `${animationProp} ${parseVal(transition, "ms")}`
+    : "";
+
+  return {
+    backgroundImage: getBackgroundImage(),
+    backgroundSize: getBackgroundSize(),
+    backgroundPosition: getBackgroundPosition(),
+    backgroundRepeat: getBackgroundRepeat(),
+    transition: transitionDeclaration,
+    opacity: animationState({
+      type: "opacity",
+      animation: animation!,
+      direction,
+      isFirst,
+      show: shadowsActive[child],
+      rtl: rtl!,
+    }),
+    transform: animationState({
+      type: "transform",
+      animation: animation!,
+      direction,
+      isFirst,
+      show: shadowsActive[child],
+      rtl: rtl!,
+    }),
+    invertScale: getInvertScale(),
+    borderRadius: getBorderRadius(),
+    boxShadow: getBoxShadow(),
+  };
 };
 
 // https://gist.github.com/njvack/02ad8efcb0d552b0230d
