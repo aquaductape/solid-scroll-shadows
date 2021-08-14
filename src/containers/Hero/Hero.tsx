@@ -16,21 +16,20 @@ const Hero = () => {
         direction="horizontal"
         endsDetectionMargin="5vw"
         shadows={{
-          size: 500,
           animation: "opacity",
           transition: "500ms",
-          element: {
-            first: (
-              <div style="position: relative; height: 100%;">
-                <DesktopLeftCurtain />
-              </div>
-            ),
-            last: (
-              <div style="position: relative; height: 100%;">
-                <DesktopRightCurtain />
-              </div>
-            ),
-          },
+          // element: {
+          //   first: (
+          //     <div style="position: relative; height: 100%;">
+          //       <DesktopLeftCurtain />
+          //     </div>
+          //   ),
+          //   last: (
+          //     <div style="position: relative; height: 100%;">
+          //       <DesktopRightCurtain />
+          //     </div>
+          //   ),
+          // },
         }}
       >
         <div class={c["slides"] + " no-scrollbar"}>

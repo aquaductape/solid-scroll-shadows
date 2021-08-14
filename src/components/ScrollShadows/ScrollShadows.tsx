@@ -542,9 +542,9 @@ const Shadow: Component<
   };
 
   const getAnimatedElClassNames = () => {
-    const { shadowsActive, shadows } = props;
-    const { animateClassNames } = shadows;
-    if (!animateClassNames) return "";
+    // const { shadowsActive, shadows } = props;
+    // const { animateClassNames } = shadows;
+    // if (!animateClassNames) return "";
     //     const state = active ? "-show" : "-hide";
     //     const init = !transitionActive ? `${animateClassNames}-init` : "";
     //
@@ -643,13 +643,13 @@ const Shadow: Component<
           when={props.customShadows}
           fallback={
             <div
-              class={getAnimatedElClassNames()}
+              // class={getAnimatedElClassNames()}
               style="width: 100%; height: 100%;"
               ref={animatedEl}
               {...dataAttribute}
             >
               <div
-                class={props.shadows && props.shadows.class}
+                // class={props.shadows && props.shadows.class}
                 ref={shadowEl}
                 style={"width: 100%; height: 100%;"}
                 {...dataAttribute}
