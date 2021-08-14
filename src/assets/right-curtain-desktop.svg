@@ -1,49 +1,166 @@
-<svg width="550.59" height="1095.9" viewBox="0 0 145.68 289.95" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <filter id="right-curtain-desktop-c" x="-.159" y="-.057" width="1.317" height="1.113" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="3.57"/>
-    </filter>
-    <filter id="right-curtain-desktop-e" x="-.21" y="-.112" width="1.421" height="1.224" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="6.527"/>
-    </filter>
-    <filter id="right-curtain-desktop-d" x="-.052" y="-.031" width="1.104" height="1.063" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="2.559"/>
-    </filter>
-    <filter id="right-curtain-desktop-b" x="-.05" y="-.071" width="1.101" height="1.142" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="4.099"/>
-    </filter>
-    <filter id="right-curtain-desktop-a" x="-.266" y="-.374" width="1.532" height="1.748" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="21.626"/>
-    </filter>
-  </defs>
-  <text x="51.935" y="-216.552" font-family="Ubuntu" font-size="14.826" letter-spacing="0" stroke-width=".265" word-spacing="0" style="font-variant-caps:normal;font-variant-east-asian:normal;font-variant-ligatures:normal;font-variant-numeric:normal;line-height:1.25"/>
-  <rect class="big-blur" transform="rotate(245.39 -11.635 725.73)" x="401.33" y="1041.5" width="74.566" height="188.6" ry="11.698" fill="#c2c2ce" filter="url(#right-curtain-desktop-a)"/>
-  <path transform="matrix(.9847 .17427 -.18208 .98328 -162.76 106.14)" d="M263.81-40.1h21.354a3.443 3.443 0 013.45 3.45v143.2c0 1.912-1.546 3.298-3.45 3.451l-20.673 1.663c-1.904.153-7.696-2.02-7.271-3.881 0 0 9.476-20.7 9.703-57.962.196-32.142-6.564-86.47-6.564-86.47-.133-1.908 1.54-3.45 3.451-3.45z" fill="#e6e6e6" filter="url(#right-curtain-desktop-c)"/>
-  <g class="top-rect">
-    <path transform="rotate(-10.445 1074.5 5912.4)" d="M1175.5-49.118l32.306 6.997c4.55.986 8.219 3.752 8.405 8.405l4.458 111.7c.186 4.652-4.199 6.407-8.405 8.405l-53.735 25.527c-4.206 1.998-9.446-3.867-8.405-8.405 21.034-91.731 15.9-109.17 16.972-144.22.142-4.654 3.854-9.39 8.404-8.405z" fill="#adadb9" fill-opacity=".465" filter="url(#right-curtain-desktop-e)"/>
-    <rect transform="rotate(-10.445)" x="82.192" y="48.597" width="53.574" height="135.5" ry="8.405" fill="#fff"/>
-  </g>
-  <g class="colored-rects">
-    <rect transform="matrix(.99389 .11038 -.11503 .99336 0 0)" x="125.36" y="74.158" width="70.481" height="174.67" ry="10.834" fill="#bec7f7"/>
-    <rect transform="rotate(11.27)" x="136.66" y="55.853" width="70.5" height="178.31" ry="11.06" fill="#1e297c"/>
-  </g>
-  <g class="mind-rect">
-    <rect transform="rotate(245.39 -11.635 725.73)" x="401.33" y="1041.5" width="74.566" height="188.6" ry="11.698" fill="#c2c2ce" filter="url(#right-curtain-desktop-b)"/>
-    <rect transform="rotate(245.39)" x="-242" y="2.962" width="74.566" height="188.6" ry="11.698" fill="#fff"/>
-    <g class="btn-arrow" stroke-linecap="round">
-      <rect x="80.949" y="149.41" width="15.052" height="15.37" ry="2.195" fill="#fff"/>
-      <g fill="none" stroke="#000" stroke-width=".953">
-        <circle cx="88.44" cy="157.34" r="5.599"/>
-        <g>
-          <path d="M88.657 160.02l2.59-2.683"/>
-          <path d="M88.657 154.65l2.59 2.683"/>
-          <path d="M85.634 157.27l3.728.065"/>
+<svg
+    width="550.59"
+    height="1095.9"
+    viewBox="0 0 145.68 289.95"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <linearGradient
+        id="right-curtain-desktop-b"
+        x1="-210.11"
+        x2="-204.41"
+        y1="217.23"
+        y2="-13.426"
+        gradientTransform="scale(-1.3321) rotate(65.39 -4.575 57.268)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#c2c2ce" offset="0" />
+        <stop stop-color="#bfbfd1" stop-opacity="0" offset="1" />
+      </linearGradient>
+      <linearGradient
+        id="right-curtain-desktop-a"
+        x1="-204.45"
+        x2="-208.61"
+        y1="211.59"
+        y2="-5.237"
+        gradientTransform="matrix(-.46786 -1.0415 1.0353 -.48352 -10.94 -20.054)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#c2c2ce" offset="0" />
+        <stop stop-color="#c2c2ce" stop-opacity="0" offset="1" />
+      </linearGradient>
+      <linearGradient
+        id="right-curtain-desktop-d"
+        x1="124.93"
+        x2="92.539"
+        y1="79.827"
+        y2="82.358"
+        gradientTransform="matrix(1.1998 0 0 1.1156 -41.714 -18.537)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#adadb9" offset="0" />
+        <stop stop-color="#adadb9" stop-opacity="0" offset="1" />
+      </linearGradient>
+      <linearGradient
+        id="right-curtain-desktop-e"
+        x1="1049.1"
+        x2="1037.2"
+        y1="-556.83"
+        y2="-557.61"
+        gradientTransform="matrix(1.0776 .28864 -.28864 1.0776 -1161.3 445.88)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#d8d3ea" offset="0" />
+        <stop stop-color="#d8d3ea" stop-opacity="0" offset="1" />
+      </linearGradient>
+      <linearGradient
+        id="right-curtain-desktop-f"
+        x1="283.08"
+        x2="251.26"
+        y1="98.506"
+        y2="94.567"
+        gradientTransform="matrix(1.0986 .19442 -.20313 1.097 -179.48 97.046)"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stop-color="#e3e2ea" offset="0" />
+        <stop stop-color="#e6e6e6" stop-opacity="0" offset="1" />
+      </linearGradient>
+      <filter
+        id="right-curtain-desktop-c"
+        x="-.048"
+        y="-.057"
+        width="1.097"
+        height="1.114"
+        color-interpolation-filters="sRGB"
+      >
+        <feGaussianBlur stdDeviation="3.17" />
+      </filter>
+    </defs>
+    <path
+      class="big-blur"
+      d="M38.01 250.16L1.806 171.119a19.83 19.83 0 019.793-26.346l255.19-116.89s-146.61 207.68-202.43 232.07a19.83 19.83 0 01-26.346-9.793z"
+      fill="url(#right-curtain-desktop-b)"
+      style="mix-blend-mode:normal"
+    />
+    <path
+      d="M111.68 1.922c5.583.163 8.357 16.081 9.589 21.207l29.555 123.05c1.231 5.125-3.562 7.97-8.089 11.048l-57.848 39.324c-4.528 3.078-11.986-2.359-11.745-7.608 4.866-106.11-1.926-120.76-8.285-159.88-1.853-9.753 24.498-24.325 46.178-41.158z"
+      fill="url(#right-curtain-desktop-d)"
+    />
+    <path
+      d="M157.67-68.265l-78.498 84.16c-5.87 6.173-6.528 9.835-4.318 21.043l22.655 120.66c.403.863 76.644-83.101 76.644-83.101-5.54-26.65-16.484-142.77-16.484-142.77z"
+      fill="#fff"
+    />
+    <g class="colored-rects">
+      <path
+        class="light-blue-rect"
+        d="M113.291 80.414l54.124 6.011-76.538 187.56a11.993 11.993 0 01-10.622-13.34l19.636-169.55a12.129 12.129 0 0113.4-10.673z"
+        fill="#bec7f7"
+      />
+      <path
+        class="dark-blue-rect"
+        d="M121.241 74.777l52.931 10.548-101.5 170.03 34.054-170.89a12.311 12.311 0 0114.512-9.69z"
+        fill="#1e297c"
+      />
+    </g>
+    <g class="mid-rect">
+      <path
+        transform="translate(-28.2 -18.537) scale(1.1156)"
+        d="M98.6 208.15l-21.309-46.522a11.673 11.673 0 015.764-15.507l150.2-68.797s-121.68 157.03-134.65 130.83z"
+        fill="#c3c3cf"
+        filter="url(#right-curtain-desktop-c)"
+      />
+      <path
+        d="M99.424 227.24l-29.61-65.912a12.494 12.679 20.404 016.26-16.845l197.74-92.351z"
+        fill="url(#right-curtain-desktop-a)"
+        transform="translate(-25.279)"
+      />
+      <path
+        d="M81.801 213.68l-23.773-51.902a13.023 13.023 0 016.43-17.3l167.57-76.752s-135.75 175.19-150.22 145.96z"
+        fill="#fff"
+      />
+      <g
+        class="btn-arrow"
+        transform="translate(-28.2 -18.537) scale(1.1156)"
+        stroke-linecap="round"
+      >
+        <rect
+          x="80.949"
+          y="149.41"
+          width="15.052"
+          height="15.37"
+          ry="2.195"
+          fill="#fff"
+        />
+        <g fill="none" stroke="#000" stroke-width=".953">
+          <circle cx="88.44" cy="157.34" r="5.599" />
+          <path d="M88.657 160.02l2.59-2.683" />
+          <path d="M88.657 154.65l2.59 2.683" />
+          <path d="M85.634 157.27l3.728.065" />
         </g>
       </g>
     </g>
-  </g>
-  <g class="bottom-rect">
-    <path transform="rotate(14.995 -2100.7 -3736.5)" d="M1058.6-632.44l45.764.969c6.48.137 11.698 5.217 11.698 11.698v165.21c0 6.48-5.24 11.16-11.698 11.698l-37.884 3.153c-6.458.537-25.019-8.37-24.985-14.851.256-48.14-4.96-51.563-3.75-108.04.201-9.367 7.145-10.094 6.584-14.33-1.935-14.631-4.076-36.305-3.524-38.82 1.714-7.82 8.901-16.871 17.795-16.682z" fill="#d8d3ea" filter="url(#right-curtain-desktop-d)"/>
-    <path d="M147.68 79.484l48.219 17.128c6.107 2.17 8.382 8.584 7.108 14.939l-33.43 166.74c-1.274 6.354-8.927 9.527-14.94 7.108l-70.085-28.196c-6.013-2.42-9.277-8.832-7.108-14.94l55.296-155.68a11.673 11.673 0 0114.939-7.107z" fill="#fff"/>
-  </g>
-</svg>
+    <g class="bottom-rect">
+      <path
+        class="bottom-blur"
+        d="M135.011 158.57L83.444 277.15c-.85 1.956 25.28 3.803 23.157 3.6l-50.696-2.68c-2.123-.202-6.039-2.406-7.81-6.025-2.567-12.465 20.816-55.215 25.776-63.75 22.709-39.076 64.93-58.065 61.141-49.724z"
+        fill="#e3e2ea"
+        fill-opacity=".19"
+      />
+      <path
+        class="bottom-blur"
+        d="M167.51 151.46l-51.567 118.58c-.85 1.956 3.234 7.332 1.111 7.13l-28.65-6.21c-2.123-.202-6.04-2.406-7.81-6.025-2.568-12.465 20.815-55.215 25.775-63.75 22.71-39.076 64.93-58.065 61.141-49.724z"
+        fill="url(#right-curtain-desktop-f)"
+        transform="translate(-25.279)"
+      />
+      <path
+        d="M211.11 84.167c-17.409 28.222-54.443 203.25-54.443 203.25l-39.019-16.238c-7.114-1.285-27.262-7.541-25.355-14.516 14.172-51.804-3.369-38.85 14.238-99.363 0 0 27.28-60.371 37.53-83.304 4.104-7.932 9.122-7.8 18.652-5.03 0 0 34.534 11.167 48.398 15.197z"
+        fill="url(#right-curtain-desktop-e)"
+        style="mix-blend-mode:normal"
+        transform="translate(-25.279)"
+      />
+      <path
+        d="M136.561 70.138l53.795 19.109s-26.988 152.93-41.073 209.96l-83.149-30.799c-6.708-2.7-10.35-9.853-7.93-16.668l61.69-173.68c2.4-6.803 9.873-10.359 16.666-7.929z"
+        fill="#fff"
+      />
+    </g>
+  </svg>

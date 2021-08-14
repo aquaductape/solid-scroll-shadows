@@ -555,7 +555,6 @@ const Shadow: Component<
   createEffect(() => {
     const shadowsActive = untrack(props.shadowsActive);
 
-    console.log("fire");
     const rtl = props.rtl;
     const direction = props.direction;
     const shadows = props.shadows;

@@ -15,10 +15,19 @@
 }
 
 .slide {
+  position: relative;
   min-width: 100vw;
   flex-shrink: 0;
   height: 100%;
 }
 
 .slide-content {
+}
+
+.slide-declaration {
+  position: absolute;
+  right: 379px;
+  top: 47vh;
+  font-size: 30px;
+  font-weight: bold;
 }

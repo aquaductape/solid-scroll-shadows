@@ -14,22 +14,23 @@ const Hero = () => {
       <ScrollShadows
         class={c["container"]}
         direction="horizontal"
-        endsDetectionMargin="5vw"
+        endsDetectionMargin="10vw"
         shadows={{
+          size: "auto",
           animation: "opacity",
           transition: "500ms",
-          // element: {
-          //   first: (
-          //     <div style="position: relative; height: 100%;">
-          //       <DesktopLeftCurtain />
-          //     </div>
-          //   ),
-          //   last: (
-          //     <div style="position: relative; height: 100%;">
-          //       <DesktopRightCurtain />
-          //     </div>
-          //   ),
-          // },
+          element: {
+            first: (
+              <div style="position: relative; height: 100%; width: 500px; display: flex; justify-content: flex-start; align-items: center;">
+                <DesktopLeftCurtain />
+              </div>
+            ),
+            last: (
+              <div style="position: relative; height: 100%; width: 500px; display: flex; justify-content: flex-end; align-items: center;">
+                <DesktopRightCurtain />
+              </div>
+            ),
+          },
         }}
       >
         <div class={c["slides"] + " no-scrollbar"}>
@@ -47,6 +48,7 @@ const Hero = () => {
                 Solid
               </a>
             </p>
+            <div class={c["slide-declaration"]}>Scroll Here</div>
           </div>
           <div class={c["slide"]}>
             <div class={c["slide-content"]}>slide 2</div>
