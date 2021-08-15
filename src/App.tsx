@@ -10,8 +10,8 @@ const App: Component = () => {
   return (
     <>
       <Header></Header>
-      <Hero></Hero>
-      {/* <Horizontal></Horizontal> */}
+      {/* <Hero></Hero> */}
+      <Horizontal></Horizontal>
     </>
   );
 };

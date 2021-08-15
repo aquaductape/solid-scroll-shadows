@@ -176,19 +176,19 @@ export const DesktopLeftCurtain = () => (
   >
     <defs>
       <linearGradient
-        id="left-curtain-desktop-d"
+        id="left-curtain-desktop-f"
         x1="-76.352"
         x2="-131.28"
         y1="-153.41"
         y2="-154.67"
-        gradientTransform="translate(-11.536 1.633) scale(1.0051)"
+        gradientTransform="matrix(-.96786 -.27107 .3442 -.94433 11.668 1.577)"
         gradientUnits="userSpaceOnUse"
       >
         <stop stop-color="#d5d7eb" stop-opacity=".314" offset="0" />
         <stop stop-color="#d5d7eb" stop-opacity=".102" offset="1" />
       </linearGradient>
       <linearGradient
-        id="left-curtain-desktop-b"
+        id="left-curtain-desktop-g"
         x1="-117.24"
         x2="-72.987"
         y1="148.54"
@@ -199,7 +199,7 @@ export const DesktopLeftCurtain = () => (
         <stop stop-color="#b5ade0" stop-opacity="0" offset="1" />
       </linearGradient>
       <linearGradient
-        id="left-curtain-desktop-a"
+        id="left-curtain-desktop-h"
         x1="15.201"
         x2="-31.489"
         y1="-30.119"
@@ -211,7 +211,7 @@ export const DesktopLeftCurtain = () => (
         <stop stop-color="#cccbdd" stop-opacity="0" offset="1" />
       </linearGradient>
       <filter
-        id="left-curtain-desktop-e"
+        id="left-curtain-desktop-c"
         x="-.113"
         y="-.116"
         width="1.226"
@@ -222,38 +222,38 @@ export const DesktopLeftCurtain = () => (
       </filter>
     </defs>
     <path
+      class="top-blur"
       transform="matrix(-.9854 .17023 -.24374 -.96984 0 0)"
       d="M-23.522-160.84c130.14-48.956 70.252 152.16 0 152.48a8.584 8.584 0 01-8.603-8.603v-135.27a8.584 8.584 0 018.603-8.602z"
-      fill="url(#left-curtain-desktop-a)"
+      fill="url(#left-curtain-desktop-h)"
     />
-    <g stroke-width="1.022">
+    <g class="bottom-rect">
       <path
-        transform="matrix(-.96295 -.26969 .34245 -.93954 0 0)"
-        d="M-137.92-238.83h58.497c4.35 0 7.86 3.503 7.854 7.854l-.158 116.39a7.84 7.84 0 01-7.854 7.853h-58.497a7.833 7.833 0 01-7.853-7.854l.158-116.39a7.84 7.84 0 017.853-7.853z"
-        fill="url(#left-curtain-desktop-d)"
+        d="M51.023 261.59l-56.33-15.776c-4.189-1.173-6.37-5.411-4.873-9.497l40.01-109.31a7.535 8.134 62.836 0110.252-5.26l56.33 15.776a7.528 8.127 62.836 014.872 9.497l-40.01 109.31a7.535 8.134 62.836 01-10.251 5.26z"
+        fill="url(#left-curtain-desktop-f)"
       />
       <path
-        d="M23.117 282.1l-56.33-15.776c-4.19-1.173-6.498-5.46-4.873-9.496l52.052-129.34c1.624-4.036 6.062-6.433 10.252-5.26l56.33 15.776c4.19 1.173 6.497 5.46 4.873 9.497L33.368 276.84c-1.624 4.036-6.062 6.434-10.251 5.26z"
+        d="M23.117 282.1l-56.33-15.776c-4.19-1.173-6.498-5.46-4.873-9.496l52.052-129.34c1.624-4.036 6.062-6.433 10.252-5.26l56.33 15.776c4.19 1.173 6.497 5.46 4.873 9.497l-52.053 129.34c-1.624 4.036-6.062 6.434-10.251 5.26z"
         fill="#bbbede"
         fill-opacity=".063"
       />
       <path
-        d="M21.238 277.443l-56.33-15.776c-4.19-1.174-6.428-5.433-4.873-9.497L6.598 130.447c1.554-4.064 6.062-6.434 10.252-5.26l56.33 15.775c4.189 1.174 6.427 5.433 4.872 9.497L31.49 272.182c-1.555 4.064-6.063 6.434-10.252 5.26z"
+        d="M21.238 277.44l-56.33-15.776c-4.19-1.174-6.428-5.433-4.873-9.497l46.563-121.72c1.554-4.064 6.062-6.434 10.252-5.26l56.33 15.775c4.189 1.174 6.427 5.433 4.872 9.497L31.49 272.179c-1.555 4.064-6.063 6.434-10.252 5.26z"
         fill="#bbbede"
         fill-opacity=".061"
       />
-    </g>
-    <g>
       <path
-        d="M17.171 277.642c-86.434 5.537-28.08-159.874-4.092-152.529l50.117 17.022a8.056 8.056 0 015.048 10.242l-40.83 120.215a8.056 8.056 0 01-10.242 5.049z"
+        d="M17.171 277.64c-86.434 5.537-28.08-159.87-4.092-152.53l50.117 17.022a8.056 8.056 0 015.048 10.242l-40.83 120.22a8.056 8.056 0 01-10.242 5.049z"
         fill="#fff"
       />
+    </g>
+    <path
+      d="M44.47 150.09a8.96 8.96 0 01-.688 12.68L7.48 195.334a8.96 8.96 0 01-12.68-.688l40.14-44.388z"
+      fill="#3f4790"
+    />
+    <g class="top-rect">
       <path
-        d="M44.47 150.089a8.96 8.96 0 01-.688 12.68L7.48 195.333a8.96 8.96 0 01-12.68-.688z"
-        fill="#3f4790"
-      />
-      <path
-        d="M47.454 152.2l-51.816 10.797C-24.003 71.967 18.262 12.099 18.262 12.099a8.056 8.056 0 019.551 6.258l25.898 124.29a8.056 8.056 0 01-6.257 9.551z"
+        d="M47.454 152.2l-51.816 10.797c-19.641-91.03 22.624-150.9 22.624-150.9a8.056 8.056 0 019.551 6.258l25.898 124.29a8.056 8.056 0 01-6.257 9.551z"
         fill="#bec7f7"
       />
       <path
@@ -262,44 +262,46 @@ export const DesktopLeftCurtain = () => (
       />
     </g>
     <path
-      transform="scale(1.01194 .98791) rotate(-45)"
+      transform="scale(1.0119 .98791) rotate(-45)"
       d="M-88.471 78.951A10.187 10.187 0 01-78.262 89.16v44.943a10.187 10.187 0 01-10.209 10.209h-55.445a10.187 10.187 0 01-10.209-10.209z"
-      fill="url(#left-curtain-desktop-b)"
+      fill="url(#left-curtain-desktop-g)"
     />
-    <path
-      transform="scale(1.0151 .99101) rotate(-45 -554.084 741.694)"
-      d="M271.8 693.82a8.96 8.96 0 018.979 8.979v39.53a8.96 8.96 0 01-8.979 8.979h-48.767a8.96 8.96 0 01-8.979-8.979z"
-      fill="#8173ca"
-      fill-opacity=".396"
-      filter="url(#left-curtain-desktop-e)"
-    />
-    <path
-      d="M-4.599 122.078a8.96 8.96 0 0112.698 0l27.953 27.952a8.96 8.96 0 010 12.699L1.568 197.213a8.96 8.96 0 01-12.699 0z"
-      fill="#fff"
-    />
-    <g
-      class="btn-arrow"
-      transform="translate(10.694 -16.6)"
-      stroke-linecap="round"
-    >
-      <rect
-        x="5.342"
-        y="165.71"
-        width="16.05"
-        height="15.491"
-        ry="0"
+    <g class="mid-rect">
+      <path
+        transform="scale(1.0151 .99101) rotate(-45 -554.08 741.69)"
+        d="M271.8 693.82a8.96 8.96 0 018.979 8.979v39.53a8.96 8.96 0 01-8.979 8.979h-48.767a8.96 8.96 0 01-8.979-8.979z"
+        fill="#8173ca"
+        fill-opacity=".396"
+        filter="url(#left-curtain-desktop-c)"
+      />
+      <path
+        d="M-4.599 122.078a8.96 8.96 0 0112.698 0l27.953 27.952a8.96 8.96 0 010 12.699L1.568 197.213a8.96 8.96 0 01-12.699 0z"
         fill="#fff"
       />
       <g
-        transform="translate(-1.607 -24.513) scale(1.1421)"
-        fill="none"
-        stroke="#000"
-        stroke-width=".953"
+        class="btn-arrow"
+        transform="translate(10.694 -16.6)"
+        stroke-linecap="round"
       >
-        <circle transform="scale(-1 1)" cx="-13.212" cy="173.43" r="5.599" />
-        <path d="M12.996 176.12l-2.59-2.683" />
-        <path d="M12.996 170.75l-2.59 2.683" />
-        <path d="M16.019 173.37l-3.728.065" />
+        <rect
+          x="5.342"
+          y="165.71"
+          width="16.05"
+          height="15.491"
+          ry="0"
+          fill="#fff"
+        />
+        <g
+          transform="translate(-1.607 -24.513) scale(1.1421)"
+          fill="none"
+          stroke="#000"
+          stroke-width=".953"
+        >
+          <circle transform="scale(-1 1)" cx="-13.212" cy="173.43" r="5.599" />
+          <path d="M12.996 176.12l-2.59-2.683" />
+          <path d="M12.996 170.75l-2.59 2.683" />
+          <path d="M16.019 173.37l-3.728.065" />
+        </g>
       </g>
     </g>
   </svg>

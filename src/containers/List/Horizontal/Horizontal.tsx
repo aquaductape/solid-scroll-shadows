@@ -11,6 +11,8 @@ import ScrollShadows, {
   ScrollShadowsComponent,
 } from "../../../components/ScrollShadows/ScrollShadows";
 import { scopeModuleClasses } from "../../../../utils/moduleClasses";
+import InputRange from "../../../components/Inputs/InputRange";
+import InputColor from "../../../components/Inputs/InputColor";
 
 const classM = scopeModuleClasses(c);
 
@@ -20,7 +22,7 @@ const Horizontal = () => {
     direction: "horizontal",
     shadows: {
       class: "",
-      color: "magenta",
+      color: "#1F15BE",
       size: 50,
       invert: null,
       insetSize: undefined,
@@ -31,15 +33,19 @@ const Horizontal = () => {
   });
 
   return (
-    <div>
+    <div style="padding: 50px">
       <div class="section">
-        <button onClick={() => setShadowState("rtl", !shadowState.rtl)}>
+        <button
+          class="btn"
+          onClick={() => setShadowState("rtl", !shadowState.rtl)}
+        >
           {!shadowState.rtl ? "RTL" : "LTR"}
         </button>
       </div>
 
       <div class="section">
         <button
+          class="btn"
           onClick={() => {
             const value =
               shadowState.direction === "horizontal"
@@ -107,79 +113,58 @@ const Horizontal = () => {
       </div>
 
       <div class="section">
-        <input
-          type="color"
-          value="#ff00ff"
-          onInput={(e) => {
-            setShadowState("shadows", "color", e.currentTarget.value);
+        <InputColor
+          value={shadowState.shadows!.color!}
+          onInput={(color) => {
+            setShadowState("shadows", "color", color);
           }}
         />
       </div>
 
       <div class="section">
-        <label htmlFor="">
-          Size
-          <input
-            type="range"
-            min="5"
-            max="100"
-            value={shadowState.shadows!.size}
-            onInput={(e) => {
-              setShadowState("shadows", "size", Number(e.currentTarget.value));
-            }}
-          />
-        </label>
+        <InputRange
+          text="Size"
+          min="5"
+          max="100"
+          value={shadowState.shadows!.size!}
+          onInput={({ valueAsNumber }) => {
+            setShadowState("shadows", "size", valueAsNumber);
+          }}
+        />
       </div>
       <div class="section">
-        <label htmlFor="">
-          Border Radius
-          <input
-            type="range"
-            min="0"
-            max="30"
-            value={shadowState.shadows!.borderRadius || 0}
-            onInput={(e) => {
-              let value: number | undefined = Number(e.currentTarget.value);
-              if (value === 0) value = undefined;
-              setShadowState("shadows", "borderRadius", value);
-            }}
-          />
-        </label>
+        <InputRange
+          text="Border Radius"
+          min="0"
+          max="30"
+          value={shadowState.shadows!.borderRadius! || 0}
+          onInput={({ valueAsNumber }) => {
+            setShadowState("shadows", "borderRadius", valueAsNumber);
+          }}
+        />
       </div>
       <div class="section">
-        <label htmlFor="">
-          inset size
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={shadowState.shadows!.insetSize || 0}
-            onInput={(e) => {
-              let value: number | undefined = Number(e.currentTarget.value);
-              if (value === 0) value = undefined;
-
-              setShadowState("shadows", "insetSize", value);
-            }}
-          />
-        </label>
+        <InputRange
+          text="inset size"
+          min="0"
+          max="100"
+          value={shadowState.shadows!.insetSize || 0}
+          onInput={({ valueAsNumber }) => {
+            setShadowState("shadows", "insetSize", valueAsNumber);
+          }}
+        />
       </div>
 
       <div class="section">
-        <label htmlFor="">
-          endsDetectionMargin
-          <input
-            type="range"
-            min="0"
-            max="150"
-            value={shadowState.endsDetectionMargin}
-            onInput={(e) => {
-              setShadowState(
-                "endsDetectionMargin",
-                Number(e.currentTarget.value)
-              );
-            }}
-          />
-        </label>
+        <InputRange
+          text="endsDetectionMargin"
+          min="0"
+          max="150"
+          value={shadowState.endsDetectionMargin || 0}
+          onInput={({ valueAsNumber }) => {
+            setShadowState("endsDetectionMargin", valueAsNumber);
+          }}
+        />
       </div>
 
       <ScrollShadows

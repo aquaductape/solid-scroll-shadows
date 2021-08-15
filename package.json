@@ -17,7 +17,7 @@
     "vite-plugin-solid": "^2.0.0"
   },
   "dependencies": {
-    "@r-tek/colr_pickr": "^2.0.0",
+    "@simonwep/pickr": "^1.8.1",
     "solid-js": "^1.0.2"
   }
 }

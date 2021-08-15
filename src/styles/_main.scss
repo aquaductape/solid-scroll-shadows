@@ -86,3 +86,30 @@ button {
 li {
   list-style-type: none;
 }
+
+button {
+  cursor: pointer;
+}
+
+.btn {
+  appearance: none;
+  background: #fff;
+  font-weight: bold;
+  font-size: 18px;
+  border: 1px solid #bcb7d4;
+  border-radius: 9px;
+  padding: 12px 28px;
+  box-shadow: 0 6px 0 0 #bcb7d4, 0 7px 4px 0px #121438, 0 8px 0 6px #eae9ef;
+}
+
+.section {
+  display: inline-block;
+  margin: 20px;
+  width: 250px;
+  font-size: 18px;
+}
+
+.pcr-app {
+  box-shadow: 0 10px 1.5em 0 rgb(0, 0, 0, 0.5);
+  border-radius: 10px;
+}

@@ -17,16 +17,15 @@ const Hero = () => {
         endsDetectionMargin="10vw"
         shadows={{
           size: "auto",
-          animation: "opacity",
-          transition: "500ms",
+          animateClassNames: "curtains",
           element: {
             first: (
-              <div style="position: relative; height: 100%; width: 500px; display: flex; justify-content: flex-start; align-items: center;">
+              <div style="position: relative; height: 100%; width: 500px; display: flex; justify-content: flex-start; align-items: center; transform: scale(1.2); transform-origin: left;">
                 <DesktopLeftCurtain />
               </div>
             ),
             last: (
-              <div style="position: relative; height: 100%; width: 500px; display: flex; justify-content: flex-end; align-items: center;">
+              <div style="position: relative; height: 100%; width: 500px; display: flex; justify-content: flex-end; align-items: center; transform: scale(1.2); transform-origin: right;">
                 <DesktopRightCurtain />
               </div>
             ),

@@ -197,9 +197,7 @@ const ScrollShadows: Component<
 > = (props) => {
   const { direction, onEndsHit, hover, scrollableElementId } = props;
 
-  const [local, shadows] = splitProps(props.shadows ? props.shadows : {}, [
-    "element",
-  ]);
+  const [local] = splitProps(props.shadows ? props.shadows : {}, ["element"]);
 
   const sentinelShadowState = new Map<HTMLElement, HTMLElement>();
   let shadowFirstEl!: HTMLElement;
@@ -225,7 +223,7 @@ const ScrollShadows: Component<
   const [shadowsActive, setShadowsActive] = createSignal<ShadowsActive>({
     first: false,
     last: false,
-    transition: shadows.transitionInit || false,
+    transition: props.shadows!.transitionInit || false,
   });
 
   const children = props.children as HTMLElement & ElementTemplate;
@@ -280,7 +278,13 @@ const ScrollShadows: Component<
       const shadowEl = shadowContainerEl.firstElementChild as HTMLElement;
       const shadowAnimationEl = shadowEl.firstElementChild as HTMLElement;
       const isFirstShadow = shadowContainerEl === shadowFirstEl;
-      const firstLast = target.dataset.scrollShadowsSentinel!;
+      const firstLast = target.dataset.scrollShadowsSentinel! as
+        | "first"
+        | "last";
+
+      const shadows = props.shadows!;
+      const { onAnimate, animateClassNames } = shadows;
+      const customShadows = local.element;
 
       if (onEndsHit) {
         const result = onEndsHit({
@@ -303,29 +307,46 @@ const ScrollShadows: Component<
         setShadowsActive((prev) => ({
           ...prev,
           first: !isVisible,
-          transition: shadows.transitionInit || !init,
+          transition: props.shadows!.transitionInit || !init,
         }));
       } else {
         setShadowsActive((prev) => ({
           ...prev,
           last: !isVisible,
-          transition: shadows.transitionInit || !init,
+          transition: props.shadows!.transitionInit || !init,
         }));
       }
 
-      // console.log(props.direction, shadows);
+      const _shadowsActive = shadowsActive();
 
       const { opacity, transform, transition } = getShadowStyle({
         child: firstLast as "first",
         direction: props.direction,
         rtl: props.rtl,
-        shadowsActive: shadowsActive(),
-        shadows: shadows,
+        shadowsActive: _shadowsActive,
+        shadows: props.shadows!,
       });
 
-      if (shadows.animateClassNames) return;
+      if (customShadows) {
+        // @ts-ignore
+        const element = customShadows as ShadowElements;
+        if (onAnimate) {
+          onAnimate({
+            target: element instanceof Element ? element : element[firstLast],
+            active: _shadowsActive[firstLast],
+            isFirst: firstLast === "first",
+            init: _shadowsActive.transition,
+          });
+        }
 
-      // console.log({ shadowContainerEl, shadowEl });
+        shadowAnimationEl.style.transition = transition;
+        shadowAnimationEl.style.opacity = opacity;
+        shadowAnimationEl.style.transform = transform;
+        return;
+      }
+
+      if (animateClassNames) return;
+
       shadowAnimationEl.style.transition = transition;
       shadowAnimationEl.style.opacity = opacity;
       shadowAnimationEl.style.transform = transform;
@@ -381,7 +402,7 @@ const ScrollShadows: Component<
       <Shadow
         child="first"
         direction={props.direction}
-        shadows={shadows}
+        shadows={props.shadows!}
         customShadows={local.element}
         rtl={props.rtl}
         shadowsActive={shadowsActive}
@@ -390,7 +411,7 @@ const ScrollShadows: Component<
       <Shadow
         child="last"
         direction={props.direction}
-        shadows={shadows}
+        shadows={props.shadows!}
         customShadows={local.element}
         shadowsActive={shadowsActive}
         rtl={props.rtl}
@@ -565,14 +586,16 @@ const Shadow: Component<
       shadows.colorToRGBA
     );
 
+    console.log(props.shadows.color);
+
     const {
       backgroundImage,
       backgroundPosition,
       backgroundRepeat,
       backgroundSize,
-      transition,
-      opacity,
-      transform,
+      // transition,
+      // opacity,
+      // transform,
       invertScale,
       boxShadow,
       borderRadius,
@@ -588,24 +611,6 @@ const Shadow: Component<
       color,
     });
 
-    if (customShadows) {
-      // @ts-ignore
-      const element = customShadows as ShadowElements;
-      // if (shadows.onAnimate) {
-      //   shadows.onAnimate({
-      //     target: element instanceof Element ? element : element[child],
-      //     active,
-      //     isFirst: child === "first",
-      //     init: transitionActive,
-      //   });
-      // }
-
-      animatedEl.style.transition = transition;
-      animatedEl.style.opacity = opacity;
-      animatedEl.style.transform = transform;
-      return;
-    }
-
     shadowEl.style.backgroundImage = backgroundImage;
     shadowEl.style.backgroundPosition = backgroundPosition;
     shadowEl.style.backgroundRepeat = backgroundRepeat;
@@ -613,22 +618,6 @@ const Shadow: Component<
     shadowEl.style.boxShadow = boxShadow;
     shadowEl.style.borderRadius = borderRadius;
     shadowEl.style.transform = invertScale;
-
-    // if (shadows.onAnimate) {
-    //   shadows.onAnimate({
-    //     target: shadowEl,
-    //     active,
-    //     isFirst: child === "first",
-    //     init: !transitionActive,
-    //   });
-    //   return;
-    // }
-
-    if (shadows.animateClassNames) return;
-
-    animatedEl.style.transition = transition;
-    animatedEl.style.opacity = opacity;
-    animatedEl.style.transform = transform;
   });
 
   const dataAttribute = isFirst ? { first: "" } : { last: "" };

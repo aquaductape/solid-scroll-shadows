@@ -1,14 +1,14 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@r-tek/colr_pickr': ^2.0.0
+  '@simonwep/pickr': ^1.8.1
   sass: ^1.35.2
   solid-js: ^1.0.2
   vite: ^2.4.2
   vite-plugin-solid: ^2.0.0
 
 dependencies:
-  '@r-tek/colr_pickr': 2.0.0
+  '@simonwep/pickr': 1.8.1
   solid-js: 1.0.4
 
 devDependencies:
@@ -308,8 +308,11 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@r-tek/colr_pickr/2.0.0:
-    resolution: {integrity: sha512-J4T5Q4EvEA0snR9VXY08WuqhI5v4LYfI5WoUiqgg/gFbu2vzeqjNAZTo8owI68MsaFzLHvL3p3MRUXONYuUUTg==}
+  /@simonwep/pickr/1.8.1:
+    resolution: {integrity: sha512-3Q5+INWW0Py+/E9hgy0cyD0/0w/yGZbkxam6RzFVFDOEHgAqMVJR+x9znx58/ky/ZIvE/78FbH189yIC9h111A==}
+    dependencies:
+      core-js: 3.16.1
+      nanopop: 2.1.0
     dev: false
 
   /ansi-styles/3.2.1:
@@ -416,6 +419,11 @@ packages:
     dependencies:
       safe-buffer: 5.1.2
     dev: true
+
+  /core-js/3.16.1:
+    resolution: {integrity: sha512-AAkP8i35EbefU+JddyWi12AWE9f2N/qr/pwnDtWz4nyUIBGMJPX99ANFFRSw6FefM374lDujdtLDyhN2A/btHw==}
+    requiresBuild: true
+    dev: false
 
   /debug/4.3.2:
     resolution: {integrity: sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==}
@@ -568,6 +576,10 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /nanopop/2.1.0:
+    resolution: {integrity: sha512-jGTwpFRexSH+fxappnGQtN9dspgE2ipa1aOjtR24igG0pv6JCxImIAmrLRHX+zUF5+1wtsFVbKyfP51kIGAVNw==}
+    dev: false
 
   /node-releases/1.1.73:
     resolution: {integrity: sha512-uW7fodD6pyW2FZNZnp/Z3hvWKeEW1Y8R1+1CnErE8cXFXzl5blBOoVB41CvMer6P6Q0S5FXDwcHgFd1Wj0U9zg==}
