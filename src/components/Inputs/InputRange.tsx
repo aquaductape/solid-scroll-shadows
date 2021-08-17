@@ -56,7 +56,7 @@ const Range: Component<{
   const trackButtRightStyle = `${sharedTrackStyle} ${sharedTrackButtStyle} right: 1px; background: linear-gradient(to left, #bbb, transparent)`;
 
   return (
-    <div style="display: inline-flex; padding: 9px 5px; overflow: hidden; width: 100%;">
+    <div style="display: inline-flex; padding: 10px 10px; overflow: hidden; width: 100%;">
       <div style="display: inline-flex; position: relative; width: 100%;">
         <div class="track" style={mainTrackStyle}></div>
         <input

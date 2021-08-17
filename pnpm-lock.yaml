@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@simonwep/pickr': ^1.8.1
+  focus-visible: ^5.2.0
   sass: ^1.35.2
   solid-js: ^1.0.2
   vite: ^2.4.2
@@ -9,6 +10,7 @@ specifiers:
 
 dependencies:
   '@simonwep/pickr': 1.8.1
+  focus-visible: 5.2.0
   solid-js: 1.1.0
 
 devDependencies:
@@ -463,6 +465,10 @@ packages:
     dependencies:
       to-regex-range: 5.0.1
     dev: true
+
+  /focus-visible/5.2.0:
+    resolution: {integrity: sha512-Rwix9pBtC1Nuy5wysTmKy+UjbDJpIfg8eHjw0rjZ1mX4GNLz1Bmd16uDpI3Gk1i70Fgcs8Csg2lPm8HULFg9DQ==}
+    dev: false
 
   /fsevents/2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}

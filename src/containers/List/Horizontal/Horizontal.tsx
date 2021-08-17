@@ -13,6 +13,7 @@ import ScrollShadows, {
 import { scopeModuleClasses } from "../../../../utils/moduleClasses";
 import InputRange from "../../../components/Inputs/InputRange";
 import InputColor from "../../../components/Inputs/InputColor";
+import InputSelect from "../../../components/Inputs/InputSelect";
 
 const classM = scopeModuleClasses(c);
 
@@ -59,57 +60,60 @@ const Horizontal = () => {
       </div>
 
       <div class="section">
-        <label>
-          Shadow shapes:
-          <select
-            onInput={(e) => {
-              setShadowState(
-                "shadows",
-                "shape",
-                e.currentTarget.value.toLowerCase() as "rectangle"
-              );
-            }}
-          >
-            <option>Rectangle</option>
-            <option>Concave</option>
-            <option>Convex</option>
-          </select>
-        </label>
+        <InputSelect
+          title="Shape"
+          list={[
+            {
+              content: "Rectangle",
+            },
+            { content: "Concave" },
+            { content: "Convex" },
+          ]}
+          onInput={(value) => {
+            setShadowState(
+              "shadows",
+              "shape",
+              value.toLowerCase() as "rectangle"
+            );
+          }}
+        />
       </div>
       <div class="section">
-        <label>
-          Invert shadow:
-          <select
-            onInput={(e) => {
-              let value: string | null = e.currentTarget.value.toLowerCase();
-              if (value === "none") {
-                value = null;
-              }
-              setShadowState("shadows", "invert", value as "first");
-            }}
-          >
-            <option>None</option>
-            <option>First</option>
-            <option>Last</option>
-          </select>
-        </label>
+        <InputSelect
+          title="Invert"
+          list={[
+            {
+              content: "None",
+            },
+            { content: "First" },
+            { content: "Last" },
+          ]}
+          onInput={(_value) => {
+            let value: string | null = _value.toLowerCase();
+            if (value === "none") {
+              value = null;
+            }
+            setShadowState("shadows", "invert", value as "first");
+          }}
+        />
       </div>
       <div class="section">
-        <label>
-          CSS class:
-          <select
-            onInput={(e) => {
-              let value: string = e.currentTarget.value;
-              if (value === "None") {
-                value = "";
-              }
-              setShadowState("shadows", "class", value);
-            }}
-          >
-            <option>None</option>
-            <option>foo</option>
-          </select>
-        </label>
+        <InputSelect
+          title="CSS class"
+          list={[
+            {
+              content: "None",
+            },
+            { content: "foo" },
+          ]}
+          onInput={(_value) => {
+            let value = _value.toLowerCase();
+            if (value === "none") {
+              value = "";
+            }
+            setShadowState("shadows", "class", value);
+          }}
+        />
       </div>
 
       <div class="section">

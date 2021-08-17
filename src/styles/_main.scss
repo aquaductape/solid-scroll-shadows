@@ -87,8 +87,20 @@ li {
   list-style-type: none;
 }
 
+input,
+button {
+  outline: none;
+  &[data-focus-visible-added] {
+    outline: 3px solid #000;
+    outline-offset: 4px;
+  }
+}
+
 button {
   cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  appearance: none;
 }
 
 .btn {
