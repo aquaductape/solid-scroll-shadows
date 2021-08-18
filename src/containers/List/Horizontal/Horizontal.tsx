@@ -3,7 +3,7 @@
 
 // import { ColorPicker } from "../../../lib/colr_pickr/index";
 import { list as _list } from "../list";
-import { For, createSignal, onMount } from "solid-js";
+import { For, createSignal, onMount, createUniqueId } from "solid-js";
 import { createStore } from "solid-js/store";
 import c from "../List.module.scss";
 import ScrollShadows, {
@@ -68,13 +68,19 @@ const Horizontal = () => {
             },
             { content: "Concave" },
             { content: "Convex" },
+            { content: "goldfish" },
+            { content: "Conny" },
+            { content: "Cobble" },
+            { content: "Call" },
+            { content: "gold" },
+            { content: "run" },
           ]}
           onInput={(value) => {
-            setShadowState(
-              "shadows",
-              "shape",
-              value.toLowerCase() as "rectangle"
-            );
+            // setShadowState(
+            //   "shadows",
+            //   "shape",
+            //   value.toLowerCase() as "rectangle"
+            // );
           }}
         />
       </div>
@@ -177,14 +183,6 @@ const Horizontal = () => {
           shadowState.direction === "vertical" && "vertical"
         )}
         direction={shadowState.direction}
-        // image: {
-        //   first: "radial-gradient(red, blue)",
-        //   last: "url(https://images.unsplash.com/photo-1613448921377-4d98656a2d57?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80) center/cover",
-        // },
-        // shadow={{
-        //   color: "magenta",
-        //   size: shadowState.shadow.size,
-        // }}
         shadows={{
           class: shadowState.shadows!.class,
           color: shadowState.shadows!.color,
@@ -192,21 +190,6 @@ const Horizontal = () => {
           shape: shadowState.shadows!.shape,
           borderRadius: shadowState.shadows!.borderRadius,
           insetSize: shadowState.shadows.insetSize,
-          //           onAnimate: ({ target, active, init, isFirst }) => {
-          //             if (isFirst) {
-          //               target.style.transform = active
-          //                 ? "scale(1) rotate(0deg)"
-          //                 : "scale(0) rotate(270deg)";
-          //             } else {
-          //               target.style.transform = active
-          //                 ? "scale(1) rotate(0deg)"
-          //                 : "scale(0) rotate(-270deg)";
-          //             }
-          //
-          //             if (!init) {
-          //               target.style.transition = "500ms";
-          //             }
-          //           },
           animation: "slide",
           invert: shadowState.shadows.invert,
         }}

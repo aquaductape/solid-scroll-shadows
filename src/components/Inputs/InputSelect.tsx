@@ -10,8 +10,10 @@ import {
 import { createStore } from "solid-js/store";
 import InputTheme from "./InputTheme";
 import c from "./InputSelect.module.scss";
-import { createFocusOut, FocusOut } from "../../hooks/createFocusOut";
+import { createFocusOut, Dismiss } from "../../hooks/createFocusOut";
 import { scopeModuleClasses } from "../../../utils/moduleClasses";
+import { debounce } from "lodash-es";
+
 const classM = scopeModuleClasses(c);
 // https://codepen.io/chriscoyier/pen/zYYZaGP
 
@@ -55,6 +57,26 @@ const InputSelect: Component<{
   const listId = "real-" + createUniqueId();
   let listEl!: HTMLUListElement;
   let fakeBtnEl!: HTMLButtonElement;
+  let searchWord = "";
+  let debouncedSearchWordActive = false;
+  let debouncedFirstCharActive = false;
+  let timeoutSearchWord = () =>
+    window.setTimeout(() => {
+      debouncedSearchWordActive = false;
+    }, 500);
+  let timeoutFirstChar = () =>
+    window.setTimeout(() => {
+      if (debouncedFirstCharActive) return;
+      searchWord = "";
+      // debouncedFirstCharActive = false;
+    }, 500);
+  // let debounceSearchWord = debounce(() => {
+  //   debouncedSearchWordActive = false;
+  //   searchWord = "";
+  //   console.log("release");
+  // }, 500);
+  let firstCharTimeoutId: number | null = null;
+  let searchWordTimeoutId: number | null = null;
 
   const [cpList, setCpList] = createStore<TList[]>(
     props.list.map((item, idx) => ({ ...item, index: idx }))
@@ -86,21 +108,6 @@ const InputSelect: Component<{
     const SPACE = "";
     const ESCAPE = "Escape";
 
-    if (
-      ![
-        ARROW_DOWN,
-        ARROW_UP,
-        ARROW_LEFT,
-        ARROW_RIGHT,
-        HOME,
-        ENTER,
-        END,
-        SPACE,
-        // ESCAPE,
-      ].includes(e.key)
-    )
-      return;
-
     if (e.key === ENTER) {
       if (toggle()) {
         btnEl.focus();
@@ -109,35 +116,108 @@ const InputSelect: Component<{
       return;
     }
 
-    e.preventDefault();
+    if (e.key.match(/\s/)) {
+      if (toggle()) {
+        e.preventDefault();
+      } else {
+        return;
+      }
+    }
 
-    if ([ARROW_LEFT, ARROW_RIGHT].includes(e.key) && toggle()) return;
+    if (
+      [ARROW_DOWN, ARROW_UP, ARROW_LEFT, ARROW_RIGHT, HOME, END].includes(e.key)
+    ) {
+      e.preventDefault();
+    }
 
+    const maxIndex = cpList.length - 1;
     const { idx } = selected();
     const prevIndex = idx;
-    const maxIndex = cpList.length - 1;
     let newIndex = idx;
 
-    switch (e.key) {
-      case ARROW_DOWN:
-        newIndex++;
-        break;
-      case ARROW_UP:
-        newIndex--;
-        break;
-      case ARROW_RIGHT:
-        newIndex++;
-        break;
-      case ARROW_LEFT:
-        newIndex--;
-        break;
-      case END:
-        newIndex = maxIndex;
-        break;
-        console.log({ btnId });
-      case HOME:
-        newIndex = 0;
-        break;
+    const navigate = () => {
+      if ([ARROW_LEFT, ARROW_RIGHT].includes(e.key) && toggle()) return;
+
+      switch (e.key) {
+        case ARROW_DOWN:
+          newIndex++;
+          break;
+        case ARROW_UP:
+          newIndex--;
+          break;
+        case ARROW_RIGHT:
+          newIndex++;
+          break;
+        case ARROW_LEFT:
+          newIndex--;
+          break;
+        case END:
+          newIndex = maxIndex;
+          break;
+        case HOME:
+          newIndex = 0;
+          break;
+      }
+    };
+
+    const searchByFirstChar = () => {
+      const key = e.key.toLowerCase();
+      const length = cpList.length;
+
+      if (
+        !debouncedSearchWordActive &&
+        (!searchWord || searchWord[0] === key)
+      ) {
+        searchWord = "";
+      } else {
+        debouncedSearchWordActive = true;
+        window.clearTimeout(searchWordTimeoutId!);
+        searchWordTimeoutId = timeoutSearchWord();
+      }
+
+      window.clearTimeout(firstCharTimeoutId!);
+      firstCharTimeoutId = timeoutFirstChar();
+
+      searchWord += key;
+      console.log({ searchWord });
+
+      const matchWord = (content: string) => {
+        content = content.toLowerCase();
+
+        const searchWordLength = searchWord.length;
+        if (searchWordLength <= 1) {
+          return content[0] === key;
+        }
+
+        for (let i = 0; i < searchWordLength; i++) {
+          if (content[i] !== searchWord[i].toLowerCase()) {
+            return false;
+          }
+        }
+        return true;
+      };
+      // start from prev
+      for (let i = prevIndex + 1; i < length; i++) {
+        const item = cpList[i];
+        if (matchWord(item.content)) {
+          newIndex = i;
+          return;
+        }
+      }
+      // wrap around, start from first then end with prev
+      for (let i = 0; i < prevIndex; i++) {
+        const item = cpList[i];
+        if (matchWord(item.content)) {
+          newIndex = i;
+          return;
+        }
+      }
+    };
+
+    if (e.key.length === 1 || debouncedSearchWordActive) {
+      searchByFirstChar();
+    } else {
+      navigate();
     }
 
     if (newIndex > maxIndex) newIndex = maxIndex;
@@ -147,8 +227,6 @@ const InputSelect: Component<{
       setCpList(prevIndex, "selected", false);
     }
     setCpList(newIndex, "selected", true);
-
-    // console.log(e.key);
   };
 
   const onClickListItem = (e: MouseEvent) => {
@@ -163,6 +241,7 @@ const InputSelect: Component<{
 
     setCpList(prevIndex, "selected", false);
     setCpList(newIndex, "selected", true);
+    setToggle(false);
   };
 
   createEffect(() => {
@@ -203,12 +282,12 @@ const InputSelect: Component<{
     <InputTheme
       title={<span id={titleId}>{props.title}</span>}
       input={
-        <FocusOut
+        <Dismiss
           class={c["container"]}
           toggle={toggle}
           setToggle={setToggle}
           setFocus={setFocus}
-          focusBtnOnOut={true}
+          delegateFocus={true}
         >
           <button
             id={btnId}
@@ -255,7 +334,7 @@ const InputSelect: Component<{
               }}
             </For>
           </ul>
-        </FocusOut>
+        </Dismiss>
       }
     />
   );

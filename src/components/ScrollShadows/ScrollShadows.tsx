@@ -125,6 +125,7 @@ export type ScrollShadowsComponent = _TScrollShadowsComponent & {
 };
 
 export interface _TScrollShadowsComponent {
+  id?: string;
   direction: "horizontal" | "vertical";
   /**
    * Default `false`
@@ -394,6 +395,7 @@ const ScrollShadows: Component<
 
   return (
     <div
+      id={props.id}
       class={props.class}
       classList={props.classList || {}}
       style={setContainerStyle()}

@@ -2,7 +2,9 @@ lockfileVersion: 5.3
 
 specifiers:
   '@simonwep/pickr': ^1.8.1
+  '@types/lodash-es': ^4.17.4
   focus-visible: ^5.2.0
+  lodash-es: ^4.17.21
   sass: ^1.35.2
   solid-js: ^1.0.2
   vite: ^2.4.2
@@ -10,7 +12,9 @@ specifiers:
 
 dependencies:
   '@simonwep/pickr': 1.8.1
+  '@types/lodash-es': 4.17.4
   focus-visible: 5.2.0
+  lodash-es: 4.17.21
   solid-js: 1.1.0
 
 devDependencies:
@@ -317,6 +321,16 @@ packages:
       nanopop: 2.1.0
     dev: false
 
+  /@types/lodash-es/4.17.4:
+    resolution: {integrity: sha512-BBz79DCJbD2CVYZH67MBeHZRX++HF+5p8Mo5MzjZi64Wac39S3diedJYHZtScbRVf4DjZyN6LzA0SB0zy+HSSQ==}
+    dependencies:
+      '@types/lodash': 4.14.172
+    dev: false
+
+  /@types/lodash/4.14.172:
+    resolution: {integrity: sha512-/BHF5HAx3em7/KkzVKm3LrsD6HZAXuXO1AJZQ3cRRBZj4oHZDviWPYu0aEplAqDFNHZPW6d3G7KN+ONcCCC7pw==}
+    dev: false
+
   /ansi-styles/3.2.1:
     resolution: {integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==}
     engines: {node: '>=4'}
@@ -561,6 +575,10 @@ packages:
     dependencies:
       minimist: 1.2.5
     dev: true
+
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
 
   /merge-anything/4.0.1:
     resolution: {integrity: sha512-KsFjBYc3juDoHz9Vzd5fte1nqp06H8SQ+yU344Dd0ZunwSgtltnC0kgKds8cbocJGyViLcBQuHkitbDXAqW+LQ==}
