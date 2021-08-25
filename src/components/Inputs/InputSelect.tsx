@@ -92,11 +92,6 @@ const InputSelect: Component<{
     return { item, idx };
   });
 
-  const onClickFakeBtn = () => {
-    btnEl.focus();
-    setToggle(false);
-  };
-
   const onKeyDown = (e: KeyboardEvent) => {
     const ARROW_DOWN = "ArrowDown";
     const ARROW_UP = "ArrowUp";
@@ -257,7 +252,6 @@ const InputSelect: Component<{
 
     listEl.setAttribute("aria-activedescendant", itemEl.id);
     btnEl.textContent = selectedItem.content;
-    fakeBtnEl.textContent = selectedItem.content;
   });
 
   createEffect(() => {
@@ -291,19 +285,11 @@ const InputSelect: Component<{
         >
           <button
             id={btnId}
-            class={c["btn"]}
+            class={classM("btn", toggle() && "active")}
             aria-labelledby={`${titleId} ${btnId}`}
             aria-haspopup="listbox"
             aria-expanded={toggle()}
             ref={btnEl}
-          ></button>
-          <button
-            class={classM("btn-fake", toggle() && "active")}
-            aria-labelledby={`${titleId} ${btnId}`}
-            aria-haspopup="listbox"
-            aria-expanded={toggle()}
-            onClick={onClickFakeBtn}
-            ref={fakeBtnEl}
           ></button>
           <ul
             class={classM("list", toggle() && "active")}
@@ -312,27 +298,29 @@ const InputSelect: Component<{
             tabindex="-1"
             ref={listEl}
           >
-            <For each={cpList}>
-              {(item) => {
-                const id = createUniqueId();
-                return (
-                  <li
-                    id={id}
-                    class={classM(
-                      "list-item",
-                      item.content === selected().item.content && "active"
-                    )}
-                    role="option"
-                    data-value={item.value || item.content}
-                    aria-selected={item.selected}
-                    aria-disabled={item.disabled}
-                    onClick={onClickListItem}
-                  >
-                    {item.content}
-                  </li>
-                );
-              }}
-            </For>
+            <div class={classM("list-inner")}>
+              <For each={cpList}>
+                {(item) => {
+                  const id = createUniqueId();
+                  return (
+                    <li
+                      id={id}
+                      class={classM(
+                        "list-item",
+                        item.content === selected().item.content && "active"
+                      )}
+                      role="option"
+                      data-value={item.value || item.content}
+                      aria-selected={item.selected}
+                      aria-disabled={item.disabled}
+                      onClick={onClickListItem}
+                    >
+                      {item.content}
+                    </li>
+                  );
+                }}
+              </For>
+            </div>
           </ul>
         </Dismiss>
       }
