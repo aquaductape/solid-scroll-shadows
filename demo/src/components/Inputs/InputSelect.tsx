@@ -1,5 +1,4 @@
 import {
-  on,
   For,
   Component,
   createEffect,
@@ -10,9 +9,8 @@ import {
 import { createStore } from "solid-js/store";
 import InputTheme from "./InputTheme";
 import c from "./InputSelect.module.scss";
-import { createFocusOut, Dismiss } from "../../hooks/createFocusOut";
+import { Dismiss } from "../../hooks/createFocusOut";
 import { scopeModuleClasses } from "../../../utils/moduleClasses";
-import { debounce } from "lodash-es";
 
 const classM = scopeModuleClasses(c);
 // https://codepen.io/chriscoyier/pen/zYYZaGP

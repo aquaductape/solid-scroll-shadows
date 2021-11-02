@@ -14,7 +14,7 @@ import {
   splitProps,
 } from "solid-js";
 import { isServer } from "solid-js/web";
-import { editHTMLStr } from "./ssr";
+import { editHTMLStr } from "./ssr/index";
 //  animatedEl > shadowEl: inversion
 
 type ShadowElements = HTMLElement | { first: HTMLElement; last: HTMLElement };
@@ -565,14 +565,15 @@ const Shadow: Component<
   };
 
   const getAnimatedElClassNames = () => {
-    // const { shadowsActive, shadows } = props;
-    // const { animateClassNames } = shadows;
-    // if (!animateClassNames) return "";
-    //     const state = active ? "-show" : "-hide";
-    //     const init = !transitionActive ? `${animateClassNames}-init` : "";
-    //
-    //     return `${animateClassNames} ${init} ${animateClassNames}${state}`;
-    return "";
+    const { shadows } = props;
+    const { animateClassNames } = shadows;
+    console.log(animateClassNames);
+    if (!animateClassNames) return "";
+    // const state = active ? "-show" : "-hide";
+    // const init = !transitionActive ? `${animateClassNames}-init` : "";
+
+    // return `${animateClassNames} ${init} ${animateClassNames}${state}`;
+    return `${animateClassNames}`;
   };
 
   createEffect(() => {
@@ -624,69 +625,75 @@ const Shadow: Component<
 
   const dataAttribute = isFirst ? { first: "" } : { last: "" };
 
+  {
+    /* extra wrapper fixes animation bug in Safari, where animation is shown outside of parent despite having overflow:hidden
+  
+  https://stackoverflow.com/a/42297882/8234457
+  */
+  }
   return (
     <div ref={props.ref} style={getShadowContainerStyle()}>
-      {/* extra wrapper fixes animation bug in Safari, where animation is shown outside of parent despite having overflow:hidden
-      
-      https://stackoverflow.com/a/42297882/8234457
-      */}
       <div style="width: 100%; height: 100%; overflow: hidden;">
-        <Show
-          when={props.customShadows}
-          fallback={
-            <div
-              // class={getAnimatedElClassNames()}
-              style="width: 100%; height: 100%;"
-              ref={animatedEl}
-              {...dataAttribute}
-            >
-              <div
-                // class={props.shadows && props.shadows.class}
-                ref={shadowEl}
-                style={"width: 100%; height: 100%;"}
-                {...dataAttribute}
-              ></div>
-            </div>
-          }
-        >
-          <div
-            class={getAnimatedElClassNames()}
-            style="width: 100%; height: 100%;"
-            ref={animatedEl}
-            {...dataAttribute}
-          >
-            <div
-              {...dataAttribute}
-              class={props.shadows && props.shadows.class}
-              style={getCustomShadowStyle()}
-            >
-              <Switch>
-                <Match
-                  when={
-                    props.customShadows instanceof Element ||
-                    // @ts-ignore
-                    props.customShadows.t
-                  }
-                >
-                  {/* @ts-ignore */}
-                  {props.customShadows}
-                </Match>
-                <Match when={child === "first"}>
-                  {/* @ts-ignore */}
-                  {props.customShadows.first}
-                </Match>
-                <Match when={child === "last"}>
-                  {/* @ts-ignore */}
-                  {props.customShadows.last}
-                </Match>
-              </Switch>
-            </div>
-          </div>
+        <Show when={true}>
+          <p></p>
         </Show>
       </div>
     </div>
   );
 };
+
+// <Show
+//   when={props.customShadows}
+//   fallback={
+//     <div
+//       // class={getAnimatedElClassNames()}
+//       style="width: 100%; height: 100%;"
+//       ref={animatedEl}
+//       {...dataAttribute}
+//     >
+//       <div
+//         class={props.shadows && props.shadows.class}
+//         ref={shadowEl}
+//         style={"width: 100%; height: 100%;"}
+//         {...dataAttribute}
+//       ></div>
+//     </div>
+//   }
+// >
+//   <div
+//     class={getAnimatedElClassNames()}
+//     style="width: 100%; height: 100%;"
+//     ref={animatedEl}
+//     {...dataAttribute}
+//   >
+//     <div
+//       {...dataAttribute}
+//       class={props.shadows && props.shadows.class}
+//       style={getCustomShadowStyle()}
+//     >
+//       <Switch>
+//         <Match
+//           when={
+//             props.customShadows instanceof Element ||
+//             // @ts-ignore
+//             props.customShadows.t
+//           }
+//         >
+//           {/* @ts-ignore */}
+//           {props.customShadows}
+//         </Match>
+//         <Match when={child === "first"}>
+//           {/* @ts-ignore */}
+//           {props.customShadows.first}
+//         </Match>
+//         <Match when={child === "last"}>
+//           {/* @ts-ignore */}
+//           {props.customShadows.last}
+//         </Match>
+//       </Switch>
+//     </div>
+//   </div>
+// </Show>
 
 const getShadowStyle = (
   props: Omit<_TScrollShadowsComponent, "shadows"> & {
@@ -981,13 +988,6 @@ const colorArrToCSS = ({
   return `rgba(${colorArr.join(", ")})`;
 };
 
-const userAgent = (pattern: RegExp) => {
-  // @ts-ignore
-  if (typeof window !== "undefined" && window.navigator) {
-    return !!(/*@__PURE__*/ navigator.userAgent.match(pattern));
-  }
-};
-
 const parseVal = (value?: string | number, unit: "px" | "ms" = "px") => {
   if (typeof value === "number") return `${value}${unit}`;
 
@@ -1006,7 +1006,26 @@ const parseValToNum = (value?: string | number) => {
   return value || 0;
 };
 
-export const isSafari =
-  userAgent(/safari/i) && !userAgent(/chrome/i) && !userAgent(/android/i);
-
 export default ScrollShadows;
+
+/**
+ * Bidirectional shadow feature for bidrectional scrollcontainer in the future:
+ *
+ * 1. Use inset box-shadow
+ * Pro: easy setup, simple css transition will suffice
+ * Cons: potential animated performance jank especially duration is long
+ *
+ * four shadows, all overlap
+ * box-shadow: 0px 15px 15px -15px #050f5d7a inset, -15px 0px 15px -15px #050f5d7a inset, 0px -15px 15px -15px #050f5d7a inset, 15px 0px 15px -15px #050f5d7a inset;
+ *
+ *
+ * 2. Use drop-shadow
+ * Pro: better animation performance
+ * Cons: Medium setup
+ *
+ * Similar to horizontal/vertical setup except has 4 shadow elements and 4 corner* elements, must have non-tranparent color, will be translated 2x back while dropshadow offset will be 2x forwards. 4 shadow elements will have a parent which will have dropshadow value, that way shadows will not stack. Additional config to add "shadow corner" effect which will be 4 element additional corner* elements.
+ *
+ * corner element will be diagonally translated in when two neighboring shadows are active.
+ *
+ * *corner: is a concave shaped element done via radial-gradient background https://stackoverflow.com/a/16388187/8234457
+ */

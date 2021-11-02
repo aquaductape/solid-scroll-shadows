@@ -9,7 +9,7 @@ import c from "../List.module.scss";
 import ScrollShadows, {
   ScrollShadowsShadow,
   ScrollShadowsComponent,
-} from "../../../components/ScrollShadows/ScrollShadows";
+} from "../../../../../package/index";
 import { scopeModuleClasses } from "../../../../utils/moduleClasses";
 import InputRange from "../../../components/Inputs/InputRange";
 import InputColor from "../../../components/Inputs/InputColor";
@@ -18,7 +18,7 @@ import InputSelect from "../../../components/Inputs/InputSelect";
 const classM = scopeModuleClasses(c);
 
 const Horizontal = () => {
-  const [list] = createStore([..._list]);
+  const [list] = createStore([..._list, ..._list, ..._list]);
   const [shadowState, setShadowState] = createStore<ScrollShadowsComponent>({
     direction: "horizontal",
     shadows: {
@@ -68,19 +68,13 @@ const Horizontal = () => {
             },
             { content: "Concave" },
             { content: "Convex" },
-            { content: "goldfish" },
-            { content: "Conny" },
-            { content: "Cobble" },
-            { content: "Call" },
-            { content: "gold" },
-            { content: "run" },
           ]}
           onInput={(value) => {
-            // setShadowState(
-            //   "shadows",
-            //   "shape",
-            //   value.toLowerCase() as "rectangle"
-            // );
+            setShadowState(
+              "shadows",
+              "shape",
+              value.toLowerCase() as "rectangle"
+            );
           }}
         />
       </div>
@@ -191,6 +185,7 @@ const Horizontal = () => {
           borderRadius: shadowState.shadows!.borderRadius,
           insetSize: shadowState.shadows.insetSize,
           animation: "slide",
+          transition: "1s",
           invert: shadowState.shadows.invert,
         }}
         endsDetectionMargin={shadowState.endsDetectionMargin}

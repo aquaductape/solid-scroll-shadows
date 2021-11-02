@@ -4,7 +4,7 @@ import base62 from "./utils/base64";
 
 let id = 0;
 
-const common = ({ add = {} }: { add?: UserConfigExport } = {}) => {
+const shared = ({ add = {} }: { add?: UserConfigExport } = {}) => {
   return defineConfig({
     base: "/solid-scroll-shadows/",
     plugins: [solidPlugin()],
@@ -16,7 +16,7 @@ const common = ({ add = {} }: { add?: UserConfigExport } = {}) => {
   });
 };
 
-const serveConfig: UserConfigExport = {
+const buildConfig: UserConfigExport = {
   css: {
     modules: {
       generateScopedName: () => {
@@ -27,9 +27,11 @@ const serveConfig: UserConfigExport = {
     },
   },
 };
+
 export default ({ command }: { command: "serve" | "build" }) => {
   if (command === "build") {
-    return common({ add: serveConfig });
+    return shared();
+    // return shared({ add: buildConfig });
   }
-  return common();
+  return shared();
 };

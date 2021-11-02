@@ -2,7 +2,7 @@ import { list as _list } from "../list";
 import { For } from "solid-js";
 import { createStore } from "solid-js/store";
 import c from "../List.module.scss";
-import ScrollShadows from "../../../components/ScrollShadows/ScrollShadows";
+import ScrollShadows from "../../../../../package/index";
 import { scopeModuleClasses } from "../../../../utils/moduleClasses";
 
 const classM = scopeModuleClasses(c);

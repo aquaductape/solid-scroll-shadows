@@ -13,7 +13,7 @@ const Header = () => {
           <IconLogo />
         </div>
         <nav class={c["nav"]}>
-          {/* <ScrollShadows
+          <ScrollShadows
             class={c["scroll"]}
             direction="horizontal"
             shadows={{
@@ -27,7 +27,7 @@ const Header = () => {
               <li class={c["link"]}>Examples</li>
               <li class={c["link"]}>Docs</li>
             </ul>
-          </ScrollShadows> */}
+          </ScrollShadows>
           <a
             target="_blank"
             rel="no-referrer"

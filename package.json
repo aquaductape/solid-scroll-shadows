@@ -1,26 +1,50 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
-  "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "deploy": "./deploy.sh",
-    "quick": "git add . && git commit -m 'update' && pnpm deploy"
-  },
+  "name": "solid-scroll-shadows",
+  "version": "1.0.0",
+  "description": "Use shadows to indicate there's more content to scroll",
   "license": "MIT",
-  "devDependencies": {
-    "sass": "^1.35.2",
-    "vite": "^2.4.2",
-    "vite-plugin-solid": "^2.0.0"
+  "author": "aquaductape",
+  "keywords": [
+    "scroll",
+    "shadows",
+    "scroll shadows",
+    "solidjs",
+    "solidjs scroll shadows",
+    "solid-js",
+    "solid-js scroll shadows"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/esm/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "solid": "./dist/source/index.jsx",
+      "default": "./dist/esm/index.js"
+    }
   },
-  "dependencies": {
-    "@simonwep/pickr": "^1.8.1",
-    "@types/lodash-es": "^4.17.4",
-    "focus-visible": "^5.2.0",
-    "lodash-es": "^4.17.21",
-    "solid-js": "^1.0.2"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aquaductape/solid-scroll-shadows.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aquaductape/solid-scroll-shadows/issues"
+  },
+  "homepage": "https://github.com/aquaductape/solid-scroll-shadows#readme",
+  "peerDependencies": {
+    "solid-js": "1"
+  },
+  "devDependencies": {
+    "@release-it/keep-a-changelog": "^2.3.0",
+    "release-it": "^14.10.0",
+    "rollup": "^2.28.2",
+    "rollup-preset-solid": "^0.3.0",
+    "solid-js": "^1.2.1"
   }
 }

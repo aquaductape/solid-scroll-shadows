@@ -1,0 +1,27 @@
+{
+  "name": "vite-template-solid",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "deploy": "./deploy.sh",
+    "quick": "git add . && git commit -m 'update' && pnpm deploy"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "^1.35.2",
+    "vite": "^2.4.2",
+    "vite-plugin-solid": "^2.0.0"
+  },
+  "dependencies": {
+    "@simonwep/pickr": "^1.8.1",
+    "@types/lodash-es": "^4.17.4",
+    "focus-visible": "^5.2.0",
+    "lodash-es": "^4.17.21",
+    "solid-dismiss": "^1.0.1",
+    "solid-js": "^1.2.1"
+  }
+}
