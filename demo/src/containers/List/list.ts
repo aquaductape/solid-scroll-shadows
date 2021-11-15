@@ -1,34 +1,34 @@
 const arr = [
   {
-    text: "hello",
+    text: "Home",
     count: 0,
   },
   {
-    text: "world",
+    text: "Docs",
     count: 0,
   },
   {
-    text: "post",
+    text: "Get Started",
     count: 0,
   },
   {
-    text: "malone",
+    text: "Examples",
     count: 0,
   },
   {
-    text: "aubrey",
+    text: "Tutorials",
     count: 0,
   },
   {
-    text: "plaza",
+    text: "Blog",
     count: 0,
   },
   {
-    text: "bird",
+    text: "Contact",
     count: 0,
   },
   {
-    text: "sky",
+    text: "Join",
     count: 0,
   },
 ];

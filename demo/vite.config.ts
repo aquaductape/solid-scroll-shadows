@@ -12,6 +12,12 @@ const shared = ({ add = {} }: { add?: UserConfigExport } = {}) => {
       target: "esnext",
       polyfillDynamicImport: false,
     },
+    server: {
+      fs: {
+        // Allow serving files from one level up to the project root
+        allow: [".."],
+      },
+    },
     ...add,
   });
 };

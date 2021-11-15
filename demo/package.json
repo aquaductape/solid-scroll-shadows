@@ -21,7 +21,7 @@
     "@types/lodash-es": "^4.17.4",
     "focus-visible": "^5.2.0",
     "lodash-es": "^4.17.21",
-    "solid-dismiss": "^1.0.1",
+    "solid-dismiss": "^1.0.19",
     "solid-js": "^1.2.1"
   }
 }

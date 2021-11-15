@@ -6,7 +6,7 @@ specifiers:
   focus-visible: ^5.2.0
   lodash-es: ^4.17.21
   sass: ^1.35.2
-  solid-dismiss: ^1.0.1
+  solid-dismiss: ^1.0.19
   solid-js: ^1.2.1
   vite: ^2.4.2
   vite-plugin-solid: ^2.0.0
@@ -16,7 +16,7 @@ dependencies:
   '@types/lodash-es': 4.17.4
   focus-visible: 5.2.0
   lodash-es: 4.17.21
-  solid-dismiss: 1.0.1_solid-js@1.2.1
+  solid-dismiss: 1.0.19_solid-js@1.2.1
   solid-js: 1.2.1
 
 devDependencies:
@@ -673,8 +673,8 @@ packages:
     hasBin: true
     dev: true
 
-  /solid-dismiss/1.0.1_solid-js@1.2.1:
-    resolution: {integrity: sha512-3KuaCuoIXQGBj3kyK867pbmzgeUXRbk1M2jAEP1QCkuxdJhZ1zYVuyu+kZeo0Bdk4jr1Bx2ewis7msXtR1QSDg==}
+  /solid-dismiss/1.0.19_solid-js@1.2.1:
+    resolution: {integrity: sha512-LMB2enettzgu2qaMy7FU4lnbjoIQmcYJMrqZz5M5/3uekXECfey3oYmJe0iKh0WtVZ19P6ZUSEZ6q0ukkO+L9w==}
     peerDependencies:
       solid-js: '1'
     dependencies:
