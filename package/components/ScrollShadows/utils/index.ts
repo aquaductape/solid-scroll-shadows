@@ -11,7 +11,7 @@ export const fitShadowSizeToItem = ({
   direction,
 }: {
   isSentinelVisible: boolean;
-  type: "first" | "last";
+  type: "before" | "after";
   el: HTMLElement;
   rootBounds: DOMRect;
   rootEl: HTMLElement;

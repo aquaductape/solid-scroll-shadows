@@ -29,16 +29,16 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
   const children = props.children as HTMLElement & ElementTemplate;
   const sentinelShadowState = new Map<
     HTMLElement,
-    { type: "first" | "last"; el: HTMLElement }
+    { type: "before" | "after"; el: HTMLElement }
   >();
   let scrollableContainer = children as HTMLElement;
   let shadowFirstEl!: HTMLElement;
   let shadowLastEl!: HTMLElement;
   let sentinelFirstEl = (
-    (<Sentinel child="first" direction={direction} rtl={props.rtl} />) as any
+    (<Sentinel child="before" direction={direction} rtl={props.rtl} />) as any
   )() as HTMLElement & ElementTemplate;
   let sentinelLastEl = (
-    (<Sentinel child="last" direction={direction} rtl={props.rtl} />) as any
+    (<Sentinel child="after" direction={direction} rtl={props.rtl} />) as any
   )() as HTMLElement & ElementTemplate;
   let init = true;
   let initResetSize = false;
@@ -112,11 +112,11 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
       });
     }
     sentinelShadowState.set(sentinelFirstEl, {
-      type: "first",
+      type: "before",
       el: shadowFirstEl,
     });
     sentinelShadowState.set(sentinelLastEl, {
-      type: "last",
+      type: "after",
       el: shadowLastEl,
     });
 
@@ -134,7 +134,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
       style={props.style}
     >
       <Shadow
-        child="first"
+        child="before"
         direction={direction}
         shadowSize={shadowSize}
         smartShadowSize={smartShadowSize}
@@ -142,7 +142,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
         ref={shadowFirstEl}
       />
       <Shadow
-        child="last"
+        child="after"
         direction={direction}
         shadowSize={shadowSize}
         smartShadowSize={smartShadowSize}

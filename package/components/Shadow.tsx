@@ -1,13 +1,12 @@
 import { Component } from "solid-js";
-import { TScrollShadows } from "../types";
+import { ShadowChildComponent, TScrollShadows } from "../types";
 
 const Shadow: Component<
   { ref: any } & Pick<
     TScrollShadows,
     "direction" | "rtl" | "shadowSize" | "smartShadowSize"
-  > & {
-      child: "first" | "last";
-    }
+  > &
+    ShadowChildComponent
 > = (props) => {
   const { child, direction, ref, shadowSize, smartShadowSize } = props;
   const refCb = (el: HTMLElement) => {
@@ -15,13 +14,20 @@ const Shadow: Component<
     divEl = el;
   };
   let divEl!: HTMLElement;
+  let init = true;
+
+  const getOpacity = () => {
+    if (init && child === "before") return "0";
+    init = false;
+    return divEl ? divEl.style.opacity : "";
+  };
 
   const containerStyle = () =>
     setShadowStyle({
       child,
       direction,
       rtl: props.rtl,
-      opacity: divEl ? divEl.style.opacity : "",
+      opacity: getOpacity(),
       shadowSize,
     });
 
@@ -45,10 +51,15 @@ const Shadow: Component<
       props.direction === "column" ? "Y" : "X"
     }(0);`;
 
+  const mirroredStyle = () => {
+    const scale = direction === "column" ? "scaleY" : "scaleX";
+    return child === "before" ? `transform: ${scale}(-1);` : "";
+  };
+
   return (
     <div
       aria-hidden="true"
-      style={`position: absolute; z-index: 1; pointer-events: none; ${
+      style={`position: absolute; z-index: 1; pointer-events: none; ${mirroredStyle()} ${
         !smartShadowSize ? "overflow: hidden" : ""
       } transition: 300ms opacity;${containerStyle()}`}
       ref={refCb}
@@ -67,13 +78,13 @@ export const setShadowPosition = ({
   rtl,
   child,
   direction,
-}: Pick<TScrollShadows, "rtl" | "direction"> & { child: "first" | "last" }) => {
+}: Pick<TScrollShadows, "rtl" | "direction"> & ShadowChildComponent) => {
   const left = rtl ? "right" : "left";
   const right = rtl ? "left" : "right";
-  let transformOrigin = child === "first" ? left : right;
+  let transformOrigin = child === "before" ? left : right;
 
   if (direction === "column") {
-    transformOrigin = child === "first" ? "top" : "bottom";
+    transformOrigin = child === "before" ? "top" : "bottom";
   }
 
   return `position: absolute; transition: 300ms transform; height: 100%; width: 100%; transform-origin: ${transformOrigin};`;
@@ -86,12 +97,13 @@ export const setShadowStyle = ({
   rtl,
   opacity,
   transform,
-}: Pick<TScrollShadows, "direction" | "rtl" | "shadowSize"> & {
-  child: "first" | "last";
-  gradientStart?: string;
-  transform?: string;
-} & { opacity: string }) => {
-  const isFirst = child === "first";
+}: Pick<TScrollShadows, "direction" | "rtl" | "shadowSize"> &
+  ShadowChildComponent & {
+    gradientStart?: string;
+    transform?: string;
+    opacity: string;
+  }) => {
+  const isFirst = child === "before";
   const left = rtl ? "right" : "left";
   const right = rtl ? "left" : "right";
   const width = `width: ${direction === "row" ? shadowSize : "100%"}`;
@@ -112,23 +124,25 @@ const setShadowGradient = ({
   direction,
   rtl,
   gradientStart,
-}: Pick<TScrollShadows, "direction" | "rtl"> & {
-  child: "first" | "last";
-  gradientStart?: string;
-}) => {
-  const isFirst = child === "first";
+}: Pick<TScrollShadows, "direction" | "rtl"> &
+  ShadowChildComponent & {
+    gradientStart?: string;
+  }) => {
+  const isFirst = child === "before";
   const left = rtl ? "right" : "left";
   const right = rtl ? "left" : "right";
 
   if (direction === "row") {
     return `background-image: linear-gradient(to ${
-      isFirst ? right : left
+      left
+      // isFirst ? right : left
     }, rgba(255, 255, 255, 1) ${
       gradientStart || "5%"
     }, rgba(255, 255, 255, 0));`;
   }
   return `background-image: linear-gradient(to ${
-    isFirst ? "bottom" : "top"
+    "top"
+    // isFirst ? "bottom" : "top"
   }, rgba(255, 255, 255, 1) ${gradientStart || "5%"}, rgba(255, 255, 255, 0));`;
 };
 

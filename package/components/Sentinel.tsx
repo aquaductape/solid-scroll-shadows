@@ -1,13 +1,13 @@
 import { Component } from "solid-js";
-import { TScrollShadows } from "../types";
+import { ShadowChildComponent, TScrollShadows } from "../types";
 
 const Sentinel: Component<
-  Pick<TScrollShadows, "direction" | "rtl"> & { child: "first" | "last" }
+  Pick<TScrollShadows, "direction" | "rtl"> & ShadowChildComponent
 > = (props) => {
   const { direction, child } = props;
 
   const setPosition = () => {
-    const isFirst = child === "first";
+    const isFirst = child === "before";
     const rtl = props.rtl;
     const marginLeft = rtl ? "margin-right" : "margin-left";
     const left = rtl ? "right" : "left";
