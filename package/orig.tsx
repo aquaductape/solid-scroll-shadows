@@ -634,66 +634,62 @@ const Shadow: Component<
   return (
     <div ref={props.ref} style={getShadowContainerStyle()}>
       <div style="width: 100%; height: 100%; overflow: hidden;">
-        <Show when={true}>
-          <p></p>
+        <Show
+          when={props.customShadows}
+          fallback={
+            <div
+              // class={getAnimatedElClassNames()}
+              style="width: 100%; height: 100%;"
+              ref={animatedEl}
+              {...dataAttribute}
+            >
+              <div
+                class={props.shadows && props.shadows.class}
+                ref={shadowEl}
+                style={"width: 100%; height: 100%;"}
+                {...dataAttribute}
+              ></div>
+            </div>
+          }
+        >
+          <div
+            class={getAnimatedElClassNames()}
+            style="width: 100%; height: 100%;"
+            ref={animatedEl}
+            {...dataAttribute}
+          >
+            <div
+              {...dataAttribute}
+              class={props.shadows && props.shadows.class}
+              style={getCustomShadowStyle()}
+            >
+              <Switch>
+                <Match
+                  when={
+                    props.customShadows instanceof Element ||
+                    // @ts-ignore
+                    props.customShadows.t
+                  }
+                >
+                  {/* @ts-ignore */}
+                  {props.customShadows}
+                </Match>
+                <Match when={child === "first"}>
+                  {/* @ts-ignore */}
+                  {props.customShadows.first}
+                </Match>
+                <Match when={child === "last"}>
+                  {/* @ts-ignore */}
+                  {props.customShadows.last}
+                </Match>
+              </Switch>
+            </div>
+          </div>
         </Show>
       </div>
     </div>
   );
 };
-
-// <Show
-//   when={props.customShadows}
-//   fallback={
-//     <div
-//       // class={getAnimatedElClassNames()}
-//       style="width: 100%; height: 100%;"
-//       ref={animatedEl}
-//       {...dataAttribute}
-//     >
-//       <div
-//         class={props.shadows && props.shadows.class}
-//         ref={shadowEl}
-//         style={"width: 100%; height: 100%;"}
-//         {...dataAttribute}
-//       ></div>
-//     </div>
-//   }
-// >
-//   <div
-//     class={getAnimatedElClassNames()}
-//     style="width: 100%; height: 100%;"
-//     ref={animatedEl}
-//     {...dataAttribute}
-//   >
-//     <div
-//       {...dataAttribute}
-//       class={props.shadows && props.shadows.class}
-//       style={getCustomShadowStyle()}
-//     >
-//       <Switch>
-//         <Match
-//           when={
-//             props.customShadows instanceof Element ||
-//             // @ts-ignore
-//             props.customShadows.t
-//           }
-//         >
-//           {/* @ts-ignore */}
-//           {props.customShadows}
-//         </Match>
-//         <Match when={child === "first"}>
-//           {/* @ts-ignore */}
-//           {props.customShadows.first}
-//         </Match>
-//         <Match when={child === "last"}>
-//           {/* @ts-ignore */}
-//           {props.customShadows.last}
-//         </Match>
-//       </Switch>
-//     </div>
-//   </div>
-// </Show>
 
 const getShadowStyle = (
   props: Omit<_TScrollShadowsComponent, "shadows"> & {
