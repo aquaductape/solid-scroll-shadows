@@ -16,15 +16,28 @@ export type TScrollShadows = {
         before: string;
         after: string;
       };
+  shadowsBlockClass?:
+    | string
+    | {
+        before: string;
+        after: string;
+      };
   direction: "row" | "column";
   /**
+   *
+   * aligns shadow to partially cover the last viewable item in the scrollable list
+   *
    * @defaultValue `false`
    */
-  smartShadowSize?:
+  justifyShadowsToContentItems?:
     | boolean
     | {
-        once: boolean;
-        behavior: { type: "persist" | "in-view"; timeout: number };
+        once?: boolean;
+        persist?: boolean;
+        /**
+         * @defaultValue `0.5`: center
+         */
+        align?: number;
       };
   rtl?: boolean;
   shadowSize: string;

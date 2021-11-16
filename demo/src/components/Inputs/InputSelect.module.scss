@@ -80,10 +80,12 @@
   border-radius: 10px;
   text-align: left;
   width: 100%;
+  font-size: 16px;
+  padding: 5px 10px;
 
   &.active {
-    box-shadow: 0 3px 0px 2px rgb(10 10 60 / 17%), 0 25px 0 -2px #fff,
-      0 25px 0 0px #bcb7d4;
+    box-shadow: 0 3px 0px 2px rgb(10 10 60 / 17%), 0 20px 0 -2px #fff,
+      0 20px 0 0px #bcb7d4;
   }
 }
 

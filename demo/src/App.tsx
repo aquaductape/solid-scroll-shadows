@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import "./App.scss";
 // import Canvas from "./containers/Editor/Canvas/Canvas";
 //
 // import Header from "./containers/Header/Header";

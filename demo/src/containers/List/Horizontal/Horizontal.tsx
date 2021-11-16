@@ -6,7 +6,7 @@ import { list as _list } from "../list";
 import { For, createSignal, onMount, createUniqueId } from "solid-js";
 import { createStore } from "solid-js/store";
 import c from "../List.module.scss";
-import ScrollShadows from "../../../../../package/index";
+import ScrollShadows from "../../../../../package/components/ScrollShadows/ScrollShadows";
 import { scopeModuleClasses } from "../../../../utils/moduleClasses";
 import InputRange from "../../../components/Inputs/InputRange";
 import InputColor from "../../../components/Inputs/InputColor";
@@ -65,19 +65,32 @@ const Horizontal = () => {
       <ScrollShadows
         class={classM("container", "vertical")}
         direction="column"
-        smartShadowSize
+        shadowsClass="shadow-vertical"
+        shadowsBlockClass="shadow-block-vertical"
         // rtl
+        justifyShadowsToContentItems
         shadowSize="50px"
       >
         <div class={classM("scroll-container", "vertical") + " no-scrollbar"}>
           <For each={list}>
             {(item, idx) => {
-              return (
-                <div class={c["item"]}>
-                  {/* {idx() + 1}:  */}
-                  {item.text}
-                </div>
-              );
+              return <div class={c["item"]}>{item.text}</div>;
+            }}
+          </For>
+        </div>
+      </ScrollShadows>
+      <ScrollShadows
+        class={classM("container")}
+        direction="row"
+        justifyShadowsToContentItems
+        shadowsClass="shadow"
+        shadowsBlockClass="shadow-block"
+        shadowSize="50px"
+      >
+        <div class={classM("scroll-container") + " no-scrollbar"}>
+          <For each={list}>
+            {(item, idx) => {
+              return <div class={c["item"]}>{item.text}</div>;
             }}
           </For>
         </div>

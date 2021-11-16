@@ -14,10 +14,16 @@ const InputTheme: Component<{ title: JSX.Element; input: JSX.Element }> = ({
         style="position: relative; display: flex; flex-direction: column; align-items: center; background: #fff;
     border-radius: 18px;"
       >
-        <div style=" text-align: center; width: 100%; padding: 10px 0;">
+        <div
+          // style="font-size: 15px; font-weight: bold; text-align: center; width: 100%; padding: 5px 0;"
+          style="font-size: 15px; font-weight: bold; text-align: center; width: 100%; padding: 5px 0px ; padding-bottom: 2px ; "
+        >
           {title}
         </div>
-        <div style="width: 100%; height: 10px; background: linear-gradient(to bottom, #1e297c81 -12px, transparent)"></div>
+        <div
+          // style="width: 100%; height: 8px; margin-bottom: -3px; background: linear-gradient(to bottom, #1e297c81 -12px, transparent)"
+          style=" width: calc(100% - 20px); height: 2px; margin-top: 0px; margin-bottom: -3px; border-radius: 5px; background: #dad7e8;"
+        ></div>
         <div style="width: calc(100% - 20px); display: flex; padding: 10px 0px;">
           {input}
         </div>

@@ -4,11 +4,24 @@ import { ShadowChildComponent, TScrollShadows } from "../types";
 const Shadow: Component<
   { ref: any } & Pick<
     TScrollShadows,
-    "direction" | "rtl" | "shadowSize" | "smartShadowSize"
+    | "direction"
+    | "rtl"
+    | "shadowSize"
+    | "justifyShadowsToContentItems"
+    | "shadowsClass"
+    | "shadowsBlockClass"
   > &
     ShadowChildComponent
 > = (props) => {
-  const { child, direction, ref, shadowSize, smartShadowSize } = props;
+  const {
+    child,
+    direction,
+    ref,
+    shadowSize,
+    justifyShadowsToContentItems,
+    shadowsClass,
+    shadowsBlockClass,
+  } = props;
   const refCb = (el: HTMLElement) => {
     ref(el);
     divEl = el;
@@ -47,6 +60,7 @@ const Shadow: Component<
       child,
       rtl: props.rtl,
       direction: props.direction,
+      isSolid: true,
     })}; background: #fff; transform: scale${
       props.direction === "column" ? "Y" : "X"
     }(0);`;
@@ -60,14 +74,16 @@ const Shadow: Component<
     <div
       aria-hidden="true"
       style={`position: absolute; z-index: 1; pointer-events: none; ${mirroredStyle()} ${
-        !smartShadowSize ? "overflow: hidden" : ""
+        !justifyShadowsToContentItems ? "overflow: hidden" : ""
       } transition: 300ms opacity;${containerStyle()}`}
       ref={refCb}
     >
       {/* static shadow */}
-      <div style={shadowStyle()}></div>
+      <div style={shadowStyle()}>
+        <div class={shadowsClass}></div>
+      </div>
       {/* smart shadow */}
-      <div style={solidStyle()}></div>
+      <div class={shadowsBlockClass} style={solidStyle()}></div>
     </div>
   );
 };
@@ -78,16 +94,21 @@ export const setShadowPosition = ({
   rtl,
   child,
   direction,
-}: Pick<TScrollShadows, "rtl" | "direction"> & ShadowChildComponent) => {
+  isSolid,
+}: Pick<TScrollShadows, "rtl" | "direction"> &
+  ShadowChildComponent & { isSolid?: boolean }) => {
   const left = rtl ? "right" : "left";
   const right = rtl ? "left" : "right";
-  let transformOrigin = child === "before" ? left : right;
+  let transformOrigin = child === "before" ? right : right;
 
   if (direction === "column") {
     transformOrigin = child === "before" ? "top" : "bottom";
   }
+  const width = `width: ${direction === "row" ? "" : "100%"}`;
+  const height = `height: ${direction === "row" ? "100%" : ""}`;
+  const position = isSolid ? "position: absolute;" : "";
 
-  return `position: absolute; transition: 300ms transform; height: 100%; width: 100%; transform-origin: ${transformOrigin};`;
+  return `${position} top: 0; transition: 0ms transform; ${width}; ${height}; transform-origin: ${transformOrigin};`;
 };
 
 export const setShadowStyle = ({
@@ -106,8 +127,8 @@ export const setShadowStyle = ({
   const isFirst = child === "before";
   const left = rtl ? "right" : "left";
   const right = rtl ? "left" : "right";
-  const width = `width: ${direction === "row" ? shadowSize : "100%"}`;
-  const height = `height: ${direction === "row" ? "100%" : shadowSize}`;
+  const width = `width: ${direction === "row" ? "" : "100%"}`;
+  const height = `height: ${direction === "row" ? "100%" : ""}`;
 
   if (direction === "row") {
     return `top: 0; ${

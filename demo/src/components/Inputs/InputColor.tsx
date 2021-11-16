@@ -57,7 +57,7 @@ const InputColor: Component<{
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     width: 100%;
-    height: 45px;
+    height: 30px;
  background: ${value}`}
           ref={btnEl}
         />

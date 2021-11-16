@@ -3,19 +3,21 @@ import { round } from "../../../utils";
 
 export const fitShadowSizeToItem = ({
   el,
-  type,
   isSentinelVisible,
   rootBounds,
   rootEl,
   rtl,
   direction,
+  justifyShadowsToContentItems,
 }: {
   isSentinelVisible: boolean;
-  type: "before" | "after";
   el: HTMLElement;
   rootBounds: DOMRect;
   rootEl: HTMLElement;
-} & Pick<TScrollShadows, "direction" | "rtl">) => {
+} & Pick<
+  TScrollShadows,
+  "direction" | "rtl" | "justifyShadowsToContentItems"
+>) => {
   if (isSentinelVisible) return;
 
   const [shadowEl, solidEl] = el.children as any as NodeListOf<HTMLElement>;
@@ -27,6 +29,14 @@ export const fitShadowSizeToItem = ({
   let rootPosition = "left";
   const rootSize = rootBounds[rootDimension];
   const boundary = rtl ? 0 : rootSize;
+  const defaultAlign = 0.3;
+  const align =
+    typeof justifyShadowsToContentItems === "object"
+      ? justifyShadowsToContentItems.align ?? defaultAlign
+      : defaultAlign;
+
+  console.log({ align });
+
   if (isColumn) {
     rootPosition = "top";
     childPosition = "top";
@@ -91,8 +101,8 @@ export const fitShadowSizeToItem = ({
   const { position, size } = hideChild.bcr;
   const halfWidth =
     rtl && !isColumn
-      ? position! - size! - rootX + size! / 3
-      : rootSize - (position! - rootX + size!) + size! / 3;
+      ? position! - size! - rootX + size! * align
+      : rootSize - (position! - rootX + size!) + size! * align;
   console.log(halfWidth);
   if (halfWidth < 0) return;
 
@@ -105,9 +115,13 @@ export const fitShadowSizeToItem = ({
   solidEl.style.transform = `${scale}(${round(halfWidth / shadowSize, 3)})`;
 };
 
-export const scrollHorizontally = (e: WheelEvent) => {
+export const scrollHorizontally = (isScrollable: boolean, e: WheelEvent) => {
+  if (!isScrollable) return;
+
+  e.preventDefault();
+
   const target = e.currentTarget as HTMLElement;
-  target.scrollLeft += e.deltaY;
+  target.scrollLeft += e.deltaX + e.deltaY;
 };
 
 export const runAnimationCb = ({
