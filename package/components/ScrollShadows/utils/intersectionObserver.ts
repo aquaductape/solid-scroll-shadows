@@ -1,4 +1,5 @@
 import { LocalState } from "../../../types";
+import { animateShadow } from "./animate";
 import {
   resetJustifyShadow,
   runJustifyShadowsToContentItems,
@@ -38,7 +39,8 @@ const runEntry = (state: LocalState, entry: IntersectionObserverEntry) => {
     props.direction === "row"
       ? ![...sentinelShadowMap].every(([_, { visible }]) => visible === true)
       : false;
-  shadowEl!.style.opacity = isVisible ? "0" : "1";
+
+  animateShadow(state, shadowEl, !isVisible);
 };
 
 export const observeSentinels = (

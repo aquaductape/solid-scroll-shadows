@@ -1,5 +1,9 @@
-import { Component } from "solid-js";
-import { ShadowChildComponent, TScrollShadows } from "../types";
+import { Component, Show } from "solid-js";
+import {
+  ShadowChildComponent,
+  ShadowClassName,
+  TScrollShadows,
+} from "../types";
 
 const Shadow: Component<
   { ref: any } & Pick<
@@ -9,6 +13,8 @@ const Shadow: Component<
     | "justifyShadowsToContentItems"
     | "shadowsClass"
     | "shadowsBlockClass"
+    | "shadowsElement"
+    | "animation"
   > &
     ShadowChildComponent
 > = (props) => {
@@ -17,8 +23,8 @@ const Shadow: Component<
     direction,
     ref,
     justifyShadowsToContentItems,
-    shadowsClass,
-    shadowsBlockClass,
+    animation,
+    shadowsElement,
   } = props;
   const refCb = (el: HTMLElement) => {
     ref(el);
@@ -28,6 +34,8 @@ const Shadow: Component<
   let init = true;
 
   const getOpacity = () => {
+    if (animation) return "";
+
     if (init && child === "before") return "0";
     init = false;
     return divEl ? divEl.style.opacity : "";
@@ -46,10 +54,6 @@ const Shadow: Component<
       child,
       rtl: props.rtl,
       direction: props.direction,
-    })}${setShadowGradient({
-      child,
-      direction,
-      rtl: props.rtl,
     })}`;
 
   const solidStyle = () =>
@@ -58,34 +62,56 @@ const Shadow: Component<
       rtl: props.rtl,
       direction: props.direction,
       isSolid: true,
-    })}; background: #fff; transform: scale${
-      props.direction === "column" ? "Y" : "X"
-    }(0);`;
+    })}; transform: scale${props.direction === "column" ? "Y" : "X"}(0);`;
 
   const mirroredStyle = () => {
+    if (shadowsElement) return "";
+
     const scale = direction === "column" ? "scaleY" : "scaleX";
     return child === "before" ? `transform: ${scale}(-1);` : "";
   };
 
+  const getClass = (className?: ShadowClassName) => {
+    if (!className) return "";
+    if (typeof className === "object") {
+      return child === "after" ? className.after : className.before;
+    }
+
+    return className;
+  };
+
   return (
     <div
-      aria-hidden="true"
       style={`position: absolute; z-index: 1; pointer-events: none; ${mirroredStyle()} ${
-        !justifyShadowsToContentItems ? "overflow: hidden" : ""
-      } transition: 300ms opacity;${containerStyle()}`}
+        !justifyShadowsToContentItems ? "overflow: hidden;" : ""
+      } ${!animation ? "transition: 400ms opacity;" : ""} ${containerStyle()}`}
       ref={refCb}
     >
-      {/* static shadow */}
-      <div style={shadowStyle()}>
-        <div class={shadowsClass}></div>
-      </div>
-      {/* smart shadow */}
-      <div class={shadowsBlockClass} style={solidStyle()}></div>
+      <Show
+        when={props.shadowsElement}
+        fallback={
+          <>
+            {/* static shadow */}
+            <div style={shadowStyle()}>
+              <div
+                aria-hidden="true"
+                class={getClass(props.shadowsClass)}
+              ></div>
+            </div>
+            {/* smart shadow */}
+            <div
+              aria-hidden="true"
+              class={getClass(props.shadowsBlockClass)}
+              style={solidStyle()}
+            ></div>
+          </>
+        }
+      >
+        {props.shadowsElement![child]}
+      </Show>
     </div>
   );
 };
-
-// rtl is right
 
 export const setShadowPosition = ({
   rtl,
@@ -134,33 +160,6 @@ export const setShadowStyle = ({
   return `left: 0; ${
     isFirst ? "top" : "bottom"
   }: 0; ${width}; ${height}; opacity: ${opacity}; transform: ${transform};`;
-};
-
-const setShadowGradient = ({
-  child,
-  direction,
-  rtl,
-  gradientStart,
-}: Pick<TScrollShadows, "direction" | "rtl"> &
-  ShadowChildComponent & {
-    gradientStart?: string;
-  }) => {
-  const isFirst = child === "before";
-  const left = rtl ? "right" : "left";
-  const right = rtl ? "left" : "right";
-
-  if (direction === "row") {
-    return `background-image: linear-gradient(to ${
-      left
-      // isFirst ? right : left
-    }, rgba(255, 255, 255, 1) ${
-      gradientStart || "5%"
-    }, rgba(255, 255, 255, 0));`;
-  }
-  return `background-image: linear-gradient(to ${
-    "top"
-    // isFirst ? "bottom" : "top"
-  }, rgba(255, 255, 255, 1) ${gradientStart || "5%"}, rgba(255, 255, 255, 0));`;
 };
 
 export default Shadow;

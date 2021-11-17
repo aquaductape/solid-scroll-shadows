@@ -18,12 +18,14 @@ export const onScroll = (state: LocalState, e: Event) => {
     containerSize,
     shadowFirstEl,
     shadowLastEl,
+    endsMargin,
   } = state;
   const scrollPosition =
     props.direction === "column" ? "scrollTop" : "scrollLeft";
   const scrollContainer = e.currentTarget as HTMLElement;
   const containerScrollPosition = Math.abs(scrollContainer[scrollPosition]);
 
+  console.log("fire");
   if (!timeoutActive) {
     const scrollSize =
       props.direction === "column" ? "scrollHeight" : "scrollWidth";
@@ -34,9 +36,9 @@ export const onScroll = (state: LocalState, e: Event) => {
 
   // console.log(containerScrollPosition, containerScrollSize);
 
-  const isAtStart = containerScrollPosition <= 0;
+  const isAtStart = containerScrollPosition - endsMargin <= 0;
   const isAtEnd =
-    containerScrollPosition + containerSize >= containerScrollSize;
+    containerScrollPosition + containerSize >= containerScrollSize - endsMargin;
 
   shadowFirstEl.style.opacity = isAtStart ? "0" : "1";
   shadowLastEl.style.opacity = isAtEnd ? "0" : "1";

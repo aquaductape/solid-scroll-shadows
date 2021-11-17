@@ -20,22 +20,33 @@ import { onScroll, scrollHorizontally } from "./utils/scrolling";
 const ScrollShadows: Component<TScrollShadows> = (props) => {
   const {
     direction,
-    useScrollWheel = true,
-    useIntersectionObserver = true,
+    disableScrollWheel,
+    disableIntersectionObserver,
     justifyShadowsToContentItems,
+    endsMargin = 0,
   } = props;
   const children = props.children as HTMLElement & ElementTemplate;
   const sentinelShadowMap: SentinelShadowMap = new Map();
   let scrollableContainer = children as HTMLElement;
   // @ts-ignore
   let sentinelBeforeEl: HTMLElement & ElementTemplate =
-    useIntersectionObserver ? (
-      <Sentinel child="before" direction={direction} rtl={props.rtl} />
+    !disableIntersectionObserver ? (
+      <Sentinel
+        child="before"
+        direction={direction}
+        rtl={props.rtl}
+        endsMargin={endsMargin}
+      />
     ) : null;
   // @ts-ignore
   let sentinelAfterEl: HTMLElement & ElementTemplate =
-    useIntersectionObserver ? (
-      <Sentinel child="after" direction={direction} rtl={props.rtl} />
+    !disableIntersectionObserver ? (
+      <Sentinel
+        child="after"
+        direction={direction}
+        rtl={props.rtl}
+        endsMargin={endsMargin}
+      />
     ) : null;
 
   if (typeof sentinelBeforeEl === "function") {
@@ -57,7 +68,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     children.t = result;
   } else {
     scrollableContainer.style.position = "relative";
-    if (useIntersectionObserver) {
+    if (!disableIntersectionObserver) {
       scrollableContainer.appendChild(sentinelBeforeEl);
       scrollableContainer.appendChild(sentinelAfterEl);
     }
@@ -75,6 +86,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     sentinelShadowMap,
     shadowFirstEl: null as any,
     shadowLastEl: null as any,
+    endsMargin,
     props,
   };
 
@@ -87,7 +99,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
   };
 
   const intersectionObserver: IntersectionObserver | null =
-    useIntersectionObserver
+    !disableIntersectionObserver
       ? new IntersectionObserver(
           (entries) => observeSentinels(state, entries),
           {
@@ -100,7 +112,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
   );
 
   onMount(() => {
-    if (useScrollWheel) {
+    if (!disableScrollWheel) {
       scrollableContainer.addEventListener("wheel", _scrollHorizontally);
     }
 
@@ -154,6 +166,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
         child="before"
         direction={direction}
         justifyShadowsToContentItems={justifyShadowsToContentItems}
+        animation={props.animation}
         rtl={props.rtl}
         ref={state.shadowFirstEl}
       />
@@ -163,6 +176,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
         child="after"
         direction={direction}
         justifyShadowsToContentItems={justifyShadowsToContentItems}
+        animation={props.animation}
         rtl={props.rtl}
         ref={state.shadowLastEl}
       />

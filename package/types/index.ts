@@ -1,5 +1,12 @@
 import { JSX } from "solid-js";
 
+export type ShadowClassName =
+  | string
+  | {
+      before: string;
+      after: string;
+    };
+
 export type TScrollShadows = {
   id?: string;
   style?: string | JSX.CSSProperties;
@@ -22,6 +29,15 @@ export type TScrollShadows = {
         before: string;
         after: string;
       };
+  /**
+   * applies classes when shadow is entering or exiting
+   *
+   * @defaultValue classes are not added, shadow is toggled by opacity with 400ms transition
+   */
+  animation?: {
+    enterClass: string;
+    exitClass: string;
+  };
   direction: "row" | "column";
   /**
    *
@@ -32,28 +48,38 @@ export type TScrollShadows = {
   justifyShadowsToContentItems?:
     | boolean
     | {
-        once?: boolean;
-        persist?: boolean;
         /**
-         * @defaultValue `0.5`: center
+         * Choose a value from 0 - 1. For example 0.5 will cover 50% of content item
+         *
+         * @defaultValue `0.3`
          */
         align?: number;
       };
   rtl?: boolean;
+  shadowsElement?: {
+    before: JSX.Element;
+    after: JSX.Element;
+  };
   /**
-   * Enables horizontal scroll without holding Ctrl key
+   * Add margins when shadow should appear
    *
-   * @defaultValue `true`
+   * @defaultValue `0`
    */
-  useScrollWheel?: boolean;
+  endsMargin?: number;
   /**
-   * Enables end detection by using intersection observer, that observes sentinels that neighbors scrollable items.
+   * Disable horizontal scroll without holding Ctrl key
    *
-   * Setting it to `false` will use scroll event to detect ends. Is needed if you are going to use virtual scroll/windowing since the sentinels elements will mostlikely be removed thus shadows won't be triggered.
-   *
-   * @defaultValue `true`
+   * @defaultValue `false`
    */
-  useIntersectionObserver?: boolean;
+  disableScrollWheel?: boolean;
+  /**
+   * Disables usage of intersection observer that detects ends of scroll container
+   *
+   * Setting it to `true` will use scroll event to detect ends. Is needed if you are going to use virtual scroll/windowing since the sentinels elements will most likely be removed thus shadows won't be triggered.
+   *
+   * @defaultValue `false`
+   */
+  disableIntersectionObserver?: boolean;
 };
 export type LocalState = {
   init: boolean;
@@ -67,6 +93,7 @@ export type LocalState = {
   sentinelShadowMap: SentinelShadowMap;
   shadowFirstEl: HTMLElement;
   shadowLastEl: HTMLElement;
+  endsMargin: number;
   props: TScrollShadows;
 };
 

@@ -18,7 +18,7 @@ export const runJustifyShadowsToContentItems = ({
   TScrollShadows,
   "direction" | "rtl" | "justifyShadowsToContentItems"
 >) => {
-  if (isSentinelVisible) return;
+  if (isSentinelVisible || !justifyShadowsToContentItems) return;
 
   const [shadowEl, solidEl] = el.children as any as NodeListOf<HTMLElement>;
   const children = rootEl.children;
@@ -119,17 +119,19 @@ export const runJustifyShadowsToContentItems = ({
 
 export const resetJustifyShadow = (state: LocalState) => {
   const { init, initResetSize, sentinelShadowMap, props } = state;
+  const { justifyShadowsToContentItems } = props;
 
-  if (!init && !initResetSize) {
-    sentinelShadowMap.forEach(({ el }) => {
-      const [shadowEl, solidEl] = el.children as any as NodeListOf<HTMLElement>;
-      shadowEl.style.transform = "";
-      shadowEl.style.transition = "500ms transform";
-      solidEl.style.transform = `scale${
-        props.direction === "column" ? "Y" : "X"
-      }(0)`;
-      solidEl.style.transition = "500ms transform";
-    });
-    state.initResetSize = true;
-  }
+  if (!justifyShadowsToContentItems || init || initResetSize) return;
+
+  sentinelShadowMap.forEach(({ el }) => {
+    const [shadowEl, solidEl] = el.children as any as NodeListOf<HTMLElement>;
+    shadowEl.style.transform = "";
+    shadowEl.style.transition = "500ms transform";
+    solidEl.style.transform = `scale${
+      props.direction === "column" ? "Y" : "X"
+    }(0)`;
+    solidEl.style.transition = "500ms transform";
+  });
+
+  state.initResetSize = true;
 };
