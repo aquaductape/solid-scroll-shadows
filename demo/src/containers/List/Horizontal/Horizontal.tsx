@@ -81,15 +81,19 @@ const Horizontal = () => {
       </ScrollShadows>
       <ScrollShadows
         class={classM("container")}
-        direction="row"
-        justifyShadowsToContentItems
-        useIntersectionObserver={false}
         shadowsClass="shadow"
         shadowsBlockClass="shadow-block"
+        direction="row"
+        animation={{
+          enterClass: "enter",
+          exitClass: "exit",
+        }}
+        // justifyShadowsToContentItems
+        // disableIntersectionObserver
       >
         <div class={classM("scroll-container") + " no-scrollbar"}>
           <For each={list}>
-            {(item, idx) => {
+            {(item) => {
               return <div class={c["item"]}>{item.text}</div>;
             }}
           </For>
