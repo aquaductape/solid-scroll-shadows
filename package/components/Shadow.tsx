@@ -1,4 +1,4 @@
-import { Component, Show } from "solid-js";
+import { Component, createEffect, createRenderEffect, Show } from "solid-js";
 import {
   ShadowChildComponent,
   ShadowClassName,
@@ -30,14 +30,17 @@ const Shadow: Component<
     ref(el);
     divEl = el;
   };
+  let shadowEl!: HTMLDivElement;
   let divEl!: HTMLElement;
+  let initOpacity = true;
   let init = true;
+  let prevClassName = "";
 
   const getOpacity = () => {
     if (animation) return "";
 
-    if (init && child === "before") return "0";
-    init = false;
+    if (initOpacity && child === "before") return "0";
+    initOpacity = false;
     return divEl ? divEl.style.opacity : "";
   };
 
@@ -80,6 +83,21 @@ const Shadow: Component<
     return className;
   };
 
+  createEffect(() => {
+    const className = getClass(props.shadowsClass);
+
+    if (init) {
+      prevClassName = className;
+      shadowEl.classList.add(...className.split(" "));
+      init = false;
+      return;
+    }
+
+    shadowEl.classList.remove(...prevClassName.split(" "));
+    shadowEl.classList.add(...className.split(" "));
+    prevClassName = className;
+  });
+
   return (
     <div
       style={`position: absolute; z-index: 1; pointer-events: none; ${mirroredStyle()} ${
@@ -93,10 +111,7 @@ const Shadow: Component<
           <>
             {/* static shadow */}
             <div style={shadowStyle()}>
-              <div
-                aria-hidden="true"
-                class={getClass(props.shadowsClass)}
-              ></div>
+              <div aria-hidden="true" ref={shadowEl}></div>
             </div>
             {/* smart shadow */}
             <div

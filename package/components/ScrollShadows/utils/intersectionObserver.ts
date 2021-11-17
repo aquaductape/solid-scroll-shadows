@@ -40,7 +40,7 @@ const runEntry = (state: LocalState, entry: IntersectionObserverEntry) => {
       ? ![...sentinelShadowMap].every(([_, { visible }]) => visible === true)
       : false;
 
-  animateShadow(state, shadowEl, !isVisible);
+  animateShadow(state, shadowEl, !isVisible, shadowType);
 };
 
 export const observeSentinels = (

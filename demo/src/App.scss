@@ -33,6 +33,20 @@
   height: 100%;
 }
 
+.shadow-green {
+  // for color gradient
+  // include alpha value
+  // in order to render properly
+  // in Safari
+  background-image: linear-gradient(
+    to left,
+    rgba(2, 205, 5, 1),
+    rgba(2, 205, 5, 0)
+  );
+  width: 80px;
+  height: 100%;
+}
+
 .enter {
   transform: translateX(0%);
 }

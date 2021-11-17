@@ -55,6 +55,11 @@ export type TScrollShadows = {
          */
         align?: number;
       };
+  /**
+   * RTL (Right to Left) indicating that text is written from right to left, therefore the shadows are correctly placed in that order.
+   *
+   * @defaultValue `false`. Shadows are placed in order that respects LTR (Left to Right)
+   */
   rtl?: boolean;
   shadowsElement?: {
     before: JSX.Element;
@@ -80,6 +85,21 @@ export type TScrollShadows = {
    * @defaultValue `false`
    */
   disableIntersectionObserver?: boolean;
+  /**
+   * callback on when shadow is toggled
+   *
+   * To prevent default toggling by opacity, return `true` inside callback.
+   *
+   * Returning `true` will also not run `enterClass` and `exitClass` animations.
+   */
+  onToggleShadow?: (props: {
+    type: "before" | "after";
+    shadowEl: HTMLElement;
+    shadowContainerEl: HTMLElement;
+    scrollContainerEl: HTMLElement;
+    active: boolean;
+    init: boolean;
+  }) => void | boolean;
 };
 export type LocalState = {
   init: boolean;
@@ -95,7 +115,7 @@ export type LocalState = {
   shadowLastEl: HTMLElement;
   endsMargin: number;
   props: TScrollShadows;
-};
+} & Pick<TScrollShadows, "onToggleShadow">;
 
 export type ElementTemplate = { t: string };
 

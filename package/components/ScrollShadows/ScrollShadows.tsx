@@ -24,6 +24,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     disableIntersectionObserver,
     justifyShadowsToContentItems,
     endsMargin = 0,
+    onToggleShadow,
   } = props;
   const children = props.children as HTMLElement & ElementTemplate;
   const sentinelShadowMap: SentinelShadowMap = new Map();
@@ -87,6 +88,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     shadowFirstEl: null as any,
     shadowLastEl: null as any,
     endsMargin,
+    onToggleShadow,
     props,
   };
 

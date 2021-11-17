@@ -1,4 +1,5 @@
 import { LocalState } from "../../../types";
+import { animateShadow } from "./animate";
 import { resetJustifyShadow } from "./justifyShadowToContentItems";
 
 export const scrollHorizontally = (state: LocalState, e: WheelEvent) => {
@@ -40,8 +41,9 @@ export const onScroll = (state: LocalState, e: Event) => {
   const isAtEnd =
     containerScrollPosition + containerSize >= containerScrollSize - endsMargin;
 
-  shadowFirstEl.style.opacity = isAtStart ? "0" : "1";
-  shadowLastEl.style.opacity = isAtEnd ? "0" : "1";
+  animateShadow(state, shadowFirstEl, !isAtStart, "before");
+  animateShadow(state, shadowLastEl, !isAtEnd, "after");
+
   if (!timeoutActive) {
     state.isScrollable =
       props.direction === "row" ? !(isAtStart && isAtEnd) : false;
