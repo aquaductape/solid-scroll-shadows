@@ -40,17 +40,47 @@ export type TScrollShadows = {
         align?: number;
       };
   rtl?: boolean;
-  shadowSize: string;
-  initShadowSize?: boolean;
   /**
    * Enables horizontal scroll without holding Ctrl key
    *
    * @defaultValue `true`
    */
-  wheelScrollHorizontally?: boolean;
+  useScrollWheel?: boolean;
+  /**
+   * Enables end detection by using intersection observer, that observes sentinels that neighbors scrollable items.
+   *
+   * Setting it to `false` will use scroll event to detect ends. Is needed if you are going to use virtual scroll/windowing since the sentinels elements will mostlikely be removed thus shadows won't be triggered.
+   *
+   * @defaultValue `true`
+   */
+  useIntersectionObserver?: boolean;
 };
+export type LocalState = {
+  init: boolean;
+  initResetSize: boolean;
+  isScrollable: boolean;
+  scrollableContainer: HTMLElement;
+  scrollTimeout: number;
+  timeoutActive: boolean;
+  containerScrollSize: number;
+  containerSize: number;
+  sentinelShadowMap: SentinelShadowMap;
+  shadowFirstEl: HTMLElement;
+  shadowLastEl: HTMLElement;
+  props: TScrollShadows;
+};
+
 export type ElementTemplate = { t: string };
 
 export type ShadowChildComponent = {
   child: "before" | "after";
 };
+
+type SentinelShadowState = {
+  type: "before" | "after";
+  el: HTMLElement;
+  visible: boolean;
+  sentinel: HTMLElement;
+};
+
+export type SentinelShadowMap = Map<HTMLElement, SentinelShadowState>;

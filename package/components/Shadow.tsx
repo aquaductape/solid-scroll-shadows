@@ -6,7 +6,6 @@ const Shadow: Component<
     TScrollShadows,
     | "direction"
     | "rtl"
-    | "shadowSize"
     | "justifyShadowsToContentItems"
     | "shadowsClass"
     | "shadowsBlockClass"
@@ -17,7 +16,6 @@ const Shadow: Component<
     child,
     direction,
     ref,
-    shadowSize,
     justifyShadowsToContentItems,
     shadowsClass,
     shadowsBlockClass,
@@ -41,7 +39,6 @@ const Shadow: Component<
       direction,
       rtl: props.rtl,
       opacity: getOpacity(),
-      shadowSize,
     });
 
   const shadowStyle = () =>
@@ -114,11 +111,10 @@ export const setShadowPosition = ({
 export const setShadowStyle = ({
   child,
   direction,
-  shadowSize,
   rtl,
   opacity,
   transform,
-}: Pick<TScrollShadows, "direction" | "rtl" | "shadowSize"> &
+}: Pick<TScrollShadows, "direction" | "rtl"> &
   ShadowChildComponent & {
     gradientStart?: string;
     transform?: string;

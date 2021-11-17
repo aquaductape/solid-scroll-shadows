@@ -1,18 +1,17 @@
-import {
-  Component,
-  onCleanup,
-  onMount,
-  JSX,
-  createRenderEffect,
-  createEffect,
-} from "solid-js";
+import { Component, onCleanup, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 import { editHTMLStr } from "../../ssr";
-import { ElementTemplate, TScrollShadows } from "../../types";
-import { round } from "../../utils";
+import {
+  ElementTemplate,
+  LocalState,
+  SentinelShadowMap,
+  TScrollShadows,
+} from "../../types";
 import Sentinel from "../Sentinel";
 import Shadow from "../Shadow";
-import { fitShadowSizeToItem, scrollHorizontally } from "./utils";
+import { observeSentinels } from "./utils/intersectionObserver";
+import { observeScrollContainer } from "./utils/resizeObserver";
+import { onScroll, scrollHorizontally } from "./utils/scrolling";
 
 /**
  *
@@ -21,27 +20,23 @@ import { fitShadowSizeToItem, scrollHorizontally } from "./utils";
 const ScrollShadows: Component<TScrollShadows> = (props) => {
   const {
     direction,
-    shadowSize,
-    initShadowSize,
-    wheelScrollHorizontally = true,
+    useScrollWheel = true,
+    useIntersectionObserver = true,
     justifyShadowsToContentItems,
   } = props;
   const children = props.children as HTMLElement & ElementTemplate;
-  const sentinelShadowState = new Map<
-    HTMLElement,
-    { type: "before" | "after"; el: HTMLElement; visible: boolean }
-  >();
+  const sentinelShadowMap: SentinelShadowMap = new Map();
   let scrollableContainer = children as HTMLElement;
-  let shadowFirstEl!: HTMLElement;
-  let shadowLastEl!: HTMLElement;
   // @ts-ignore
-  let sentinelBeforeEl = (
-    <Sentinel child="before" direction={direction} rtl={props.rtl} />
-  ) as HTMLElement & ElementTemplate;
+  let sentinelBeforeEl: HTMLElement & ElementTemplate =
+    useIntersectionObserver ? (
+      <Sentinel child="before" direction={direction} rtl={props.rtl} />
+    ) : null;
   // @ts-ignore
-  let sentinelAfterEl = (
-    <Sentinel child="after" direction={direction} rtl={props.rtl} />
-  ) as HTMLElement & ElementTemplate;
+  let sentinelAfterEl: HTMLElement & ElementTemplate =
+    useIntersectionObserver ? (
+      <Sentinel child="after" direction={direction} rtl={props.rtl} />
+    ) : null;
 
   if (typeof sentinelBeforeEl === "function") {
     // @ts-ignore
@@ -49,10 +44,6 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     // @ts-ignore
     sentinelAfterEl = sentinelAfterEl();
   }
-
-  let init = true;
-  let initResetSize = false;
-  let isScrollable = false;
 
   if (isServer) {
     const scrollableContainerStr = children.t;
@@ -66,94 +57,87 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     children.t = result;
   } else {
     scrollableContainer.style.position = "relative";
-    scrollableContainer.appendChild(sentinelBeforeEl);
-    scrollableContainer.appendChild(sentinelAfterEl);
+    if (useIntersectionObserver) {
+      scrollableContainer.appendChild(sentinelBeforeEl);
+      scrollableContainer.appendChild(sentinelAfterEl);
+    }
   }
 
+  const state: LocalState = {
+    init: true,
+    initResetSize: false,
+    isScrollable: false,
+    scrollableContainer,
+    containerSize: 0,
+    scrollTimeout: 0,
+    timeoutActive: false,
+    containerScrollSize: 0,
+    sentinelShadowMap,
+    shadowFirstEl: null as any,
+    shadowLastEl: null as any,
+    props,
+  };
+
   const _scrollHorizontally = (e: WheelEvent) => {
-    scrollHorizontally(isScrollable, e);
+    scrollHorizontally(state, e);
   };
 
-  const resetInitShadowSize = () => {
-    // if (!initShadowSize) return;
-    if (!init && !initResetSize) {
-      sentinelShadowState.forEach(({ el }) => {
-        const [shadowEl, solidEl] =
-          el.children as any as NodeListOf<HTMLElement>;
-        shadowEl.style.transform = "";
-        shadowEl.style.transition = "500ms transform";
-        solidEl.style.transform = `scale${
-          props.direction === "column" ? "Y" : "X"
-        }(0)`;
-        solidEl.style.transition = "500ms transform";
-      });
-      initResetSize = true;
-    }
+  const _onScroll = (e: Event) => {
+    onScroll(state, e);
   };
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        const target = entry.target as HTMLElement;
-        const { el: shadowEl, type: shadowType } =
-          sentinelShadowState.get(target)!;
-        let isVisible = false;
-
-        if (entry.isIntersecting) {
-          isVisible = true;
-        }
-        // runAnimationCb({ el: shadowEl, isSentinelVisible: isVisible });
-        if (init && shadowType === "after") {
-          fitShadowSizeToItem({
-            el: shadowEl,
-            isSentinelVisible: isVisible,
-            rootBounds: entry.rootBounds!,
-            rootEl: scrollableContainer,
-            rtl: props.rtl!,
-            direction: props.direction,
-            justifyShadowsToContentItems,
-          });
-        }
-        resetInitShadowSize();
-        sentinelShadowState.set(target, {
-          type: shadowType,
-          el: shadowEl,
-          visible: isVisible,
-        });
-        isScrollable =
-          props.direction === "row"
-            ? ![...sentinelShadowState].every(
-                ([_, { visible }]) => visible === true
-              )
-            : false;
-        shadowEl!.style.opacity = isVisible ? "0" : "1";
-      });
-      init = false;
-    },
-    { root: scrollableContainer }
+  const intersectionObserver: IntersectionObserver | null =
+    useIntersectionObserver
+      ? new IntersectionObserver(
+          (entries) => observeSentinels(state, entries),
+          {
+            root: scrollableContainer,
+          }
+        )
+      : null;
+  const resizeObserver: ResizeObserver | null = new ResizeObserver((entries) =>
+    observeScrollContainer(state, entries)
   );
 
   onMount(() => {
-    if (wheelScrollHorizontally) {
+    if (useScrollWheel) {
       scrollableContainer.addEventListener("wheel", _scrollHorizontally);
     }
-    sentinelShadowState.set(sentinelBeforeEl, {
+
+    const setElKey = (el: HTMLElement) => {
+      if (!intersectionObserver) return {} as any;
+      return el;
+    };
+
+    sentinelShadowMap.set(setElKey(sentinelBeforeEl), {
       type: "before",
-      el: shadowFirstEl,
+      el: state.shadowFirstEl,
       visible: true,
+      sentinel: sentinelBeforeEl,
     });
-    sentinelShadowState.set(sentinelAfterEl, {
+    sentinelShadowMap.set(setElKey(sentinelAfterEl), {
       type: "after",
-      el: shadowLastEl,
+      el: state.shadowLastEl,
       visible: false,
+      sentinel: sentinelAfterEl,
     });
 
-    observer.observe(sentinelBeforeEl);
-    observer.observe(sentinelAfterEl);
+    if (intersectionObserver) {
+      intersectionObserver.observe(sentinelBeforeEl);
+      intersectionObserver.observe(sentinelAfterEl);
+    } else {
+      resizeObserver.observe(scrollableContainer);
+      scrollableContainer.addEventListener("scroll", _onScroll, {
+        passive: true,
+      });
+    }
 
     onCleanup(() => {
-      observer && observer.disconnect();
+      if (intersectionObserver) {
+        intersectionObserver && intersectionObserver.disconnect();
+      }
       scrollableContainer.removeEventListener("wheel", _scrollHorizontally);
+      scrollableContainer.removeEventListener("scroll", _onScroll);
     });
   });
 
@@ -169,20 +153,18 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
         shadowsBlockClass={props.shadowsBlockClass}
         child="before"
         direction={direction}
-        shadowSize={shadowSize}
         justifyShadowsToContentItems={justifyShadowsToContentItems}
         rtl={props.rtl}
-        ref={shadowFirstEl}
+        ref={state.shadowFirstEl}
       />
       <Shadow
         shadowsClass={props.shadowsClass}
         shadowsBlockClass={props.shadowsBlockClass}
         child="after"
         direction={direction}
-        shadowSize={shadowSize}
         justifyShadowsToContentItems={justifyShadowsToContentItems}
         rtl={props.rtl}
-        ref={shadowLastEl}
+        ref={state.shadowLastEl}
       />
       {scrollableContainer}
     </div>

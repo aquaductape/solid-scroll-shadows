@@ -1,3 +1,4 @@
+Motivation: CSS scroll shadows implementation doesn't work in Safari
 Output
 
 1. SVG

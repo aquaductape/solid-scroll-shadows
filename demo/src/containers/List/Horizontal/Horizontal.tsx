@@ -67,9 +67,9 @@ const Horizontal = () => {
         direction="column"
         shadowsClass="shadow-vertical"
         shadowsBlockClass="shadow-block-vertical"
+        // useIntersectionObserver={false}
         // rtl
         justifyShadowsToContentItems
-        shadowSize="50px"
       >
         <div class={classM("scroll-container", "vertical") + " no-scrollbar"}>
           <For each={list}>
@@ -83,9 +83,9 @@ const Horizontal = () => {
         class={classM("container")}
         direction="row"
         justifyShadowsToContentItems
+        useIntersectionObserver={false}
         shadowsClass="shadow"
         shadowsBlockClass="shadow-block"
-        shadowSize="50px"
       >
         <div class={classM("scroll-container") + " no-scrollbar"}>
           <For each={list}>

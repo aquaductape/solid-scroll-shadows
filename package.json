@@ -1,13 +1,15 @@
 {
   "name": "solid-scroll-shadows",
-  "version": "1.0.0",
-  "description": "Use shadows to indicate there's more content to scroll",
+  "version": "0.0.1",
+  "description": "Use shadows as scroll indicators",
   "license": "MIT",
   "author": "aquaductape",
   "keywords": [
     "scroll",
     "shadows",
     "scroll shadows",
+    "scroll indicators",
+    "css scroll shadows",
     "solidjs",
     "solidjs scroll shadows",
     "solid-js",
