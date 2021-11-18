@@ -35,8 +35,6 @@ export const runJustifyShadowsToContentItems = ({
       ? justifyShadowsToContentItems.align ?? defaultAlign
       : defaultAlign;
 
-  console.log({ align });
-
   if (isColumn) {
     rootPosition = "top";
     childPosition = "top";
@@ -103,8 +101,6 @@ export const runJustifyShadowsToContentItems = ({
     rtl && !isColumn
       ? position! - size! - rootX + size! * align
       : rootSize - (position! - rootX + size!) + size! * align;
-
-  console.log(halfWidth);
 
   if (halfWidth < 0) return;
 

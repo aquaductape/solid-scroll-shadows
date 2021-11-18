@@ -26,7 +26,6 @@ export const onScroll = (state: LocalState, e: Event) => {
   const scrollContainer = e.currentTarget as HTMLElement;
   const containerScrollPosition = Math.abs(scrollContainer[scrollPosition]);
 
-  console.log("fire");
   if (!timeoutActive) {
     const scrollSize =
       props.direction === "column" ? "scrollHeight" : "scrollWidth";
@@ -34,8 +33,6 @@ export const onScroll = (state: LocalState, e: Event) => {
     state.containerScrollSize = scrollContainer[scrollSize];
     state.containerSize = scrollContainer[size];
   }
-
-  // console.log(containerScrollPosition, containerScrollSize);
 
   const isAtStart = containerScrollPosition - endsMargin <= 0;
   const isAtEnd =

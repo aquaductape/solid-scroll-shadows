@@ -41,8 +41,6 @@ export const editHTMLStr = ({
       return `${insertElementStr}${tag}`;
     });
 
-    // console.log({ id, html });
-
     return html;
   }
 
