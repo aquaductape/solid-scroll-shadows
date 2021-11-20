@@ -4,6 +4,7 @@ import {
   ShadowClassName,
   TScrollShadows,
 } from "../types";
+import { getClass } from "./ScrollShadows/utils";
 
 const Shadow: Component<
   { ref: any } & Pick<
@@ -71,24 +72,17 @@ const Shadow: Component<
     if (shadowsElement) return "";
 
     const scale = direction === "column" ? "scaleY" : "scaleX";
-    return child === "before" ? `transform: ${scale}(-1);` : "";
-  };
+    const childType = props.rtl ? "after" : "before";
 
-  const getClass = (className?: ShadowClassName) => {
-    if (!className) return "";
-    if (typeof className === "object") {
-      return child === "after" ? className.after : className.before;
-    }
-
-    return className;
+    return child === childType ? `transform: ${scale}(-1);` : "";
   };
 
   createEffect(() => {
-    const className = getClass(props.shadowsClass);
+    const className = getClass(child, props.shadowsClass);
 
     if (init) {
       prevClassName = className;
-      shadowEl.classList.add(...className.split(" "));
+      // shadowEl.classList.add(...className.split(" "));
       init = false;
       return;
     }
@@ -116,7 +110,7 @@ const Shadow: Component<
             {/* smart shadow */}
             <div
               aria-hidden="true"
-              class={getClass(props.shadowsBlockClass)}
+              class={getClass(child, props.shadowsBlockClass)}
               style={solidStyle()}
             ></div>
           </>
@@ -154,11 +148,8 @@ export const setShadowStyle = ({
   direction,
   rtl,
   opacity,
-  transform,
 }: Pick<TScrollShadows, "direction" | "rtl"> &
   ShadowChildComponent & {
-    gradientStart?: string;
-    transform?: string;
     opacity: string;
   }) => {
   const isFirst = child === "before";
@@ -170,11 +161,11 @@ export const setShadowStyle = ({
   if (direction === "row") {
     return `top: 0; ${
       isFirst ? left : right
-    }: 0; ${width}; ${height}; opacity: ${opacity}; transform: ${transform};`;
+    }: 0; ${width}; ${height}; opacity: ${opacity};`;
   }
   return `left: 0; ${
     isFirst ? "top" : "bottom"
-  }: 0; ${width}; ${height}; opacity: ${opacity}; transform: ${transform};`;
+  }: 0; ${width}; ${height}; opacity: ${opacity};`;
 };
 
 export default Shadow;

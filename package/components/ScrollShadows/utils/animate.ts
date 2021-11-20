@@ -1,3 +1,4 @@
+import { getClass } from ".";
 import { LocalState } from "../../../types";
 
 export const animateShadow = (
@@ -39,6 +40,14 @@ export const animateShadow = (
       shadowEl.classList.add(animation.exitClass);
     }
     return;
+  }
+
+  shadowEl.classList.add(...getClass(type, props.shadowsClass).split(" "));
+
+  if (init) {
+    shadowEl!.style.transition = "none";
+  } else {
+    shadowEl!.style.transition = "opacity 400ms";
   }
 
   shadowEl!.style.opacity = isVisible ? "1" : "0";

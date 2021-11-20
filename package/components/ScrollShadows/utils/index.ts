@@ -1,16 +1,13 @@
-import { LocalState } from "../../../types";
+import { ShadowClassName } from "../../../types";
 
-export const runAnimationCb = ({
-  el,
-  isSentinelVisible,
-}: {
-  isSentinelVisible: boolean;
-  el: HTMLElement;
-}) => {
-  // if (isSentinelVisible && init) return;
-  if (isSentinelVisible) {
-    // onExit(el)
-    return;
+export const getClass = (
+  type: "before" | "after",
+  className?: ShadowClassName
+) => {
+  if (!className) return "";
+  if (typeof className === "object") {
+    return type === "after" ? className.after : className.before;
   }
-  // onEnter(el)
+
+  return className;
 };
