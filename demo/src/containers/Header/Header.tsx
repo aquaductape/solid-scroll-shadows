@@ -1,11 +1,15 @@
 import { scopeModuleClasses } from "../../../utils/moduleClasses";
 import { IconGithub, IconLogo } from "../../components/icons";
-import ScrollShadows from "../../components/ScrollShadows/ScrollShadows";
+import ScrollShadows from "../../../../package/index";
 import c from "./Header.module.scss";
+import { createSignal } from "solid-js";
 
 const classM = scopeModuleClasses(c);
 
 const Header = () => {
+  const [shadowClass, setShadowClass] = createSignal("");
+  const [rtl, setRTL] = createSignal(false);
+
   return (
     <header class={c["main"]}>
       <div class={c["container"]}>
@@ -14,13 +18,11 @@ const Header = () => {
         </div>
         <nav class={c["nav"]}>
           <ScrollShadows
-            class={c["scroll"]}
-            direction="horizontal"
-            shadows={{
-              color: "#000080a1",
-              borderRadius: 8,
-              insetSize: 25,
-            }}
+            class={classM("scroll")}
+            classList={{ [`${c["rtl"]}`]: rtl() }}
+            shadowsClass={"shadow"}
+            direction="row"
+            rtl={rtl()}
           >
             <ul class={c["links"] + " no-scrollbar"}>
               <li class={c["link"]}>Features</li>

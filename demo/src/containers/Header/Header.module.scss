@@ -46,10 +46,15 @@
 }
 
 .scroll {
+  position: relative;
   flex-basis: 0px;
   flex-grow: 1;
   flex-shrink: 0;
   min-width: 0;
+}
+
+.rtl {
+  direction: rtl;
 }
 
 .link {
