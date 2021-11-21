@@ -1,6 +1,6 @@
 {
   "name": "solid-scroll-shadows",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Use shadows as scroll indicators",
   "license": "MIT",
   "author": "aquaductape",
@@ -24,7 +24,7 @@
   "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
-      "solid": "./dist/source/index.jsx",
+      "solid": "./dist/source/index.js",
       "default": "./dist/esm/index.js"
     }
   },
