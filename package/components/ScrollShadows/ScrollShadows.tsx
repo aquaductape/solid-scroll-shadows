@@ -102,12 +102,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
 
   const intersectionObserver: IntersectionObserver | null =
     !disableIntersectionObserver
-      ? new IntersectionObserver(
-          (entries) => observeSentinels(state, entries),
-          {
-            root: scrollableContainer,
-          }
-        )
+      ? new IntersectionObserver((entries) => observeSentinels(state, entries))
       : null;
   const resizeObserver: ResizeObserver | null = new ResizeObserver((entries) =>
     observeScrollContainer(state, entries)
