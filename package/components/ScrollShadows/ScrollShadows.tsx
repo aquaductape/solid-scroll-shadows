@@ -1,17 +1,17 @@
 import { Component, onCleanup, onMount } from "solid-js";
-import { isServer } from "solid-js/web";
-import { editHTMLStr } from "../../ssr";
+// import { isServer } from "solid-js/web";
+// import { editHTMLStr } from "../../ssr";
 import {
   ElementTemplate,
   LocalState,
   SentinelShadowMap,
   TScrollShadows,
 } from "../../types";
-import Sentinel from "../Sentinel";
-import Shadow from "../Shadow";
-import { observeSentinels } from "./utils/intersectionObserver";
-import { observeScrollContainer } from "./utils/resizeObserver";
-import { onScroll, scrollHorizontally } from "./utils/scrolling";
+// import Sentinel from "../Sentinel";
+// import Shadow from "../Shadow";
+// import { observeSentinels } from "./utils/intersectionObserver";
+// import { observeScrollContainer } from "./utils/resizeObserver";
+// import { onScroll, scrollHorizontally } from "./utils/scrolling";
 
 /**
  *
@@ -26,9 +26,9 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     endsMargin = 0,
     onToggleShadow,
   } = props;
-  const children = props.children as HTMLElement & ElementTemplate;
+  // const children = props.children as HTMLElement & ElementTemplate;
   const sentinelShadowMap: SentinelShadowMap = new Map();
-  let scrollableContainer = children as HTMLElement;
+  let scrollableContainer = props.children as HTMLElement;
   //   // @ts-ignore
   //   let sentinelBeforeEl: HTMLElement & ElementTemplate =
   //     !disableIntersectionObserver ? (
@@ -92,13 +92,13 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     props,
   };
 
-  const _scrollHorizontally = (e: WheelEvent) => {
-    scrollHorizontally(state, e);
-  };
-
-  const _onScroll = (e: Event) => {
-    onScroll(state, e);
-  };
+  //   const _scrollHorizontally = (e: WheelEvent) => {
+  //     scrollHorizontally(state, e);
+  //   };
+  //
+  //   const _onScroll = (e: Event) => {
+  //     onScroll(state, e);
+  //   };
 
   // const intersectionObserver: IntersectionObserver | null =
   //   !disableIntersectionObserver
@@ -156,12 +156,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
   //   });
 
   return (
-    <div
-      id={props.id}
-      class={props.class}
-      classList={props.classList}
-      style={props.style}
-    >
+    <div class={props.class} classList={props.classList}>
       {/* <Shadow
         shadowsClass={props.shadowsClass}
         shadowsBlockClass={props.shadowsBlockClass}
