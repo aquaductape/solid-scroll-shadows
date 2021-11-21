@@ -13,7 +13,7 @@ export const animateShadow = (
 
   shadowEl = animation
     ? (shadowEl.firstElementChild?.firstElementChild as HTMLElement)
-    : shadowEl;
+    : (shadowEl.firstElementChild?.firstElementChild as HTMLElement);
 
   const cbResult = onToggleShadow
     ? onToggleShadow({
@@ -45,10 +45,10 @@ export const animateShadow = (
   shadowEl.classList.add(...getClass(type, props.shadowsClass).split(" "));
 
   if (init) {
-    shadowEl!.style.transition = "none";
+    shadowContainerEl!.style.transition = "none";
   } else {
-    shadowEl!.style.transition = "opacity 400ms";
+    shadowContainerEl!.style.transition = "opacity 400ms";
   }
 
-  shadowEl!.style.opacity = isVisible ? "1" : "0";
+  shadowContainerEl!.style.opacity = isVisible ? "1" : "0";
 };
