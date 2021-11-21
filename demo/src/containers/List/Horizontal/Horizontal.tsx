@@ -17,13 +17,7 @@ const classM = scopeModuleClasses(c);
 const Horizontal = () => {
   const [list] = createStore([..._list]);
 
-  const [shadowClass, setShadowClass] = createSignal("shadow-green");
-
-  onMount(() => {
-    setTimeout(() => {
-      setShadowClass("shadow");
-    }, 5000);
-  });
+  const [shadowClass, setShadowClass] = createSignal("shadow");
 
   return (
     <div style="padding: 50px">
@@ -90,15 +84,12 @@ const Horizontal = () => {
         shadowsClass={shadowClass()}
         shadowsBlockClass="shadow-block"
         direction="row"
-        animation={{
-          enterClass: "enter",
-          exitClass: "exit",
-        }}
-        onToggleShadow={({ type, active }) => {
-          console.log(type, active);
-        }}
+        // animation={{
+        //   enterClass: "enter",
+        //   exitClass: "exit",
+        // }}
         // justifyShadowsToContentItems
-        disableIntersectionObserver
+        // disableIntersectionObserver
       >
         <div class={classM("scroll-container") + " no-scrollbar"}>
           <For each={list}>

@@ -7,9 +7,6 @@ import { createSignal } from "solid-js";
 const classM = scopeModuleClasses(c);
 
 const Header = () => {
-  const [shadowClass, setShadowClass] = createSignal("");
-  const [rtl, setRTL] = createSignal(false);
-
   return (
     <header class={c["main"]}>
       <div class={c["container"]}>
@@ -19,10 +16,8 @@ const Header = () => {
         <nav class={c["nav"]}>
           <ScrollShadows
             class={classM("scroll")}
-            classList={{ [`${c["rtl"]}`]: rtl() }}
             shadowsClass={"shadow"}
             direction="row"
-            rtl={rtl()}
           >
             <ul class={c["links"] + " no-scrollbar"}>
               <li class={c["link"]}>Features</li>

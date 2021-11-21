@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@amoutonbrady/solid-heroicons': ^0.8.0
   '@simonwep/pickr': ^1.8.1
   '@types/lodash-es': ^4.17.4
   focus-visible: ^5.2.0
@@ -8,16 +9,21 @@ specifiers:
   sass: ^1.35.2
   solid-dismiss: ^1.0.19
   solid-js: ^1.2.1
+  solid-scroll-shadows: ^0.0.6
+  solid-transition-group: ^0.0.8
   vite: ^2.4.2
   vite-plugin-solid: ^2.0.0
 
 dependencies:
+  '@amoutonbrady/solid-heroicons': 0.8.0
   '@simonwep/pickr': 1.8.1
   '@types/lodash-es': 4.17.4
   focus-visible: 5.2.0
   lodash-es: 4.17.21
   solid-dismiss: 1.0.19_solid-js@1.2.1
   solid-js: 1.2.1
+  solid-scroll-shadows: 0.0.6_solid-js@1.2.1
+  solid-transition-group: 0.0.8_solid-js@1.2.1
 
 devDependencies:
   sass: 1.37.5
@@ -25,6 +31,12 @@ devDependencies:
   vite-plugin-solid: 2.0.1
 
 packages:
+
+  /@amoutonbrady/solid-heroicons/0.8.0:
+    resolution: {integrity: sha512-87NSVAtuMojL//LEQKIMfI2k5i0YJjXubQGUt4ugUe8EEK7YrYzbIDrqmy9qVmdyJ4zfdTaN023vBTekwv5p5g==}
+    dependencies:
+      solid-js: 0.26.5
+    dev: false
 
   /@babel/code-frame/7.14.5:
     resolution: {integrity: sha512-9pzDqyc6OLDaqe+zbACgFkb6fKMNG6CObKpnYXChRsvYGyEdc7CA2BaqeOM+vOtCS5ndmJicPJhKAwYRI6UfFw==}
@@ -681,6 +693,10 @@ packages:
       solid-js: 1.2.1
     dev: false
 
+  /solid-js/0.26.5:
+    resolution: {integrity: sha512-cMjxcVoyRBgnfSpwYxXPM5WF800guR+x/01RDBFQjAAkqU7X28GbRkTNKcyQ1KHcFOnzEsG18J+JJ9/PvqyNmw==}
+    dev: false
+
   /solid-js/1.2.1:
     resolution: {integrity: sha512-Ooi8lYHc08IDRDAPcT5faPSVjqLo6sfIY58TG/PQLwwEt59jakw67Q8qx/csSyCqLmPD8fAFyzdezXKJxOKmIQ==}
 
@@ -691,6 +707,22 @@ packages:
     dependencies:
       solid-js: 1.2.1
     dev: true
+
+  /solid-scroll-shadows/0.0.6_solid-js@1.2.1:
+    resolution: {integrity: sha512-7aoI9LRACD5sS1G7UBihKVsOXMsTd5wylWNVEkkPOhuxt+ydLYc0zOwqMfdDQ21Lh4gr3N/1Tvl6gBOIhcZaEQ==}
+    peerDependencies:
+      solid-js: '1'
+    dependencies:
+      solid-js: 1.2.1
+    dev: false
+
+  /solid-transition-group/0.0.8_solid-js@1.2.1:
+    resolution: {integrity: sha512-5cS/Ircfs/Y0J00oEToL+MWd9V07KgQlw+qRD8kpd6azb2Ri5SjXg/ocqT8U8Wgdx1VQPx45HyopQN+UumkVGQ==}
+    peerDependencies:
+      solid-js: ^1.0.0
+    dependencies:
+      solid-js: 1.2.1
+    dev: false
 
   /source-map-js/0.6.2:
     resolution: {integrity: sha512-/3GptzWzu0+0MBQFrDKzw/DvvMTUORvgY6k6jd/VS6iCR4RDTKWH6v6WPwQoUO8667uQEf9Oe38DxAYWY5F/Ug==}

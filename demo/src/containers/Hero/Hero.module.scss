@@ -1,33 +1,56 @@
-.main {
-  height: calc(100vh - 65px);
+.h1 {
+  font-size: 8.3vw;
+  font-family: "Shippori Antique B1";
+  white-space: nowrap;
+}
+
+.info {
+  font-size: 16px;
   overflow: hidden;
 }
 
-.container {
-  height: 100%;
+.info-text {
+  p {
+    margin: 5px 0;
+  }
 }
 
-.slides {
-  display: flex;
-  overflow-x: auto;
-  min-width: 0;
-  height: 100%;
+.demo {
+  margin: 50px 0;
 }
 
-.slide {
+.display {
+  border-radius: 20px;
+  padding: 20px;
+  width: 50vw;
+  margin: 0 auto;
+  box-shadow: 0 18px 35px 0px #888ec1;
+}
+
+.emoji-container {
   position: relative;
-  min-width: 100vw;
-  flex-shrink: 0;
-  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-.slide-content {
+.emoji-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  height: 35vh;
+  padding: 0;
+  margin: 0;
+  align-items: center;
 }
 
-.slide-declaration {
-  position: absolute;
-  right: 400px;
-  top: 49.7vh;
-  font-size: 30px;
-  font-weight: bold;
+.emoji-item {
+  margin: 10px 0;
+  width: 60px;
+  height: 60px;
+}
+
+@media (min-width: 600px) {
+  .h1 {
+    font-size: 50px;
+  }
 }

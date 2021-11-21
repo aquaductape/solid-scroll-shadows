@@ -17,11 +17,14 @@
     "vite-plugin-solid": "^2.0.0"
   },
   "dependencies": {
+    "@amoutonbrady/solid-heroicons": "^0.8.0",
     "@simonwep/pickr": "^1.8.1",
     "@types/lodash-es": "^4.17.4",
     "focus-visible": "^5.2.0",
     "lodash-es": "^4.17.21",
     "solid-dismiss": "^1.0.19",
-    "solid-js": "^1.2.1"
+    "solid-js": "^1.2.1",
+    "solid-scroll-shadows": "^0.0.6",
+    "solid-transition-group": "^0.0.8"
   }
 }
