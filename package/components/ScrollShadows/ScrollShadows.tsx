@@ -128,12 +128,14 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
       el: state.shadowFirstEl,
       visible: true,
       sentinel: sentinelBeforeEl,
+      init: true,
     });
     sentinelShadowMap.set(setElKey(sentinelAfterEl), {
       type: "after",
       el: state.shadowLastEl,
       visible: false,
       sentinel: sentinelAfterEl,
+      init: true,
     });
 
     if (intersectionObserver) {

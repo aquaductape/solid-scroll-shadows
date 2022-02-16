@@ -38,8 +38,8 @@ export const onScroll = (state: LocalState, e: Event) => {
   const isAtEnd =
     containerScrollPosition + containerSize >= containerScrollSize - endsMargin;
 
-  animateShadow(state, shadowFirstEl, !isAtStart, "before");
-  animateShadow(state, shadowLastEl, !isAtEnd, "after");
+  animateShadow(state, shadowFirstEl, !isAtStart, "before", false);
+  animateShadow(state, shadowLastEl, !isAtEnd, "after", false);
 
   if (!timeoutActive) {
     state.isScrollable =

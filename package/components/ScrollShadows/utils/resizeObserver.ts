@@ -51,8 +51,10 @@ const runEntry = (state: LocalState, entry: ResizeObserverEntry) => {
   state.isScrollable =
     props.direction === "row" ? !(isAtStart && isAtEnd) : false;
 
-  animateShadow(state, shadowFirstEl, !isAtStart, "before");
-  animateShadow(state, shadowLastEl, !isAtEnd, "after");
+  // TODO
+  // pass proper shadowInit
+  animateShadow(state, shadowFirstEl, !isAtStart, "before", false);
+  animateShadow(state, shadowLastEl, !isAtEnd, "after", false);
 
   state.init = false;
 };

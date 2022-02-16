@@ -128,6 +128,7 @@ type SentinelShadowState = {
   el: HTMLElement;
   visible: boolean;
   sentinel: HTMLElement;
+  init: boolean;
 };
 
 export type SentinelShadowMap = Map<HTMLElement, SentinelShadowState>;

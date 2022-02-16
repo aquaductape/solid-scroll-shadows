@@ -114,10 +114,10 @@ export const runJustifyShadowsToContentItems = ({
 };
 
 export const resetJustifyShadow = (state: LocalState) => {
-  const { init, initResetSize, sentinelShadowMap, props } = state;
+  const { initResetSize, sentinelShadowMap, props } = state;
   const { justifyShadowsToContentItems } = props;
 
-  if (!justifyShadowsToContentItems || init || initResetSize) return;
+  if (!justifyShadowsToContentItems || initResetSize) return;
 
   sentinelShadowMap.forEach(({ el }) => {
     const [shadowEl, solidEl] = el.children as any as NodeListOf<HTMLElement>;

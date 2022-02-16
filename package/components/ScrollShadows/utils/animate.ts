@@ -5,7 +5,8 @@ export const animateShadow = (
   state: LocalState,
   shadowEl: HTMLElement,
   isVisible: boolean,
-  type: "before" | "after"
+  type: "before" | "after",
+  shadowInit: boolean
 ) => {
   const { props, init, onToggleShadow, scrollableContainer } = state;
   const { animation } = props;
@@ -44,7 +45,7 @@ export const animateShadow = (
 
   shadowEl.classList.add(...getClass(type, props.shadowsClass).split(" "));
 
-  if (init) {
+  if (shadowInit) {
     shadowContainerEl!.style.transition = "none";
   } else {
     shadowContainerEl!.style.transition = "opacity 400ms";
