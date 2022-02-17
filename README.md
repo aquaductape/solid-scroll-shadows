@@ -27,7 +27,7 @@ Popular online solution uses pure CSS such as this below.
 
 It's a simple and effective but unfortunatly doesn't work for iOS since the shadows aren't able to re-rendere as you scroll. You can [fix by using JS to force rerender](https://www.bram.us/2019/10/24/pure-css-scroll-shadows-vertical-horizontal/#note-mobilesafari) but this currently doesn't work with iOS15.
 
-Another downside implementing animations as shadows are toggled.
+Another downside is implementing animations to shadows, when they are toggled.
 
 This small component allows you to easily add shadows as scroll indicators. It runs efficiently by utilizing IntersectionObserver to toggle the shadows. You also have to freedom to customize the animation on how the shadow appears.
 
