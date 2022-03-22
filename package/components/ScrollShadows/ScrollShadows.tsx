@@ -104,7 +104,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
   };
 
   const intersectionObserver: IntersectionObserver | null =
-    !disableIntersectionObserver
+    !disableIntersectionObserver && !isServer
       ? new IntersectionObserver(
           (entries) => {
             observeSentinels(state, entries);
@@ -114,12 +114,12 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
           }
         )
       : null;
-  const resizeObserver: ResizeObserver | null = new ResizeObserver(
-    (entries) => {
-      if (!props.shadowsClass) return;
-      observeScrollContainer(state, entries);
-    }
-  );
+  const resizeObserver: ResizeObserver | null = !isServer
+    ? new ResizeObserver((entries) => {
+        if (!props.shadowsClass) return;
+        observeScrollContainer(state, entries);
+      })
+    : null;
 
   onMount(() => {
     if (!disableScrollWheel) {
@@ -150,7 +150,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
       intersectionObserver.observe(sentinelBeforeEl);
       intersectionObserver.observe(sentinelAfterEl);
     } else {
-      resizeObserver.observe(scrollableContainer);
+      resizeObserver!.observe(scrollableContainer);
       scrollableContainer.addEventListener("scroll", _onScroll, {
         passive: true,
       });
