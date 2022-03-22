@@ -58,6 +58,26 @@ const List = () => {
 };
 ```
 
+```css
+/* css stylesheet */
+
+.shadow {
+  /**
+   for color gradient
+   include alpha value
+   in order to render properly
+   in Safari
+  */
+  background-image: linear-gradient(
+    to left,
+    rgb(30 41 124 / 100%),
+    rgb(30 41 124 / 0%)
+  );
+  width: 20px;
+  height: 100%;
+}
+```
+
 ### Mask shadows
 
 ```jsx
@@ -190,5 +210,45 @@ type TOnAtEndsProps = {
   direction: "row" | "column";
   rtl?: boolean;
   init: boolean;
+};
+
+type ShadowMaskProps = {
+  /**
+   * @defaultValue `"30px"`
+   *
+   * number converts to px unit
+   */
+  size?: number | string;
+  /**
+   * @defaultValue `"30px"`
+   *
+   * number converts to px unit
+   */
+  rowSize?: number | string;
+  /**
+   * @defaultValue `"30px"`
+   *
+   * number converts to px unit
+   */
+  columnSize?: number | string;
+  /**
+   * @defaultValue `"-webkit-mask-position 250ms ease-in-out, mask-position 250ms ease-in-out"`
+   */
+  transition?:
+    | {
+        /**
+         * @defaultValue `250`
+         */
+        duration?: number;
+        /**
+         * @defaultValue `"ease-in-out"`
+         */
+        easing?: string;
+        /**
+         * @defaultValue `0`
+         */
+        delay?: number;
+      }
+    | string;
 };
 ```
