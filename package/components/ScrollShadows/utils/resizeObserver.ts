@@ -1,5 +1,6 @@
 import { LocalState } from "../../../types";
 import { animateShadow } from "./animate";
+import { getShadowEl } from "./getShadowEl";
 import {
   resetJustifyShadow,
   runJustifyShadowsToContentItems,
@@ -13,6 +14,7 @@ const runEntry = (state: LocalState, entry: ResizeObserverEntry) => {
     scrollableContainer,
     shadowFirstEl,
     shadowLastEl,
+    onAtEnds,
   } = state;
   const rootBounds = entry.target.getBoundingClientRect();
 
@@ -50,11 +52,56 @@ const runEntry = (state: LocalState, entry: ResizeObserverEntry) => {
 
   state.isScrollable =
     props.direction === "row" ? !(isAtStart && isAtEnd) : false;
+  const isScrollContainer = state.containerSize === state.containerScrollSize;
 
-  // TODO
-  // pass proper shadowInit
-  animateShadow(state, shadowFirstEl, !isAtStart, "before", false);
-  animateShadow(state, shadowLastEl, !isAtEnd, "after", false);
+  if (onAtEnds) {
+    onAtEnds({
+      type: "start",
+      active: isScrollContainer && isAtStart,
+      shadowEl: getShadowEl({
+        shadowEl: shadowFirstEl,
+        hasShadowEl: !!props.shadowsClass,
+        animated: !!props.animation,
+      }),
+      shadowContainerEl: shadowFirstEl,
+      scrollContainerEl: scrollableContainer,
+      direction: props.direction,
+      init,
+    });
+    onAtEnds({
+      type: "end",
+      active: isScrollContainer && isAtEnd,
+      shadowEl: getShadowEl({
+        shadowEl: shadowLastEl,
+        hasShadowEl: !!props.shadowsClass,
+        animated: !!props.animation,
+      }),
+      shadowContainerEl: shadowLastEl,
+      scrollContainerEl: scrollableContainer,
+      direction: props.direction,
+      init,
+    });
+  }
+
+  if (props.shadowsClass) {
+    // TODO
+    // pass proper shadowInit
+    // also debounce
+    animateShadow(
+      state,
+      shadowFirstEl,
+      isScrollContainer && !isAtStart,
+      "before",
+      false
+    );
+    animateShadow(
+      state,
+      shadowLastEl,
+      isScrollContainer && !isAtEnd,
+      "after",
+      false
+    );
+  }
 
   state.init = false;
 };

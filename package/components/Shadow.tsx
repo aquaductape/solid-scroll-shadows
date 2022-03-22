@@ -4,7 +4,7 @@ import {
   ShadowClassName,
   TScrollShadows,
 } from "../types";
-import { getClass } from "./ScrollShadows/utils";
+import { getClass } from "./ScrollShadows/utils/getClass";
 
 const Shadow: Component<
   { ref: any } & Pick<

@@ -1,4 +1,4 @@
-import { getClass } from ".";
+import { getClass } from "./getClass";
 import { LocalState } from "../../../types";
 
 export const animateShadow = (
@@ -8,28 +8,13 @@ export const animateShadow = (
   type: "before" | "after",
   shadowInit: boolean
 ) => {
-  const { props, init, onToggleShadow, scrollableContainer } = state;
+  const { props, init, scrollableContainer, direction } = state;
   const { animation } = props;
   const shadowContainerEl = shadowEl;
 
   shadowEl = animation
     ? (shadowEl.firstElementChild?.firstElementChild as HTMLElement)
     : (shadowEl.firstElementChild?.firstElementChild as HTMLElement);
-
-  const cbResult = onToggleShadow
-    ? onToggleShadow({
-        type,
-        shadowEl: animation
-          ? shadowEl
-          : (shadowEl.firstElementChild?.firstElementChild as HTMLElement),
-        shadowContainerEl,
-        active: isVisible,
-        init,
-        scrollContainerEl: scrollableContainer,
-      })
-    : false;
-
-  if (cbResult) return;
 
   if (animation) {
     shadowEl.style.transition = init ? "none" : "";
@@ -48,7 +33,7 @@ export const animateShadow = (
   if (shadowInit) {
     shadowContainerEl!.style.transition = "none";
   } else {
-    shadowContainerEl!.style.transition = "opacity 400ms";
+    shadowContainerEl!.style.transition = "opacity 250ms";
   }
 
   shadowContainerEl!.style.opacity = isVisible ? "1" : "0";

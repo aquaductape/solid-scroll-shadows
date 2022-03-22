@@ -143,19 +143,21 @@ type TScrollShadows = {
    */
   disableIntersectionObserver?: boolean;
   /**
-   * callback on when shadow is toggled
-   *
-   * To prevent default toggling by opacity, return `true` inside callback.
-   *
-   * Returning `true` will also not run `enterClass` and `exitClass` animations.
+   * callback on when scroll container is at start or end
    */
-  onToggleShadow?: (props: {
-    type: "before" | "after";
-    shadowEl: HTMLElement;
-    shadowContainerEl: HTMLElement;
-    scrollContainerEl: HTMLElement;
-    active: boolean;
-    init: boolean;
-  }) => void | boolean;
+  onAtEnds?: (props: TOnAtEndsProps) => void;
+};
+
+type TOnAtEndsProps = {
+  type: "start" | "end";
+  isAtStart: boolean;
+  isAtEnd: boolean;
+  shadowEl: HTMLElement | null;
+  // shadowEls?: { type: "before" | "after"; shadowEl: HTMLElement }[];
+  shadowContainerEl: HTMLElement;
+  scrollContainerEl: HTMLElement;
+  direction: "row" | "column";
+  rtl?: boolean;
+  init: boolean;
 };
 ```

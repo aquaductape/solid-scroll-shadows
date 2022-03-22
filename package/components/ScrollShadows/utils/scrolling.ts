@@ -1,5 +1,6 @@
 import { LocalState } from "../../../types";
 import { animateShadow } from "./animate";
+import { getShadowEl } from "./getShadowEl";
 import { resetJustifyShadow } from "./justifyShadowToContentItems";
 
 export const scrollHorizontally = (state: LocalState, e: WheelEvent) => {
@@ -17,9 +18,12 @@ export const onScroll = (state: LocalState, e: Event) => {
     props,
     containerScrollSize,
     containerSize,
+    scrollableContainer,
     shadowFirstEl,
     shadowLastEl,
     endsMargin,
+    onAtEnds,
+    init,
   } = state;
   const scrollPosition =
     props.direction === "column" ? "scrollTop" : "scrollLeft";
@@ -38,8 +42,53 @@ export const onScroll = (state: LocalState, e: Event) => {
   const isAtEnd =
     containerScrollPosition + containerSize >= containerScrollSize - endsMargin;
 
-  animateShadow(state, shadowFirstEl, !isAtStart, "before", false);
-  animateShadow(state, shadowLastEl, !isAtEnd, "after", false);
+  if (isAtStart) {
+    if (!state.isAtStart) {
+      if (onAtEnds) {
+        onAtEnds({
+          type: "start",
+          active: isAtStart,
+          shadowEl: getShadowEl({
+            shadowEl: shadowFirstEl,
+            hasShadowEl: !!props.shadowsClass,
+            animated: !!props.animation,
+          }),
+          shadowContainerEl: shadowFirstEl,
+          scrollContainerEl: scrollableContainer,
+          direction: props.direction,
+          init,
+        });
+      }
+      animateShadow(state, shadowFirstEl, !isAtStart, "before", false);
+    } else {
+      state.isAtStart = true;
+      state.isAtEnd = false;
+    }
+  }
+
+  if (isAtEnd) {
+    if (!state.isAtEnd) {
+      if (onAtEnds) {
+        onAtEnds({
+          type: "end",
+          active: isAtEnd,
+          shadowEl: getShadowEl({
+            shadowEl: shadowLastEl,
+            hasShadowEl: !!props.shadowsClass,
+            animated: !!props.animation,
+          }),
+          shadowContainerEl: shadowFirstEl,
+          scrollContainerEl: scrollableContainer,
+          direction: props.direction,
+          init,
+        });
+      }
+      animateShadow(state, shadowLastEl, !isAtEnd, "after", false);
+    } else {
+      state.isAtStart = false;
+      state.isAtEnd = true;
+    }
+  }
 
   if (!timeoutActive) {
     state.isScrollable =

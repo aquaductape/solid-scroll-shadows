@@ -1,4 +1,4 @@
-import { Component, onCleanup, onMount } from "solid-js";
+import { Component, onCleanup, onMount, Show } from "solid-js";
 import { isServer } from "solid-js/web";
 import { editHTMLStr } from "../../ssr";
 import {
@@ -24,7 +24,7 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     disableIntersectionObserver,
     justifyShadowsToContentItems,
     endsMargin = 0,
-    onToggleShadow,
+    onAtEnds,
   } = props;
   // const children = props.children as HTMLElement & ElementTemplate;
   const sentinelShadowMap: SentinelShadowMap = new Map();
@@ -85,10 +85,13 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
     timeoutActive: false,
     containerScrollSize: 0,
     sentinelShadowMap,
+    isAtStart: true,
+    isAtEnd: false,
     shadowFirstEl: null as any,
     shadowLastEl: null as any,
     endsMargin,
-    onToggleShadow,
+    direction,
+    onAtEnds,
     props,
   };
 
@@ -103,14 +106,19 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
   const intersectionObserver: IntersectionObserver | null =
     !disableIntersectionObserver
       ? new IntersectionObserver(
-          (entries) => observeSentinels(state, entries),
+          (entries) => {
+            observeSentinels(state, entries);
+          },
           {
             root: scrollableContainer,
           }
         )
       : null;
-  const resizeObserver: ResizeObserver | null = new ResizeObserver((entries) =>
-    observeScrollContainer(state, entries)
+  const resizeObserver: ResizeObserver | null = new ResizeObserver(
+    (entries) => {
+      if (!props.shadowsClass) return;
+      observeScrollContainer(state, entries);
+    }
   );
 
   onMount(() => {
@@ -159,26 +167,28 @@ const ScrollShadows: Component<TScrollShadows> = (props) => {
 
   return (
     <div class={props.class} classList={props.classList}>
-      <Shadow
-        shadowsClass={props.shadowsClass}
-        shadowsBlockClass={props.shadowsBlockClass}
-        child="before"
-        direction={direction}
-        justifyShadowsToContentItems={justifyShadowsToContentItems}
-        animation={props.animation}
-        rtl={props.rtl}
-        ref={state.shadowFirstEl}
-      />
-      <Shadow
-        shadowsClass={props.shadowsClass}
-        shadowsBlockClass={props.shadowsBlockClass}
-        child="after"
-        direction={direction}
-        justifyShadowsToContentItems={justifyShadowsToContentItems}
-        animation={props.animation}
-        rtl={props.rtl}
-        ref={state.shadowLastEl}
-      />
+      <Show when={props.shadowsClass}>
+        <Shadow
+          shadowsClass={props.shadowsClass}
+          shadowsBlockClass={props.shadowsBlockClass}
+          child="before"
+          direction={direction}
+          justifyShadowsToContentItems={justifyShadowsToContentItems}
+          animation={props.animation}
+          rtl={props.rtl}
+          ref={state.shadowFirstEl}
+        />
+        <Shadow
+          shadowsClass={props.shadowsClass}
+          shadowsBlockClass={props.shadowsBlockClass}
+          child="after"
+          direction={direction}
+          justifyShadowsToContentItems={justifyShadowsToContentItems}
+          animation={props.animation}
+          rtl={props.rtl}
+          ref={state.shadowLastEl}
+        />
+      </Show>
       {scrollableContainer}
     </div>
   );
