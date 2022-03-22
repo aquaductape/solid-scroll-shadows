@@ -31,7 +31,9 @@ Another downside is implementing animations to shadows, when they are toggled.
 
 This small component allows you to easily add shadows as scroll indicators. It runs efficiently by utilizing IntersectionObserver to toggle the shadows. You also have to freedom to customize the animation on how the shadow appears.
 
-## Example
+## Examples
+
+### Regular Shadows
 
 ```jsx
 const List = () => {
@@ -47,11 +49,40 @@ const List = () => {
   ];
 
   return (
+    <ScrollShadows class="container" shadowsClass="shadow" direction="row">
+      <ul class="scroll-container">
+        <For each={list}>{(item) => <li>{item}</li>}</For>
+      </ul>
+    </ScrollShadows>
+  );
+};
+```
+
+### Mask shadows
+
+```jsx
+import ScrollShadows, { shadowMask } from "solid-scroll-shadows";
+
+const List = () => {
+  const list = [
+    "Home",
+    "Docs",
+    "Get Started",
+    "Examples",
+    "Tutorials",
+    "Blog",
+    "Contact",
+    "Join",
+  ];
+
+  return (
     <ScrollShadows
       class="container"
-      shadowsClass="shadow"
       direction="row"
-      disableIntersectionObserver
+      onAtEnds={shadowMask({
+        size: "30px", // can be any css unit such as 'vw', 'rem' ect.
+        transition: { duration: 250, easing: "ease-in-out" },
+      })}
     >
       <ul class="scroll-container">
         <For each={list}>{(item) => <li>{item}</li>}</For>
