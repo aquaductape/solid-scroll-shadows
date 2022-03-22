@@ -2,6 +2,20 @@
 
 <img src="https://img.shields.io/badge/size%20(gzip)-~3.5kb-brightgreen" alt="size of package gzip" />
 
+## Install
+
+```
+npm i solid-scroll-shadows
+```
+
+```
+yarn add solid-scroll-shadows
+```
+
+```
+pnpm add solid-scroll-shadows
+```
+
 ## Motivation
 
 Popular online solution uses pure CSS such as this below.
